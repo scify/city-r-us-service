@@ -13,9 +13,8 @@ class UserController extends Controller {
      * also initialize the services needed
      * and the middlewares
      */
-    public function __construct(){
+    public function __construct() {
         $this->middleware('jwt.auth', ['except' => ['register']]);
-        $this->middleware('cors');
         $this->userService = new UserService();
     }
 
@@ -33,5 +32,15 @@ class UserController extends Controller {
         return $response;
     }
 
+    public function index() {
+
+        $users = User::all();
+
+        return \Response::json([
+            'success' => true,
+            'data' => [
+                'users' => $users]
+        ]);
+    }
 
 }

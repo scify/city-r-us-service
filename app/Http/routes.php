@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
+Route::get('/', 'HomeController@index');
 
 Route::get('home', 'HomeController@index');
 
@@ -22,7 +22,7 @@ Route::controllers([
 
 
 
-Route::group(['prefix' => 'api/v1'], function()
+Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 {
     Route::post('authenticate', 'Auth\AuthenticateController@authenticate');
 
@@ -30,6 +30,7 @@ Route::group(['prefix' => 'api/v1'], function()
     //User routes
     Route::post('users/register', 'UserController@register');
     Route::post('users/login', 'Auth\AuthenticateController@authenticate');
+    Route::get('users', 'UserController@index');
 
 
 

@@ -29,7 +29,7 @@ class Kernel extends HttpKernel {
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
         'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
-        'cors' => 'App\Http\Middleware\CORS'
+        //'corsss' => 'App\Http\Middleware\CORS'
 	];
 
 }

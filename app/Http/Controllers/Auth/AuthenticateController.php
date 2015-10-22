@@ -27,19 +27,27 @@ class AuthenticateController extends Controller {
             // verify the credentials and create a token for the user
             if (!$token = \JWTAuth::attempt($credentials)) {
                 return \Response::json([
-                    'error' => 'invalid_credentials'
-                    ], 401);
+                    'success' => false,
+                    'errors' => [
+                        'id' => '',
+                        'message' => 'invalid_credentials']
+                ]);
             }
         } catch (JWTException $e) {
             // something went wrong
             return \Response::json([
-                    'error' => 'could_not_create_token'
-                ], 500);
+                'success' => false,
+                'errors' => [
+                    'id' => '',
+                    'message' => 'could_not_create_token']
+            ]);
         }
 
         // if no errors are encountered we can return a JWT
         return \Response::json([
-                'token' => $token
-            ], 200);
+            'success' => true,
+            'data' => [
+                'token' => $token]
+        ]);
     }
 }
