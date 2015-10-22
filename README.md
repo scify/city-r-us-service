@@ -114,25 +114,6 @@ And finally, set the group appropriately:
 
 Initialize the database with `php artisan migrate` and test the installation with `php artisan serve` and hit `localhost:8000/auth/register` at your browser of choice.
 
-After running migrations, it's time to create an initial user.
-
-Navigate at the root directory and run `./config-user.pl`. The script asks for initial user info. After filling everything, you will be asked if the info is correct. If not, just press `n` and it will run once more. Upon successful completion, the database seed file will be generated. It's time to seed the database with `php artisan db:seed --class=UserTableSeeder`. You can verify the created user with:
-
-
-```
-% psql -d <database_name>
-<database_name>=> select * from users;
- id |  name   |        email      |      password     | level |     addr       |    tel     |
-----+---------+-------------------+-------------------+-------+----------------+------------+
-  1 | <name>  | email@example.com | <hashed password> |       | <user address> | <user tel> |
-
- remember_token |     created_at      |     updated_at
-----------------+---------------------+---------------------
-                | 2015-06-09 07:20:51 | 2015-06-09 07:20:51
-```
-
-Verify login credentials by navigating at http://localhost/auth/login
-
 ### Mail setup
 
 Manual intervention required in this. You'll have to edit city-r-us-service/config/mail.php and set the global "From" Address from:
