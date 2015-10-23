@@ -136,6 +136,7 @@ return [
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 
+        //Add-on providers
         'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',
         'Barryvdh\Cors\ServiceProvider',
 

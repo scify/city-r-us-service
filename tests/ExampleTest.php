@@ -7,13 +7,15 @@ class ExampleTest extends TestCase {
 	 *
 	 * @return void
 	 */
-//	public function testBasicExample()
-//	{
-//		$response = $this->call('GET', '/');
-//
-//		$this->assertEquals(200, $response->getStatusCode());
-//	}
-    public function dummyTest_VariableHasAlwaysValueOfOne()
+	public function testBasicExample()
+	{
+		$response = $this->call('GET', '/');
+
+		$this->assertEquals(200, $response->getStatusCode());
+	}
+
+
+    public function testVariableHasAlwaysValueOfOne()
     {
         $variable = 1;
 
@@ -31,6 +33,6 @@ class ExampleTest extends TestCase {
 
     //test_Missions_Create
 
-    //test_UploadRoute  
+    //test_UploadRoute
 
 }

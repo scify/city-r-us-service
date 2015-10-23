@@ -1,5 +1,37 @@
 <?php namespace App\Http\Controllers;
 
+
+/**
+ * Class HomeController
+ *
+ * @package App\Http\Controllers
+ *
+ * @SWG\Swagger(
+ *     host="http://city-r-us-service/api",
+ *     basePath="/v1",
+ *     schemes={"http"},
+ *     @SWG\Info(
+ *         version="1.0",
+ *         title="City-R-US API",
+ *         description = "API, API on the wall, who is the RESTiest of them all?",
+ *         @SWG\Contact(name="SciFY"),
+ *     ),
+ *     @SWG\Definition(
+ *         definition="Error",
+ *         required={"code", "message"},
+ *         @SWG|Tag(name = "Private", description = "Tag used to denote operations as private"),
+ *         @SWG\Property(
+ *             property="code",
+ *             type="integer",
+ *             format="int32"
+ *         ),
+ *         @SWG\Property(
+ *             property="message",
+ *             type="string"
+ *         )
+ *     )
+ * )
+ */
 class HomeController extends Controller {
 
 	/*
@@ -20,7 +52,6 @@ class HomeController extends Controller {
 	 */
 	public function __construct()
 	{
-		$this->middleware('auth');
 	}
 
 	/**

@@ -1,0 +1,65 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "City-R-US API",
+        "description": "API, API on the wall, who is the RESTiest of them all?",
+        "contact": {
+            "name": "SciFY"
+        },
+        "version": "1.0"
+    },
+    "host": "http://city-r-us-service/api",
+    "basePath": "/v1",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "description": "Retrieve the users of the application.",
+                "operationId": "api.users",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "jwtToken",
+                        "description": "The JWT is required in order to authenticate the user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns all the users of the application."
+                    },
+                    "400": {
+                        "description": "Unauthorized action."
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "description": "Class HomeController",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "description": "Class HomeController",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

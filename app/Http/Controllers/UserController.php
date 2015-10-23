@@ -32,6 +32,34 @@ class UserController extends Controller {
         return $response;
     }
 
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     path="/users",
+     *     description="Retrieve the users of the application.",
+     *     operationId="api.users",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *			name="jwtToken",
+     *			description="The JWT is required in order to authenticate the user",
+     *      	required=true,
+     *      	type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns all the users of the application."
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action.",
+     *     )
+     * )
+     */
     public function index() {
 
         $users = User::all();
