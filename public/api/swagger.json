@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "http://city-r-us-service/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -19,25 +19,67 @@
                 "tags": [
                     "users"
                 ],
+                "summary": "Get all users",
                 "description": "Retrieve the users of the application.",
                 "operationId": "api.users",
                 "produces": [
                     "application/json"
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Returns all the users of the application",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/authenticate": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Authenticate a user",
+                "description": "Authenticate a user based on given credentials.",
+                "operationId": "api.users.authenticate",
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
-                        "name": "jwtToken",
-                        "description": "The JWT is required in order to authenticate the user",
+                        "name": "email",
+                        "in": "query",
+                        "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "The user's password",
                         "required": true,
                         "type": "string"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns all the users of the application."
+                        "description": "User authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/apiResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
                     },
                     "400": {
-                        "description": "Unauthorized action."
+                        "description": "Unauthorized action"
                     }
                 }
             }
@@ -60,6 +102,57 @@
                     "type": "string"
                 }
             }
+        },
+        "user": {
+            "properties": {
+                "id": {
+
+                },
+                "name": {
+
+                },
+                "email": {
+
+                },
+                "created_at": {
+
+                },
+                "updated_at": {
+
+                }
+            }
+        },
+        "apiResponse": {
+            "properties": {
+                "success": {
+                    "required": true,
+                    "type": "boolean"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "string"
+                }
+            }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "users",
+            "description": "Operations about users"
+        },
+        {
+            "name": "store",
+            "description": "Operations about user"
+        },
+        {
+            "name": "user",
+            "description": "Access to Petstore orders",
+            "externalDocs": {
+                "description": "Find out more about our store",
+                "url": "http://swagger.io"
+            }
+        }
+    ]
 }

@@ -29,14 +29,14 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
     //User routes
     Route::post('users/register', 'UserController@register');
-    Route::post('users/login', 'Auth\AuthenticateController@authenticate');
+    Route::post('users/authenticate', 'UserController@authenticate');
     Route::get('users', 'UserController@index');
 
 
     //Mission routes
     Route::get('missions', 'UserController@index');
     Route::get('missions/{id}', 'UserController@show');
-    Route::post('missions/create', 'UserController@store');
+    Route::post('missions/store', 'UserController@store');
     Route::put('missions/{id}/update', 'UserController@update');
     Route::delete('missions/{id}/delete', 'UserController@delete');
 

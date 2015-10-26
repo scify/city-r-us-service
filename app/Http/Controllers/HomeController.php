@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use Swagger\Annotations\Swagger;
 
 /**
  * Class HomeController
@@ -7,7 +8,7 @@
  * @package App\Http\Controllers
  *
  * @SWG\Swagger(
- *     host="http://city-r-us-service/api",
+ *     host="city-r-us-service/api",
  *     basePath="/v1",
  *     schemes={"http"},
  *     @SWG\Info(
@@ -16,10 +17,10 @@
  *         description = "API, API on the wall, who is the RESTiest of them all?",
  *         @SWG\Contact(name="SciFY"),
  *     ),
+ *
  *     @SWG\Definition(
  *         definition="Error",
  *         required={"code", "message"},
- *         @SWG|Tag(name = "Private", description = "Tag used to denote operations as private"),
  *         @SWG\Property(
  *             property="code",
  *             type="integer",

@@ -6,6 +6,17 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+/**
+ * @SWG\Definition(
+ *  definition="user",
+ *   @SWG\Property(property="id"),
+ *   @SWG\Property(property="name"),
+ *   @SWG\Property(property="email"),
+ *   @SWG\Property(property="created_at"),
+ *   @SWG\Property(property="updated_at")
+ * )
+ *
+ */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
 	use Authenticatable, CanResetPassword;

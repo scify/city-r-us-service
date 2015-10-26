@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Controller;
+use App\Models\ApiResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -26,28 +27,31 @@ class AuthenticateController extends Controller {
         try {
             // verify the credentials and create a token for the user
             if (!$token = \JWTAuth::attempt($credentials)) {
-                return \Response::json([
+                $response = new ApiResponse([
                     'success' => false,
                     'errors' => [
                         'id' => '',
                         'message' => 'invalid_credentials']
                 ]);
+                return \Response::json($response);
             }
         } catch (JWTException $e) {
             // something went wrong
-            return \Response::json([
+            $response = new ApiResponse([
                 'success' => false,
                 'errors' => [
                     'id' => '',
                     'message' => 'could_not_create_token']
             ]);
+            return \Response::json($response);
         }
 
         // if no errors are encountered we can return a JWT
-        return \Response::json([
+        $response = new ApiResponse([
             'success' => true,
             'data' => [
                 'token' => $token]
         ]);
+        return \Response::json($response);
     }
 }
