@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 
+use App\Models\ApiResponse;
 use App\Models\User;
 
 class UserService {
@@ -17,53 +18,63 @@ class UserService {
     public function register($credentials) {
 
         //Validations
-        if ($credentials['email'] == null || $credentials['email'] == '')
-            return \Response::json([
-                'success' => false,
-                'errors' => [
-                    'id' => '',
-                    'description' => 'email_is_null',
-                    'message' => 'The user email should not be null or an empty string.']
-            ]);
+        if ($credentials['email'] == null || $credentials['email'] == '') {
+            $response = new ApiResponse();
+            $response->success = false;
+            $response->errors = [
+                'id' => '',
+                'description' => 'email_is_null',
+                'message' => 'The user email should not be null or an empty string.'];
 
-        if ($credentials['password'] == null || $credentials['password'] == '')
-            return \Response::json([
-                'success' => false,
-                'errors' => [
-                    'id' => '',
-                    'description' => 'password_is_null',
-                    'message' => 'The user password should not be null or an empty string.']
-            ]);
+            return \Response::json($response);
+        }
 
-        if (!filter_var($credentials['email'], FILTER_VALIDATE_EMAIL))
-            return \Response::json([
-                'success' => false,
-                'errors' => [
-                    'id' => '',
-                    'description' => 'email_bad_format',
-                    'message' => 'The user email should be in a correct email format (i.e. example@example.com).']
-            ]);
+        if ($credentials['password'] == null || $credentials['password'] == '') {
+            $response = new ApiResponse();
+            $response->success = false;
+            $response->errors = [
+                'id' => '',
+                'description' => 'password_is_null',
+                'message' => 'The user password should not be null or an empty string.'];
 
-        if (strlen($credentials['password']) < 5)
-            return \Response::json([
-                'success' => false,
-                'errors' => [
-                    'id' => '',
-                    'description' => 'password_bad_format',
-                    'message' => 'The user password should be at least 6 characters long.']
-            ]);
+            return \Response::json($response);
+        }
+
+        if (!filter_var($credentials['email'], FILTER_VALIDATE_EMAIL)) {
+            $response = new ApiResponse();
+            $response->success = false;
+            $response->errors = [
+                'id' => '',
+                'description' => 'email_bad_format',
+                'message' => 'The user email should be in a correct email format (i.e. example@example.com).'];
+
+            return \Response::json($response);
+        }
+
+        if (strlen($credentials['password']) < 5) {
+            $response = new ApiResponse();
+            $response->success = false;
+            $response->errors = [
+                'id' => '',
+                'description' => 'password_bad_format',
+                'message' => 'The user password should be at least 6 characters long.'];
+
+            return \Response::json($response);
+        }
 
         //Check if email already exists in db
         $user = User::where('email', $credentials['email'])->first();
 
-        if ($user != null)
-            return \Response::json([
-                'success' => false,
-                'errors' => [
-                    'id' => '',
-                    'description' => 'email_exists',
-                    'message' => 'The email provided is already in use.']
-            ]);
+        if ($user != null) {
+            $response = new ApiResponse();
+            $response->success = false;
+            $response->errors = [
+                'id' => '',
+                'description' => 'email_exists',
+                'message' => 'The email provided is already in use.'];
+
+            return \Response::json($response);
+        }
 
         //All's good, create a new user
         $user = User::create($credentials);
@@ -71,11 +82,14 @@ class UserService {
         //Retrieve the JWT and send back to the Controller
         $token = \JWTAuth::fromUser($user);
 
-        return \Response::json([
-            'success' => true,
-            'data' => [
-                'token' => $token]
-        ]);
+        $response = new ApiResponse();
+        $response->success = true;
+        $response->data = [
+            'token' => $token,];
+
+        return \Response::json($response);
+
+
     }
 
 }
