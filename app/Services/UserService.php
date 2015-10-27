@@ -77,7 +77,11 @@ class UserService {
         }
 
         //All's good, create a new user
-        $user = User::create($credentials);
+        $user = User::create([
+            'name' => $credentials['name'],
+            'email' => $credentials['email'],
+            'password' => bcrypt($credentials['password']),
+        ]);
 
         //Retrieve the JWT and send back to the Controller
         $token = \JWTAuth::fromUser($user);
