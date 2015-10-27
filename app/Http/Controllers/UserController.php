@@ -28,7 +28,7 @@ class UserController extends Controller {
      */
     public function register() {
 
-        $credentials = \Request::only('email', 'password');
+        $credentials = \Request::only('email', 'password', 'name');
 
         $response = $this->userService->register($credentials);
 
