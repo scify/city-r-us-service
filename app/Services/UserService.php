@@ -18,6 +18,18 @@ class UserService {
     public function register($credentials) {
 
         //Validations
+        if ($credentials['name'] == null || $credentials['name'] == '') {
+            $response = new ApiResponse();
+            $response->success = false;
+            $response->errors = [
+                'id' => '',
+                'description' => 'name_is_null',
+                'message' => 'The user\'s name should not be null or an empty string.'];
+
+            return \Response::json($response);
+        }
+
+
         if ($credentials['email'] == null || $credentials['email'] == '') {
             $response = new ApiResponse();
             $response->success = false;
