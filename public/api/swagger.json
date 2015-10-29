@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "city-r-us-service/api",
+    "host": "http://cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -124,14 +124,10 @@
         },
         "apiResponse": {
             "properties": {
-                "success": {
-                    "required": true,
+                "status": {
                     "type": "boolean"
                 },
-                "data": {
-                    "type": "string"
-                },
-                "errors": {
+                "message": {
                     "type": "string"
                 }
             }

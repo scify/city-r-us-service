@@ -8,7 +8,7 @@ use Swagger\Annotations\Swagger;
  * @package App\Http\Controllers
  *
  * @SWG\Swagger(
- *     host="city-r-us-service/api",
+ *     host="http://cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
  *     basePath="/v1",
  *     schemes={"http"},
  *     @SWG\Info(

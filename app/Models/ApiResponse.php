@@ -3,16 +3,14 @@
 /**
  * @SWG\Definition(
  *   definition="apiResponse",
- *   @SWG\Property(property="success", type="boolean"),
- *   @SWG\Property(property="data", type="string"),
- *   @SWG\Property(property="errors", type="string")
+ *   @SWG\Property(property="status", type="boolean"),
+ *   @SWG\Property(property="message", type="string")
  * )
  */
 class ApiResponse {
 
-    public $success;
+    public $status;
 
-    public $data;
+    public $message;
 
-    public $errors;
 }

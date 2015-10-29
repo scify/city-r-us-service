@@ -1,4 +1,4 @@
-# City-r-us Service 
+# City-R-US Service 
 
 ### Starting the project
 

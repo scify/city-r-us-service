@@ -20,8 +20,8 @@ class MissionController extends Controller {
         $missions = Mission::all();
 
         $response = new ApiResponse();
-        $response->success = false;
-        $response->data = [
+        $response->status = 'success';
+        $response->message = [
             'users' => $missions];
 
         return \Response::json($response);

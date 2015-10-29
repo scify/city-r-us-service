@@ -20,11 +20,11 @@ class UserService {
         //Validations
         if ($credentials['name'] == null || $credentials['name'] == '') {
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'description' => 'name_is_null',
-                'message' => 'The user\'s name should not be null or an empty string.'];
+                'code' => 'name_is_null',
+                'description' => 'The user\'s name should not be null or an empty string.'];
 
             return \Response::json($response);
         }
@@ -32,44 +32,44 @@ class UserService {
 
         if ($credentials['email'] == null || $credentials['email'] == '') {
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'description' => 'email_is_null',
-                'message' => 'The user email should not be null or an empty string.'];
+                'code' => 'email_is_null',
+                'description' => 'The user email should not be null or an empty string.'];
 
             return \Response::json($response);
         }
 
         if ($credentials['password'] == null || $credentials['password'] == '') {
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'description' => 'password_is_null',
-                'message' => 'The user password should not be null or an empty string.'];
+                'code' => 'password_is_null',
+                'description' => 'The user password should not be null or an empty string.'];
 
             return \Response::json($response);
         }
 
         if (!filter_var($credentials['email'], FILTER_VALIDATE_EMAIL)) {
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'description' => 'email_bad_format',
-                'message' => 'The user email should be in a correct email format (i.e. example@example.com).'];
+                'code' => 'email_bad_format',
+                'description' => 'The user email should be in a correct email format (i.e. example@example.com).'];
 
             return \Response::json($response);
         }
 
         if (strlen($credentials['password']) < 5) {
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'description' => 'password_bad_format',
-                'message' => 'The user password should be at least 6 characters long.'];
+                'code' => 'password_bad_format',
+                'description' => 'The user password should be at least 6 characters long.'];
 
             return \Response::json($response);
         }
@@ -79,11 +79,11 @@ class UserService {
 
         if ($user != null) {
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'description' => 'email_exists',
-                'message' => 'The email provided is already in use.'];
+                'code' => 'email_exists',
+                'description' => 'The email provided is already in use.'];
 
             return \Response::json($response);
         }
@@ -99,8 +99,8 @@ class UserService {
         $token = \JWTAuth::fromUser($user);
 
         $response = new ApiResponse();
-        $response->success = true;
-        $response->data = [
+        $response->status = 'success';
+        $response->message = [
             'token' => $token,];
 
         return \Response::json($response);

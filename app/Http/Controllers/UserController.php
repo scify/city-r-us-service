@@ -122,28 +122,30 @@ class UserController extends Controller {
             // verify the credentials and create a token for the user
             if (!$token = \JWTAuth::attempt($credentials)) {
                 $response = new ApiResponse();
-                $response->success = false;
-                $response->errors = [
+                $response->status = 'error';
+                $response->message = [
                     'id' => '',
-                    'message' => 'invalid_credentials'];
+                    'code' => 'invalid_credentials',
+                    'description' => 'The credentials provided are not valid'];
 
                 return \Response::json($response);
             }
         } catch (JWTException $e) {
             // something went wrong
             $response = new ApiResponse();
-            $response->success = false;
-            $response->errors = [
+            $response->status = 'error';
+            $response->message = [
                 'id' => '',
-                'message' => 'could_not_create_token'];
+                'code' => 'could_not_create_token',
+                'description' => 'The token could not be created'];
 
             return \Response::json($response);
         }
 
         // if no errors are encountered we can return a JWT
         $response = new ApiResponse();
-        $response->success = true;
-        $response->data = ['token'=> $token];
+        $response->status = 'success';
+        $response->message = ['token'=> $token];
 
         return \Response::json($response);
     }
