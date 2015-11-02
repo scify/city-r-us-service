@@ -21,10 +21,54 @@ class UserController extends Controller {
         $this->userService = new UserService();
     }
 
+
     /**
-     * Register a new user to the app
+     * Register a new user to the app.
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Register a user",
+     *     path="/users/register",
+     *     description="Register a new user to the app.",
+     *     operationId="api.users.register",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *			name="name",
+     *			description="The user's name",
+     *      	required=true,
+     *      	type="string",
+     *          in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *			name="email",
+     *			description="The user's email",
+     *      	required=true,
+     *      	type="string",
+     *          in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *			name="password",
+     *			description="The user's password",
+     *      	required=true,
+     *      	type="string",
+     *          in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="User registered",
+     *         @SWG\Schema(ref="#/definitions/apiResponse")
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Malformed data",
+     *     ),
+     *     @SWG\Response(
+     *         response=409,
+     *         description="Email already exists",
+     *     )
+     * )
      */
     public function register() {
 

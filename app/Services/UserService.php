@@ -26,7 +26,7 @@ class UserService {
                 'code' => 'name_is_null',
                 'description' => 'The user\'s name should not be null or an empty string.'];
 
-            return \Response::json($response);
+            return \Response::json($response, 400);
         }
 
 
@@ -38,7 +38,7 @@ class UserService {
                 'code' => 'email_is_null',
                 'description' => 'The user email should not be null or an empty string.'];
 
-            return \Response::json($response);
+            return \Response::json($response, 400);
         }
 
         if ($credentials['password'] == null || $credentials['password'] == '') {
@@ -49,7 +49,7 @@ class UserService {
                 'code' => 'password_is_null',
                 'description' => 'The user password should not be null or an empty string.'];
 
-            return \Response::json($response);
+            return \Response::json($response, 400);
         }
 
         if (!filter_var($credentials['email'], FILTER_VALIDATE_EMAIL)) {
@@ -60,7 +60,7 @@ class UserService {
                 'code' => 'email_bad_format',
                 'description' => 'The user email should be in a correct email format (i.e. example@example.com).'];
 
-            return \Response::json($response);
+            return \Response::json($response, 400);
         }
 
         if (strlen($credentials['password']) < 5) {
@@ -71,7 +71,7 @@ class UserService {
                 'code' => 'password_bad_format',
                 'description' => 'The user password should be at least 6 characters long.'];
 
-            return \Response::json($response);
+            return \Response::json($response, 400);
         }
 
         //Check if email already exists in db
@@ -85,7 +85,7 @@ class UserService {
                 'code' => 'email_exists',
                 'description' => 'The email provided is already in use.'];
 
-            return \Response::json($response);
+            return \Response::json($response, 409);
         }
 
         //All's good, create a new user
@@ -103,7 +103,7 @@ class UserService {
         $response->message = [
             'token' => $token,];
 
-        return \Response::json($response);
+        return \Response::json($response, 200);
 
 
     }

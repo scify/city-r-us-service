@@ -2,13 +2,16 @@
 
 use Swagger\Annotations\Swagger;
 
+
+//cityrus.projects.development1.scify.org/www/city-r-us-service/public
+//
 /**
  * Class HomeController
  *
  * @package App\Http\Controllers
  *
  * @SWG\Swagger(
- *     host="cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+ *     host="city-r-us-service/api",
  *     basePath="/v1",
  *     schemes={"http"},
  *     @SWG\Info(
