@@ -19,8 +19,7 @@ use Swagger\Annotations\Swagger;
  *         title="City-R-US API",
  *         description = "API, API on the wall, who is the RESTiest of them all?",
  *         @SWG\Contact(name="SciFY"),
- *     ),
- *
+ *     ), *
  *     @SWG\Definition(
  *         definition="Error",
  *         required={"code", "message"},
