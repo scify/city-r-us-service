@@ -3,15 +3,15 @@
 use Swagger\Annotations\Swagger;
 
 
-//cityrus.projects.development1.scify.org/www/city-r-us-service/public
-//
+//cityrus.projects.development1.scify.org/www/city-r-us-service/public/api
+//city-r-us-service/api
 /**
  * Class HomeController
  *
  * @package App\Http\Controllers
  *
  * @SWG\Swagger(
- *     host="city-r-us-service/api",
+ *     host="cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
  *     basePath="/v1",
  *     schemes={"http"},
  *     @SWG\Info(
