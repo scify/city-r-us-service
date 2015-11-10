@@ -110,6 +110,35 @@ And finally, set the group appropriately:
 
 `% sudo chown -R www-data:www-data storage`
 
-*database instructions placeholder*
+### database instructions placeholder###
 
 Initialize the database with `php artisan migrate` and test the installation with `php artisan serve` and hit `localhost:8000/auth/register` at your browser of choice to create the first user.
+
+
+### env file ###
+Create an .env file
+ 
+ ```
+ APP_ENV=local
+APP_DEBUG=true
+APP_KEY=rIXzIHrNd5keauakhH8Hf0YHMTK5kAMq
+
+DB_HOST=localhost
+DB_DATABASE=...
+DB_USERNAME= ...
+DB_PASSWORD=...
+
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_DRIVER=sync
+
+MAIL_DRIVER=smtp
+MAIL_HOST=...
+MAIL_PORT=...
+MAIL_USERNAME=...
+MAIL_PASSWORD=...
+MAIL_FROM_ADDR=...
+MAIL_FROM_NAME=...
+
+JWT_SECRET=...
+```
