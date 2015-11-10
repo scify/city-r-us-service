@@ -8,4 +8,8 @@ class Mission extends Model{
 
     protected $fillable = ['name', 'description'];
 
+
+    public function type(){
+        return $this->hasOne('App\Models\Descriptions\MissionType', 'id', 'type_id');
+    }
 }
