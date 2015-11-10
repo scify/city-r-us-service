@@ -4,11 +4,15 @@
 use App\Http\Requests\MissionRequest;
 use App\Models\ApiResponse;
 use App\Models\Mission;
+use App\Services\MissionService;
 
 class MissionController extends Controller {
 
+    private $missionService;
 
     public function __construct() {
+        $this->middleware('jwt.auth', ['only' => ['store']]);
+        $this->missionService = new MissionService();
     }
 
     /**
@@ -22,15 +26,17 @@ class MissionController extends Controller {
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = [
-            'users' => $missions];
+            'missions' => $missions];
 
         return \Response::json($response);
     }
 
-    public function store(MissionRequest $request) {
-
-        $mission = Mission::create($request->all());
-
-        return $mission;
+    /**
+     * Store a mission
+     *
+     * @return mixed
+     */
+    public function store() {
+        return $this->missionService->store(\Request::all());
     }
 }

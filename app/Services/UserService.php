@@ -41,6 +41,7 @@ class UserService {
             return \Response::json($response, 400);
         }
 
+
         if ($credentials['password'] == null || $credentials['password'] == '') {
             $response = new ApiResponse();
             $response->status = 'error';
@@ -101,11 +102,10 @@ class UserService {
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = [
-            'token' => $token,];
+            'token' => $token
+        ];
 
         return \Response::json($response, 200);
-
-
     }
 
 }
