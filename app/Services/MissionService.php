@@ -2,6 +2,7 @@
 
 
 use App\Models\ApiResponse;
+use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
 
 class MissionService{
@@ -22,11 +23,12 @@ class MissionService{
             return \Response::json($response, 400);
         }
 
-
-        //All's good, create a new user
+        //All's good, create a new mission
+        $type_id = MissionType::where('name', $data['type'])->first()->id;
         $mission = Mission::create([
             'name' => $data['name'],
-            'description' => $data['description']
+            'description' => $data['description'],
+            'type_id' => $type_id
            /*  'imgPath' => bcrypt($credentials['imgPath']),*/
         ]);
 
@@ -37,6 +39,5 @@ class MissionService{
         ];
 
         return \Response::json($response, 200);
-
     }
 }
