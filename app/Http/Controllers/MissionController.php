@@ -21,7 +21,7 @@ class MissionController extends Controller {
      * @return Response
      */
     public function index() {
-        $missions = Mission::all();
+        $missions = Mission::with('type')->get();
 
         $response = new ApiResponse();
         $response->status = 'success';
@@ -38,5 +38,25 @@ class MissionController extends Controller {
      */
     public function store() {
         return $this->missionService->store(\Request::all());
+    }
+
+    /**
+     * Update a mission
+     *
+     * @return mixed
+     */
+    public function update(){
+        dd('aa');
+        $mission = Mission::find(\Request::get('id'));
+        if($mission!=null)
+            $mission->update(\Request::all());
+
+        return \Request::get('id');
+    }
+
+
+    public function byName(){
+        $name = \Request::get('name');
+        return Mission::where('name', $name)->first();
     }
 }

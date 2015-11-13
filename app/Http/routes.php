@@ -35,9 +35,10 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
     //Mission routes
     Route::get('missions', 'MissionController@index');
-    Route::get('missions/{id}', 'MissionController@show');
+    Route::get('missions/byId', 'MissionController@byId');
+    Route::get('missions/byName', 'MissionController@byName');
     Route::post('missions/store', 'MissionController@store');
-    Route::put('missions/{id}/update', 'MissionController@update');
+    Route::post('missions/{id}/update', 'MissionController@update');
     Route::delete('missions/{id}/delete', 'MissionController@delete');
 
 

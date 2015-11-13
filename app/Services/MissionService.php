@@ -10,7 +10,6 @@ class MissionService{
 
 
     public function store($data){
-
         //Validations
         if ($data['name'] == null || $data['name'] == '') {
             $response = new ApiResponse();
@@ -22,7 +21,6 @@ class MissionService{
 
             return \Response::json($response, 400);
         }
-
         //All's good, create a new mission
         $type_id = MissionType::where('name', $data['type'])->first()->id;
         $mission = Mission::create([

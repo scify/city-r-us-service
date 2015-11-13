@@ -21,7 +21,7 @@ class CreateMissionsTable extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('img_path')->nullable();
+            $table->string('img_name')->nullable();
             $table->timestamps();
 
             $table->integer('type_id')->unsigned();
