@@ -13,6 +13,18 @@ class DescriptionsSeeder extends Seeder {
      */
     public function run()
     {
+        //User roles
+        DB::table('roles')->delete();
+
+        $types = [
+            ['name' => 'web'],
+            ['name' => 'mobile'],
+        ];
+
+        DB::table('roles')->insert($types);
+
+
+        //Mission types
         DB::table('mission_types')->delete();
 
         $types = [
@@ -21,5 +33,7 @@ class DescriptionsSeeder extends Seeder {
         ];
 
         DB::table('mission_types')->insert($types);
+
+
     }
 }

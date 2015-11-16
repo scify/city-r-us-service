@@ -6,8 +6,8 @@
  *   description="Operations about users"
  * )
  * @SWG\Tag(
- *   name="store",
- *   description="Operations about user"
+ *   name="missions",
+ *   description="Operations about missions"
  * )
  * @SWG\Tag(
  *   name="user",

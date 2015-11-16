@@ -2,6 +2,7 @@
 
 
 use App\Models\ApiResponse;
+use App\Models\Descriptions\Role;
 use App\Models\User;
 
 class UserService {
@@ -95,6 +96,10 @@ class UserService {
             'email' => $credentials['email'],
             'password' => bcrypt($credentials['password']),
         ]);
+
+        //assign role to user
+        $role = Role::where('name', $credentials['role'])->first();
+        $user->roles()->save($role);
 
         //Retrieve the JWT and send back to the Controller
         $token = \JWTAuth::fromUser($user);

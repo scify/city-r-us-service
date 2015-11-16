@@ -29,6 +29,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
     //User routes
     Route::post('users/register', 'UserController@register');
+    Route::post('users/register', 'UserController@register');
     Route::post('users/authenticate', 'UserController@authenticate');
     Route::get('users', 'UserController@index');
 

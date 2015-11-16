@@ -74,6 +74,11 @@ class UserController extends Controller {
 
         $credentials = \Request::only('email', 'password', 'name');
 
+        if(!\Request::has('role'))
+            $credentials['role'] = 'mobile';
+        else
+            $credentials['role'] = 'web';
+
         $response = $this->userService->register($credentials);
 
         return $response;

@@ -8,12 +8,39 @@
         },
         "version": "1.0"
     },
-    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
     ],
     "paths": {
+        "/missions": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get all missions",
+                "description": "Retrieve the missions of the application.",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns all the missions of the application",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
@@ -153,6 +180,31 @@
                 }
             }
         },
+        "mission": {
+            "properties": {
+                "id": {
+
+                },
+                "name": {
+
+                },
+                "description": {
+
+                },
+                "img_name": {
+
+                },
+                "type_id": {
+
+                },
+                "created_at": {
+
+                },
+                "updated_at": {
+
+                }
+            }
+        },
         "user": {
             "properties": {
                 "id": {
@@ -189,8 +241,8 @@
             "description": "Operations about users"
         },
         {
-            "name": "store",
-            "description": "Operations about user"
+            "name": "missions",
+            "description": "Operations about missions"
         },
         {
             "name": "user",
