@@ -2,6 +2,7 @@
 
 
 use App\Models\ApiResponse;
+use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
 use App\Services\MissionService;
 
@@ -68,10 +69,15 @@ class MissionController extends Controller {
      */
     public function update() {
         $mission = Mission::find(\Request::get('id'));
-        if ($mission != null)
-            $mission->update(\Request::all());
 
-        return \Request::get('id');
+        if ($mission != null) {
+            $mission->update(\Request::all());
+            $type_id = MissionType::where('name', \Request::get('mission_type'))->first()->id;
+            $mission->type_id = $type_id;
+            $mission->save();
+        }
+
+        return $mission->id;
     }
 
 
@@ -88,8 +94,7 @@ class MissionController extends Controller {
         } else {
             $response = new ApiResponse();
             $response->status = 'success';
-            $response->message = [
-                'mission' => $mission];
+            $response->message = $mission;
         }
         return \Response::json($response);
     }
@@ -107,8 +112,7 @@ class MissionController extends Controller {
         } else {
             $response = new ApiResponse();
             $response->status = 'success';
-            $response->message = [
-                'mission' => $mission];
+            $response->message = $mission;
         }
         return \Response::json($response);
     }
