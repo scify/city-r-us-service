@@ -11,7 +11,7 @@ class MissionController extends Controller {
     private $missionService;
 
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['store']]);
+        $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->missionService = new MissionService();
     }
 
@@ -81,8 +81,13 @@ class MissionController extends Controller {
     }
 
 
+    /**
+     * Find a mission by name
+     *
+     * @return mixed
+     */
     public function byName() {
-        $mission = Mission::where('name', \Request::get('name'))->with('type')->first();
+        $mission = Mission::where('name', \Request::get('name'))->with('type', 'users')->first();
 
         if ($mission == null) {
             $response = new ApiResponse();
@@ -99,8 +104,13 @@ class MissionController extends Controller {
         return \Response::json($response);
     }
 
+    /**
+     * Find a mission by id
+     *
+     * @return mixed
+     */
     public function byId() {
-        $mission = Mission::where('id', \Request::get('id'))->with('type')->first();
+        $mission = Mission::where('id', \Request::get('id'))->with('type', 'users')->first();
 
         if ($mission == null) {
             $response = new ApiResponse();
@@ -114,6 +124,47 @@ class MissionController extends Controller {
             $response->status = 'success';
             $response->message = $mission;
         }
+        return \Response::json($response);
+    }
+
+    /**
+     * Delete a mission
+     */
+    public function destroy($id = null) {
+        $response = new ApiResponse();
+        if ($id == null)
+            $id = \Request::get('id');
+
+        if ($id != null) {
+            $mission = Mission::with('users')->find($id);
+            if ($mission != null) {
+                if (sizeof($mission->users) > 0) {
+                    $response->status = 'error';
+                    $response->message = [
+                        'id' => '',
+                        'code' => 'mission_has_users',
+                        'description' => 'The mission could not be deleted because it has users'];
+                } else {
+                    //safely delete the mission
+                    $mission->delete();
+                    $response->status = 'success';
+                    $response->message = $id;
+                }
+            } else {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'mission_not_found',
+                    'description' => 'The mission could not be found'];
+            }
+        } else {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'id_not_provided',
+                'description' => 'No id was provided'];
+        }
+
         return \Response::json($response);
     }
 }

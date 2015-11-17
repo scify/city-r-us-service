@@ -53,10 +53,15 @@ class MissionService{
         }
         //All's good, create a new mission
         $type_id = MissionType::where('name', $data['mission_type'])->first()->id;
+
         if(isset($data['name']))
             $mission->name = $data['name'];
         if(isset($data['img_name']))
             $mission->img_name = $data['img_name'];
+        if(isset($data['description']))
+            $mission->description = $data['description'];
+        if(isset($data['mission_type']))
+            $mission->type_id = $type_id;
 
         $mission->save();
 

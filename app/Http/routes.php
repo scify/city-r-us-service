@@ -40,7 +40,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::get('missions/byName', 'MissionController@byName');
     Route::post('missions/store', 'MissionController@store');
     Route::post('missions/{id}/update', 'MissionController@update');
-    Route::delete('missions/{id}/delete', 'MissionController@delete');
+    Route::post('missions/delete/{id}', 'MissionController@destroy');
 
 
 
