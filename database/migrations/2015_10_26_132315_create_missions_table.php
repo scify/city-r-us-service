@@ -23,6 +23,7 @@ class CreateMissionsTable extends Migration {
             $table->string('description')->nullable();
             $table->string('img_name')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->integer('type_id')->unsigned();
             $table->foreign('type_id')->references('id')->on('mission_types');

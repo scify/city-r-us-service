@@ -11,7 +11,7 @@ class MissionController extends Controller {
     private $missionService;
 
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['store',  'destroy']]);
+        $this->middleware('jwt.auth', ['only' => ['store',  'update', 'destroy']]);
         $this->missionService = new MissionService();
     }
 
