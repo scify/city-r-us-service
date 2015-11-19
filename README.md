@@ -116,7 +116,7 @@ Initialize the database with `php artisan migrate` and test the installation wit
 
 
 ### env file ###
-Create an .env file
+Create an .env file. Since City-R-Us integrates with the http://www.radical-project.eu/ the staging urls should be provided also
  
  ```
  APP_ENV=local
@@ -139,6 +139,11 @@ MAIL_USERNAME=...
 MAIL_PASSWORD=...
 MAIL_FROM_ADDR=...
 MAIL_FROM_NAME=...
+
+RADICAL_CONFIGURATION_API=http://vm.radical-project.eu:8080/ConfigurationAPI/
+RADICAL_DATA_API=http://vm.radical-project.eu:8080/Radical/rest/
+RADICAL_REPOSITORY_API=http://vm.radical-project.eu:3000/
+RADICAL_CITYNAME=ATHENS
 
 JWT_SECRET=...
 ```

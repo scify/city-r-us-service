@@ -4,10 +4,15 @@
 use App\Models\ApiResponse;
 use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
+use App\Services\Radical;
 
 class MissionService{
 
-
+    private $radicalServiceConfiguration;
+    function __construct()
+    {
+       $this->$radicalServiceConfiguration  = new RadicalConfigurationAPI();
+    }
 
     public function store($data){
         //Validations
@@ -29,6 +34,7 @@ class MissionService{
             'type_id' => $type_id
         ]);
 
+        $this->$radicalServiceConfiguration->registerMission($mission);
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = [
@@ -64,6 +70,8 @@ class MissionService{
             $mission->type_id = $type_id;
 
         $mission->save();
+
+        $this->$radicalServiceConfiguration->updateMission($mission);
 
         $response = new ApiResponse();
         $response->status = 'success';
