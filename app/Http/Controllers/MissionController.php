@@ -11,7 +11,7 @@ class MissionController extends Controller {
     private $missionService;
 
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
+        $this->middleware('jwt.auth', ['only' => ['store',  'destroy']]);
         $this->missionService = new MissionService();
     }
 
@@ -54,37 +54,217 @@ class MissionController extends Controller {
     }
 
     /**
-     * Store a mission
+     * Store a mission.
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Store a new mission",
+     *     path="/missions/store",
+     *     description="Create and save a new mission.",
+     *     operationId="api.missions",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *      @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+     *       required=true,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *     @SWG\Parameter(
+     *        name="name",
+     *        description="The missions's name",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="description",
+     *       description="The mission's description",
+     *       required=false,
+     *       default=" ",
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="mission_type",
+     *       description="The mission's type. Should be either 'location' or 'route'",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="img_name",
+     *       description="The mission's image name. Images are saved to the web app.",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns the id of the mission created",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
      */
     public function store() {
         return $this->missionService->store(\Request::all());
     }
 
+
     /**
-     * Update a mission
+     * Update a mission.
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Update an existing mission",
+     *     path="/missions/update",
+     *     description="Update the data of an existing mission",
+     *     operationId="api.missions",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *      @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+     *       required=true,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *      @SWG\Parameter(
+     *        name="id",
+     *        description="The missions's id",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *        name="name",
+     *        description="The missions's name",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="description",
+     *       description="The mission's description",
+     *       required=false,
+     *       default=" ",
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="mission_type",
+     *       description="The mission's type. Should be either 'location' or 'route'",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="img_name",
+     *       description="The mission's image name. Images are saved to the web app.",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns the id of the updated mission",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
      */
     public function update() {
+      //  return \Request::get('img_name');
+        return $this->missionService->update(\Request::all());
+
+        /*
         $mission = Mission::find(\Request::get('id'));
 
-        if ($mission != null) {
-            $mission->update(\Request::all());
-            $type_id = MissionType::where('name', \Request::get('mission_type'))->first()->id;
-            $mission->type_id = $type_id;
-            $mission->save();
-        }
+        $response = new ApiResponse();
+        $status = 200;
 
-        return $mission->id;
+        if ($mission == null) {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'mission_not_found',
+                'description' => 'The mission could not be found'];
+        } else {
+            $type = MissionType::where('name', \Request::get('mission_type'))->first();
+
+            if ($type == null) {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'mission_type_not_found',
+                    'description' => 'The mission type should be either \'location\' or \'route\'.'];
+
+                $status = 400;
+            } else {
+                $mission->update(\Request::all());
+
+                $mission->type_id = $type->id;
+                $mission->save();
+
+                $response->status = 'success';
+                $response->message = $mission->id;
+            }
+        }
+        return \Response::json($response, $status);
+        */
     }
 
 
     /**
      * Find a mission by name
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get a mission by name",
+     *     path="/missions/byName",
+     *     description="Retrieve a mission based on a given name",
+     *     operationId="api.missions",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="name",
+     *       description="The mission's name",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns a mission",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
      */
     public function byName() {
         $mission = Mission::where('name', \Request::get('name'))->with('type', 'users')->first();
@@ -107,7 +287,35 @@ class MissionController extends Controller {
     /**
      * Find a mission by id
      *
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get a mission by id",
+     *     path="/missions/byId",
+     *     description="Retrieve a mission based on a given id",
+     *     operationId="api.missions",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="id",
+     *       description="The mission's id",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns a mission",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
      */
     public function byId() {
         $mission = Mission::where('id', \Request::get('id'))->with('type', 'users')->first();

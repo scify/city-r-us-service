@@ -5,72 +5,91 @@ use App\Models\ApiResponse;
 use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
 
-class MissionService{
+class MissionService {
 
 
+    public function store($data) {
+        $response = new ApiResponse();
+        $status = 200;
 
-    public function store($data){
         //Validations
         if ($data['name'] == null || $data['name'] == '') {
-            $response = new ApiResponse();
             $response->status = 'error';
             $response->message = [
                 'id' => '',
                 'code' => 'name_is_null',
                 'description' => 'The mission\'s name should not be null or an empty string.'];
 
-            return \Response::json($response, 400);
+            $status = 400;
+        } else {
+
+            $mission = $this->sanitize($data);
+            $mission->save();
+
+            $response->status = 'success';
+            $response->message = $mission->id;
+
         }
-        //All's good, create a new mission
-        $type_id = MissionType::where('name', $data['mission_type'])->first()->id;
-        $mission = Mission::create([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'type_id' => $type_id
-        ]);
-
-        $response = new ApiResponse();
-        $response->status = 'success';
-        $response->message = [
-           'data' => $mission
-        ];
-
-        return \Response::json($response, 200);
+        return \Response::json($response, $status);
     }
 
-    public function update($mission, $data){
 
-        //Validations
-        if ($data['name'] == null || $data['name'] == '') {
-            $response = new ApiResponse();
+    public function update($data) {
+        $response = new ApiResponse();
+        $status = 200;
+
+        $mission = Mission::find(\Request::get('id'));
+
+        if ($mission == null) {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
-                'code' => 'name_is_null',
-                'description' => 'The mission\'s name should not be null or an empty string.'];
+                'code' => 'mission_not_found',
+                'description' => 'The mission was not found'];
+            $status = 400;
+        } else {
+            $mission = $this->sanitize($data, $mission);
+            $mission->save();
 
-            return \Response::json($response, 400);
+            $response->status = 'success';
+            $response->message = $mission->id;
         }
-        //All's good, create a new mission
-        $type_id = MissionType::where('name', $data['mission_type'])->first()->id;
+        return \Response::json($response, $status);
+    }
 
-        if(isset($data['name']))
+    /**
+     * Sanitize data before saving
+     *
+     * @param $data
+     * @return \App\Models\Mission|null|string
+     */
+    private function sanitize($data, $mission = null) {
+
+        if ($mission == null)
+            $mission = new Mission();
+
+        if (isset($data['name']))
             $mission->name = $data['name'];
-        if(isset($data['img_name']))
+
+        if (isset($data['img_name']))
             $mission->img_name = $data['img_name'];
-        if(isset($data['description']))
+
+
+        if (isset($data['description']))
             $mission->description = $data['description'];
-        if(isset($data['mission_type']))
-            $mission->type_id = $type_id;
+        else
+            $mission->description = '';
 
-        $mission->save();
+        if (isset($data['mission_type'])) {
+            $type = MissionType::where('name', $data['mission_type'])->first();
 
-        $response = new ApiResponse();
-        $response->status = 'success';
-        $response->message = [
-            'data' => $mission
-        ];
+            if ($type == null)
+                return 'mission_type_not_found';
+            else
+                $mission->type_id = $type->id;
+        } else
+            $mission->type_id = 1;
 
-        return \Response::json($response, 200);
+        return $mission;
     }
 }

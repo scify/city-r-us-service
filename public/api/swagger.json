@@ -41,6 +41,217 @@
                 }
             }
         },
+        "/missions/store": {
+            "post": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Store a new mission",
+                "description": "Create and save a new mission.",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "The missions's name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "The mission's description",
+                        "required": false,
+                        "type": "string",
+                        "default": " "
+                    },
+                    {
+                        "name": "mission_type",
+                        "in": "query",
+                        "description": "The mission's type. Should be either 'location' or 'route'",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "img_name",
+                        "in": "query",
+                        "description": "The mission's image name. Images are saved to the web app.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the mission created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/missions/update": {
+            "post": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Update an existing mission",
+                "description": "Update the data of an existing mission",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "The missions's id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "The missions's name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "The mission's description",
+                        "required": false,
+                        "type": "string",
+                        "default": " "
+                    },
+                    {
+                        "name": "mission_type",
+                        "in": "query",
+                        "description": "The mission's type. Should be either 'location' or 'route'",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "img_name",
+                        "in": "query",
+                        "description": "The mission's image name. Images are saved to the web app.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the id of the updated mission",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/missions/byName": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get a mission by name",
+                "description": "Retrieve a mission based on a given name",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "The mission's name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a mission",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/missions/byId": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get a mission by id",
+                "description": "Retrieve a mission based on a given id",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "The mission's id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a mission",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
