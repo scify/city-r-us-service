@@ -13,10 +13,10 @@ class RadicalConfigurationAPI {
 
     const  ServiceIdTemplate = "city_r_us_mission_%1";
 
-    private $curl ;
+    private $curl;
     function __construct()
     {
-        $this->curl= new Curl();
+        $this->curl = new Curl();
     }
 
     public function registerMission($mission){

@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @SWG\Definition(
@@ -16,6 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  */
 class Mission extends Model{
+
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
 
     protected $table = 'missions';
 

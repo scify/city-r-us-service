@@ -19,7 +19,7 @@ class Curl {
         // Set some options, such as the url
         // And also set the method to POST
         curl_setopt_array($curl, [
-            CURLOPT_URL =>  $url . '?' . $this->stringify($params),
+            CURLOPT_URL => $url . '?' . $this->stringify($params),
             CURLOPT_POST => 0,
             CURLOPT_RETURNTRANSFER => true
 
@@ -34,33 +34,33 @@ class Curl {
 
     }
 
-    public function put($url, $params,$isJsonPost=false, $headers = null){
-        return $this->request($url,$params,$isJsonPost,true,$headers);
-    }
-    public function post($url, $params,$isJsonPost=false, $headers = null) {
-        return $this->request($url,$params,$isJsonPost,false,$headers);
+    public function put($url, $params, $isJsonPost = false, $headers = null) {
+        return $this->request($url, $params, $isJsonPost, true, $headers);
     }
 
-    private function request($url, $params,$isJsonPost=false,$isPutRequest=false, $headers = null){
+    public function post($url, $params, $isJsonPost = false, $headers = null) {
+        return $this->request($url, $params, $isJsonPost, false, $headers);
+    }
+
+    private function request($url, $params, $isJsonPost = false, $isPutRequest = false, $headers = null) {
         // Get cURL resource
         $curl = curl_init();
         // Set some options, such as the url
         // And also set the method to POST
         curl_setopt_array($curl, [
-            CURLOPT_URL =>  $url,
+            CURLOPT_URL => $url,
             CURLOPT_POST => 1,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => ($isJsonPost? json_encode($params) :$this->stringify($params))
+            CURLOPT_POSTFIELDS => ($isJsonPost ? json_encode($params) : $this->stringify($params))
         ]);
 
         if ($isPutRequest)
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT"); // note the PUT here
 
-        if ($isJsonPost)
-        {
-            if ($headers==null)
+        if ($isJsonPost) {
+            if ($headers == null)
                 $headers = array();
-            array_push($headers,'Content-Type','application/json');
+            array_push($headers, 'Content-Type', 'application/json');
         }
 
         if ($headers != null)
