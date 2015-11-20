@@ -35,24 +35,24 @@ class UserController extends Controller {
      *     produces={"application/json"},
      *     tags={"users"},
      *     @SWG\Parameter(
-     *			name="name",
-     *			description="The user's name",
-     *      	required=true,
-     *      	type="string",
+     *            name="name",
+     *            description="The user's name",
+     *        required=true,
+     *        type="string",
      *          in="query"
      *     ),
      *     @SWG\Parameter(
-     *			name="email",
-     *			description="The user's email",
-     *      	required=true,
-     *      	type="string",
+     *            name="email",
+     *            description="The user's email",
+     *        required=true,
+     *        type="string",
      *          in="query"
      *     ),
      *     @SWG\Parameter(
-     *			name="password",
-     *			description="The user's password",
-     *      	required=true,
-     *      	type="string",
+     *            name="password",
+     *            description="The user's password",
+     *        required=true,
+     *        type="string",
      *          in="query"
      *     ),
      *     @SWG\Response(
@@ -74,7 +74,7 @@ class UserController extends Controller {
 
         $credentials = \Request::only('email', 'password', 'name');
 
-        if(!\Request::has('role'))
+        if (!\Request::has('role'))
             $credentials['role'] = 'mobile';
         else
             $credentials['role'] = 'web';
@@ -136,17 +136,17 @@ class UserController extends Controller {
      *     produces={"application/json"},
      *     tags={"users"},
      *     @SWG\Parameter(
-     *			name="email",
-     *			description="The user's email",
-     *      	required=true,
-     *      	type="string",
+     *            name="email",
+     *            description="The user's email",
+     *        required=true,
+     *        type="string",
      *          in="query"
      *     ),
      *     @SWG\Parameter(
-     *			name="password",
-     *			description="The user's password",
-     *      	required=true,
-     *      	type="string",
+     *            name="password",
+     *            description="The user's password",
+     *        required=true,
+     *        type="string",
      *          in="query"
      *     ),
      *     @SWG\Response(
@@ -194,7 +194,7 @@ class UserController extends Controller {
         // if no errors are encountered we can return a JWT
         $response = new ApiResponse();
         $response->status = 'success';
-        $response->message = ['token'=> $token];
+        $response->message = ['token' => $token];
 
         return \Response::json($response);
     }

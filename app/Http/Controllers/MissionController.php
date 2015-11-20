@@ -192,44 +192,7 @@ class MissionController extends Controller {
      * )
      */
     public function update() {
-      //  return \Request::get('img_name');
         return $this->missionService->update(\Request::all());
-
-        /*
-        $mission = Mission::find(\Request::get('id'));
-
-        $response = new ApiResponse();
-        $status = 200;
-
-        if ($mission == null) {
-            $response->status = 'error';
-            $response->message = [
-                'id' => '',
-                'code' => 'mission_not_found',
-                'description' => 'The mission could not be found'];
-        } else {
-            $type = MissionType::where('name', \Request::get('mission_type'))->first();
-
-            if ($type == null) {
-                $response->status = 'error';
-                $response->message = [
-                    'id' => '',
-                    'code' => 'mission_type_not_found',
-                    'description' => 'The mission type should be either \'location\' or \'route\'.'];
-
-                $status = 400;
-            } else {
-                $mission->update(\Request::all());
-
-                $mission->type_id = $type->id;
-                $mission->save();
-
-                $response->status = 'success';
-                $response->message = $mission->id;
-            }
-        }
-        return \Response::json($response, $status);
-        */
     }
 
 
@@ -338,10 +301,11 @@ class MissionController extends Controller {
     /**
      * Delete a mission
      */
-    public function destroy($id = null) {
+    public function destroy($id) {
         $response = new ApiResponse();
         if ($id == null)
             $id = \Request::get('id');
+
 
         if ($id != null) {
             $mission = Mission::with('users')->find($id);

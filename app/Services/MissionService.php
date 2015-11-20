@@ -36,7 +36,6 @@ class MissionService{
 
             $response->status = 'success';
             $response->message = $mission->id;
-
         }
         return \Response::json($response, $status);
     }
