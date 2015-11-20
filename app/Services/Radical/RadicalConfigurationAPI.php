@@ -13,10 +13,10 @@ class RadicalConfigurationAPI {
 
     const  ServiceIdTemplate = "city_r_us_mission_%1";
 
-    private $curl;
+    private $curl ;
     function __construct()
     {
-        $this->$curl = new Curl();
+        $this->curl= new Curl();
     }
 
     public function registerMission($mission){
@@ -34,9 +34,9 @@ class RadicalConfigurationAPI {
             $params = array("Service_ID" => sprintf(RadicalConfigurationAPI::ServiceIdTemplate, $mission->id),
                 "Service_Description" => $mission->name . "\n" . $mission->description);
             if ($missionIsNew)
-                $this->$curl->post($url, $params, true);
+                $this->curl->post($url, $params, true);
             else
-                $this->$curl->put($url, $params, true);
+                $this->curl->put($url, $params, true);
 
         } catch (Exception $e) {
             Log::error($e);
