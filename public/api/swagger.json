@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "city-r-us-service/api",
+    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -93,7 +93,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the mission created",
+                        "description": "Returns the id of the mission created",
                         "schema": {
                             "type": "array",
                             "items": {
