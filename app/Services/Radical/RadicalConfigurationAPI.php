@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 class RadicalConfigurationAPI {
 
-    const  ServiceIdTemplate = "city_r_us_mission_%1";
 
     private $curl;
     function __construct()
@@ -29,17 +28,14 @@ class RadicalConfigurationAPI {
 
     private function sendRequest($mission,$missionIsNew)
     {
-        try {
-            $url = env("RADICAL_CONFIGURATION_API") . "/cities/" . env("RADICAL_CITYNAME") . "/services";
-            $params = array("Service_ID" => sprintf(RadicalConfigurationAPI::ServiceIdTemplate, $mission->id),
+            $url = env("RADICAL_CONFIGURATION_API") . "cities/" . env("RADICAL_CITYNAME") . "/services";
+            $params = array("Service_ID" => $mission->radical_service_id,
                 "Service_Description" => $mission->name . "\n" . $mission->description);
             if ($missionIsNew)
                 $this->curl->post($url, $params, true);
             else
-                $this->curl->put($url, $params, true);
+                $this->curl->put($url."/".$mission->radical_service_id, $params, true);
 
-        } catch (Exception $e) {
-            Log::error($e);
-        }
+
     }
 } 

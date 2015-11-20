@@ -1,10 +1,14 @@
 <?php namespace App\Services;
 
 
+use App\Exceptions\RadicalApiException;
 use App\Models\ApiResponse;
 use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
 use App\Services\Radical\RadicalConfigurationAPI;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use PhpSpec\Exception\Exception;
 
 class MissionService{
 
@@ -27,15 +31,23 @@ class MissionService{
                 'code' => 'name_is_null',
                 'description' => 'The mission\'s name should not be null or an empty string.'];
 
-            $status = 400;
+            $status = 400; //todo: for errors use 500?
         } else {
 
             $mission = $this->sanitize($data);
-            $mission->save();
-          //  $this->$radicalServiceConfiguration->registerMission($mission);
-
-            $response->status = 'success';
-            $response->message = $mission->id;
+            $mission->radical_service_id="cityrus_". Str::random();
+            try{
+                $this->radicalServiceConfiguration->registerMission($mission);
+                $mission->save();
+                $response->status = 'success';
+                $response->message = $mission->id;
+            }
+            catch (RadicalApiException $e) {
+                Log::error($e);
+                $response->status = 'error';
+                $response->message = $e->getMessage();
+                $status=500;
+            }
         }
         return \Response::json($response, $status);
     }
@@ -57,12 +69,18 @@ class MissionService{
             $status = 400;
         } else {
             $mission = $this->sanitize($data, $mission);
+            try{
+            $this->radicalServiceConfiguration->updateMission($mission);
             $mission->save();
-
-           // $this->radicalServiceConfiguration->updateMission($mission);
-
             $response->status = 'success';
             $response->message = $mission->id;
+            }
+            catch (RadicalApiException $e) {
+                Log::error($e);
+                $response->status = 'error';
+                $response->message = $e->getMessage();
+                $status=500;
+             }
         }
         return \Response::json($response, $status);
     }
