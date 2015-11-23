@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Services\Radical;
+use App\Exceptions\RadicalApiException;
+use Illuminate\Support\Facades\Log;
 
 
 /**
@@ -52,27 +54,45 @@ class Curl {
             CURLOPT_POST => 1,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => ($isJsonPost ? json_encode($params) : $this->stringify($params))
+
         ]);
 
         if ($isPutRequest)
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT"); // note the PUT here
 
         if ($isJsonPost) {
-            if ($headers == null)
-                $headers = array();
-            array_push($headers, 'Content-Type', 'application/json');
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         }
 
         if ($headers != null)
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-// Send the request & save response to $resp
+        // Send the request & save response to $resp
         $response = curl_exec($curl);
 
-// Close request to clear up some resources
+        // Close request to clear up some resources
         curl_close($curl);
 
-        return json_decode($response);
+        $jsonResponse =json_decode($response);
+
+        $this->responseIsJson($response);
+
+        return $jsonResponse;
+    }
+
+    private function responseIsJson($response)
+    {
+        switch(json_last_error()) {
+            case JSON_ERROR_DEPTH:
+                throw new RadicalApiException('Maximum stack depth exceeded \n'.$response);
+
+            case JSON_ERROR_CTRL_CHAR:
+                throw new RadicalApiException('Unexpected control character found \n'.$response);
+
+            case JSON_ERROR_SYNTAX:
+                throw new RadicalApiException('Syntax error, malformed JSON \n'.$response);
+
+        }
     }
 
     /**
