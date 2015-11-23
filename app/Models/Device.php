@@ -6,6 +6,11 @@ class Device extends Model{
 
     protected $table = 'devices';
 
-    protected $fillable = ['name', 'device_id'];
+    protected $fillable = ['device_uuid', 'model', 'manufacturer', 'latitute', 'longitude', 'type', 'status', 'registration_date'];
+
+
+    public function capabilities(){
+        return $this->hasMany('App\Models\DeviceCapability', 'device_uuid', 'device_uuid');
+    }
 
 }

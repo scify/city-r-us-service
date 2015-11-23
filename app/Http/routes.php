@@ -48,3 +48,6 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::get('test', 'TestController@test');
 
 });
+
+
+Route::get('test', 'TestController@test');
