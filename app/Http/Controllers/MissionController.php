@@ -2,7 +2,6 @@
 
 
 use App\Models\ApiResponse;
-use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
 use App\Services\MissionService;
 
@@ -11,7 +10,7 @@ class MissionController extends Controller {
     private $missionService;
 
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['store',  'update', 'destroy']]);
+        $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->missionService = new MissionService();
     }
 
@@ -44,6 +43,13 @@ class MissionController extends Controller {
      */
     public function index() {
         $missions = Mission::with('type')->get();
+
+        foreach ($missions as $mission) {
+            if ($mission->img_name == null || $mission->img_name == '')
+                $mission->img_path = env('WEB_URL') . '/img/mission.png';
+            else
+                $mission->img_path = env('WEB_URL') . '/uploads/missions/' . $mission->img_name;
+        }
 
         $response = new ApiResponse();
         $response->status = 'success';

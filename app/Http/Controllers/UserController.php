@@ -116,8 +116,8 @@ class UserController extends Controller {
         $users = User::all();
 
         $response = new ApiResponse();
-        $response->success = false;
-        $response->data = [
+        $response->status = 'success';
+        $response->message = [
             'users' => $users];
 
         return \Response::json($response);
