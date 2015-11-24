@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Services\Radical;
+
 use App\Exceptions\RadicalApiException;
-use Illuminate\Support\Facades\Log;
 
 
 /**
@@ -13,28 +13,30 @@ use Illuminate\Support\Facades\Log;
  */
 class Curl {
 
-    public function get($url, $params) {
+    public function get($url, $params, $ssl = null) {
 
         // Get cURL resource
         $curl = curl_init();
 
+        if(sizeof($params)>0)
+            $url = $url . '?' . $this->stringify($params);
+
         // Set some options, such as the url
         // And also set the method to POST
         curl_setopt_array($curl, [
-            CURLOPT_URL => $url . '?' . $this->stringify($params),
+            CURLOPT_URL => $url,
             CURLOPT_POST => 0,
-            CURLOPT_RETURNTRANSFER => true
-
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
         ]);
 
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         // Send the request & save response to $resp
         $response = curl_exec($curl);
+       // dd(curl_error($curl));
 
         // Close request to clear up some resources
         curl_close($curl);
-
         return $response;
 
     }
@@ -46,6 +48,24 @@ class Curl {
     public function post($url, $params, $isJsonPost = false, $headers = null) {
         return $this->request($url, $params, $isJsonPost, false, $headers);
     }
+
+
+    /**
+     * Certain requests must be accessed through HTTPS.
+     * We implicetely set an SSL certificate so that the server
+     * trusts the RADICAL server.
+     *
+     * @param $curl
+     * @return mixed
+     */
+    private function setSSL($curl) {
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($curl, CURLOPT_CAINFO, public_path() . "/radical/COMODORSACertificationAuthority.crt");
+
+        return $curl;
+    }
+
 
     private function request($url, $params, $isJsonPost = false, $isPutRequest = false, $headers = null) {
         // Get cURL resource
@@ -64,7 +84,7 @@ class Curl {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT"); // note the PUT here
 
         if ($isJsonPost) {
-            curl_setopt( $curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         }
 
         if ($headers != null)
@@ -76,24 +96,23 @@ class Curl {
         // Close request to clear up some resources
         curl_close($curl);
 
-        $jsonResponse =json_decode($response);
+        $jsonResponse = json_decode($response);
 
         $this->responseIsJson($response);
 
         return $jsonResponse;
     }
 
-    private function responseIsJson($response)
-    {
-        switch(json_last_error()) {
+    private function responseIsJson($response) {
+        switch (json_last_error()) {
             case JSON_ERROR_DEPTH:
-                throw new RadicalApiException('Maximum stack depth exceeded \n'.$response);
+                throw new RadicalApiException('Maximum stack depth exceeded \n' . $response);
 
             case JSON_ERROR_CTRL_CHAR:
-                throw new RadicalApiException('Unexpected control character found \n'.$response);
+                throw new RadicalApiException('Unexpected control character found \n' . $response);
 
             case JSON_ERROR_SYNTAX:
-                throw new RadicalApiException('Syntax error, malformed JSON \n'.$response);
+                throw new RadicalApiException('Syntax error, malformed JSON \n' . $response);
 
         }
     }
@@ -112,4 +131,5 @@ class Curl {
 
         return $string;
     }
+
 }

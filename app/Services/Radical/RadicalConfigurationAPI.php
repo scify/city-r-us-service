@@ -15,11 +15,16 @@ class RadicalConfigurationAPI {
     }
 
 
+    /**
+     * Get the API key from radical, based on a username and password
+     *
+     * @return mixed
+     */
     public function getApiKey() {
 
         $url = env("RADICAL_DATA_API") . 'getApiKey?name=' . env('RADICAL_NAME') . '&password=' . env('RADICAL_PASSWORD');
 
-        $apiKey = $this->curl->get($url, []);
+        $apiKey = $this->curl->get($url, [], true);
 
         return $apiKey;
     }
