@@ -19,11 +19,14 @@ class CreateDevicesTable extends Migration {
             $table->string('device_uuid')->unique();
             $table->string('model');
             $table->string('manufacturer');
-            $table->string('latitute');
+            $table->string('latitude');
             $table->string('longitude');
             $table->string('type');
             $table->string('status');
             $table->dateTime('registration_date')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('users_devices', function(Blueprint $table)
@@ -41,6 +44,8 @@ class CreateDevicesTable extends Migration {
             $table->string('unit');
             $table->string('data_type');
 
+            $table->timestamps();
+
             $table->string('device_uuid');
             $table->foreign('device_uuid')->references('device_uuid')->on('devices');
         });
@@ -56,6 +61,5 @@ class CreateDevicesTable extends Migration {
         Schema::dropIfExists('users_devices');
         Schema::dropIfExists('device_capabilities');
         Schema::dropIfExists('devices');
-        Schema::dropIfExists('users');
     }
 }

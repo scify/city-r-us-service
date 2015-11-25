@@ -29,7 +29,6 @@ class CreateUsersMissionsTable extends Migration {
 	public function down()
 	{
         Schema::dropIfExists('users_missions');
-
     }
 
 }

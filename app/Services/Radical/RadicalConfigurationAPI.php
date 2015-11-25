@@ -14,7 +14,6 @@ class RadicalConfigurationAPI {
         $this->curl = new Curl();
     }
 
-
     /**
      * Get the API key from radical, based on a username and password
      *
@@ -30,14 +29,14 @@ class RadicalConfigurationAPI {
     }
 
     public function registerMission($mission) {
-        $this->sendRequest($mission, true);
+        $this->sendMissionRequest($mission, true);
     }
 
     public function updateMission($mission) {
-        $this->sendRequest($mission, false);
+        $this->sendMissionRequest($mission, false);
     }
 
-    private function sendRequest($mission, $missionIsNew) {
+    private function sendMissionRequest($mission, $missionIsNew) {
         $url = env("RADICAL_CONFIGURATION_API") . "cities/" . env("RADICAL_CITYNAME") . "/services";
         $params = array("Service_ID" => $mission->radical_service_id,
             "Service_Description" => $mission->name . "\n" . $mission->description);
@@ -45,5 +44,18 @@ class RadicalConfigurationAPI {
             $this->curl->post($url, $params, true);
         else
             $this->curl->put($url . "/" . $mission->radical_service_id, $params, true);
+    }
+
+
+    public function registerDevice($device) {
+        $apiKey = $this->getApiKey();
+
+        $url = env("RADICAL_REPOSITORY_API") . "registerDevice?api_key=".$apiKey;
+
+        $params = $device;
+
+        $response = $this->curl->post($url, $params, true);
+
+        return $response;
     }
 } 

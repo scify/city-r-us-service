@@ -10,11 +10,7 @@
  *   description="Operations about missions"
  * )
  * @SWG\Tag(
- *   name="user",
- *   description="Access to Petstore orders",
- *   @SWG\ExternalDocumentation(
- *     description="Find out more about our store",
- *     url="http://swagger.io"
- *   )
+ *   name="devices",
+ *   description="Operations about devices"
  * )
  */

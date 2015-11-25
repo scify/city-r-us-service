@@ -13,7 +13,7 @@ use App\Exceptions\RadicalApiException;
  */
 class Curl {
 
-    public function get($url, $params, $ssl = null) {
+    public function get($url, $params) {
 
         // Get cURL resource
         $curl = curl_init();
@@ -30,10 +30,8 @@ class Curl {
             CURLOPT_SSL_VERIFYPEER => false,
         ]);
 
-
         // Send the request & save response to $resp
         $response = curl_exec($curl);
-       // dd(curl_error($curl));
 
         // Close request to clear up some resources
         curl_close($curl);
@@ -47,23 +45,6 @@ class Curl {
 
     public function post($url, $params, $isJsonPost = false, $headers = null) {
         return $this->request($url, $params, $isJsonPost, false, $headers);
-    }
-
-
-    /**
-     * Certain requests must be accessed through HTTPS.
-     * We implicetely set an SSL certificate so that the server
-     * trusts the RADICAL server.
-     *
-     * @param $curl
-     * @return mixed
-     */
-    private function setSSL($curl) {
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($curl, CURLOPT_CAINFO, public_path() . "/radical/COMODORSACertificationAuthority.crt");
-
-        return $curl;
     }
 
 

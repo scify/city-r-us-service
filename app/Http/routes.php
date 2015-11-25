@@ -44,6 +44,11 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::post('missions/delete/{id}', 'MissionController@destroy');
 
 
+    //Devices routes
+    Route::post('devices/register', 'DeviceController@register');
+
+
+
     //TEST
     Route::get('test', 'TestController@test');
 

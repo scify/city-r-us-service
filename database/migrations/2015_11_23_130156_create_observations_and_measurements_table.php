@@ -17,6 +17,9 @@ class CreateObservationsAndMeasurementsTable extends Migration {
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->string('observation_date')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('measurements', function (Blueprint $table) {
@@ -30,6 +33,9 @@ class CreateObservationsAndMeasurementsTable extends Migration {
 
             $table->integer('observation_id')->unsigned();
             $table->foreign('observation_id')->references('observation_id')->on('observations');
+
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

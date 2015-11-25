@@ -35,15 +35,15 @@
             }
 
             // Pre load translate...
-            if(window.SwaggerTranslator) {
+            if (window.SwaggerTranslator) {
                 window.SwaggerTranslator.translate();
             }
             window.swaggerUi = new SwaggerUi({
                 url: url,
                 dom_id: "swagger-ui-container",
                 supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
-                onComplete: function(swaggerApi, swaggerUi){
-                    if(typeof initOAuth == "function") {
+                onComplete: function (swaggerApi, swaggerUi) {
+                    if (typeof initOAuth == "function") {
                         initOAuth({
                             clientId: "your-client-id",
                             clientSecret: "your-client-secret",
@@ -53,17 +53,17 @@
                         });
                     }
 
-                    if(window.SwaggerTranslator) {
+                    if (window.SwaggerTranslator) {
                         window.SwaggerTranslator.translate();
                     }
 
-                    $('pre code').each(function(i, e) {
+                    $('pre code').each(function (i, e) {
                         hljs.highlightBlock(e)
                     });
 
                     addApiKeyAuthorization();
                 },
-                onFailure: function(data) {
+                onFailure: function (data) {
                     log("Unable to Load SwaggerUI");
                 },
                 docExpansion: "none",
@@ -71,9 +71,9 @@
                 showRequestHeaders: false
             });
 
-            function addApiKeyAuthorization(){
+            function addApiKeyAuthorization() {
                 var key = encodeURIComponent($('#input_apiKey')[0].value);
-                if(key && key.trim() != "") {
+                if (key && key.trim() != "") {
                     var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
                     window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
                     log("added key " + key);
@@ -102,12 +102,14 @@
 <body class="swagger-section">
 <div id='header'>
     <div class="swagger-ui-wrap">
-        <a id="logo" href="http://swagger.io">swagger</a>
-        <form id='api_selector'>
-            <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
-            <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
-            <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div>
-        </form>
+        <img src="{{asset('img/logo.png')}}">
+        <!-- <a id="logo" href="http://swagger.io">swagger</a>
+         <form id='api_selector'>
+             <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
+             <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
+             <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div>
+         </form>
+         -->
     </div>
 </div>
 

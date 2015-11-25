@@ -46,6 +46,8 @@ class CreateUsersTable extends Migration {
 	{
         Schema::dropIfExists('users_roles');
 		Schema::dropIfExists('roles');
+        Schema::dropIfExists('users');
+
     }
 
 }

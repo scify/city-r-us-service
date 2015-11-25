@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -371,6 +371,91 @@
                     }
                 }
             }
+        },
+        "/devices/register": {
+            "post": {
+                "tags": [
+                    "devices"
+                ],
+                "summary": "Register a new device",
+                "description": "Register a device to the Radical API and save it to db",
+                "operationId": "api.devices",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": false,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "missionId",
+                        "in": "query",
+                        "description": "The id of the mission that the user wants to participate to",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "deviceName",
+                        "in": "query",
+                        "description": "The name of the device",
+                        "required": true,
+                        "type": "string",
+                        "default": " "
+                    },
+                    {
+                        "name": "model",
+                        "in": "query",
+                        "description": "The model of the device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "manufacturer",
+                        "in": "query",
+                        "description": "The manufacturer of the device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "The latitude of the device",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "The longitude of the device",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Examples: 'antenna', 'smartphone', 'sensor', ... ",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Valid values '0' (inactive) or '1' (active),",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -456,12 +541,8 @@
             "description": "Operations about missions"
         },
         {
-            "name": "user",
-            "description": "Access to Petstore orders",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "http://swagger.io"
-            }
+            "name": "devices",
+            "description": "Operations about devices"
         }
     ]
 }

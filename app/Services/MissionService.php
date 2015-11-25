@@ -8,20 +8,22 @@ use App\Models\Mission;
 use App\Services\Radical\RadicalConfigurationAPI;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use PhpSpec\Exception\Exception;
 
-class MissionService{
+class MissionService {
 
     private $radicalServiceConfiguration;
-    function __construct()
-    {
-        $this->radicalServiceConfiguration  = new RadicalConfigurationAPI();
+
+    function __construct() {
+        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
 
-    public function store($data){
+    public function store($data) {
 
         $response = new ApiResponse();
         $status = 200;
+
+        //check if there are other missions with the same radical_service_id
+        $missions = Mission::where('radical_service_id', $data['radical_service_id'])->get();
 
         //Validations
         if ($data['name'] == null || $data['name'] == '') {
@@ -32,28 +34,45 @@ class MissionService{
                 'description' => 'The mission\'s name should not be null or an empty string.'];
 
             $status = 400; //todo: for errors use 500?
-        } else {
+        } else if ($data['radical_service_id'] == null || $data['radical_service_id'] == '') {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'name_is_null',
+                'description' => 'The mission\'s id should not be null or an empty string.'];
+
+            $status = 400;
+        }
+        else if (sizeof($missions)>0) {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'name_is_null',
+                'description' => 'The mission\'s radical_service_id already exists'];
+
+            $status = 400;
+        }
+        else {
 
             $mission = $this->sanitize($data);
-            $mission->radical_service_id="cityrus_". Str::random();
-            try{
+            $mission->radical_service_id = "cityrus_" . Str::random();
+            try {
                 $this->radicalServiceConfiguration->registerMission($mission);
                 $mission->save();
                 $response->status = 'success';
                 $response->message = $mission->id;
-            }
-            catch (RadicalApiException $e) {
+            } catch (RadicalApiException $e) {
                 Log::error($e);
                 $response->status = 'error';
                 $response->message = $e->getMessage();
-                $status=500;
+                $status = 500;
             }
         }
         return \Response::json($response, $status);
     }
 
 
-    public function update($data){
+    public function update($data) {
 
         $response = new ApiResponse();
         $status = 200;
@@ -69,18 +88,17 @@ class MissionService{
             $status = 400;
         } else {
             $mission = $this->sanitize($data, $mission);
-            try{
-            $this->radicalServiceConfiguration->updateMission($mission);
-            $mission->save();
-            $response->status = 'success';
-            $response->message = $mission->id;
-            }
-            catch (RadicalApiException $e) {
+            try {
+                $this->radicalServiceConfiguration->updateMission($mission);
+                $mission->save();
+                $response->status = 'success';
+                $response->message = $mission->id;
+            } catch (RadicalApiException $e) {
                 Log::error($e);
                 $response->status = 'error';
                 $response->message = $e->getMessage();
-                $status=500;
-             }
+                $status = 500;
+            }
         }
         return \Response::json($response, $status);
     }
