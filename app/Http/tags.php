@@ -13,4 +13,8 @@
  *   name="devices",
  *   description="Operations about devices"
  * )
+ *  * @SWG\Tag(
+ *   name="observations",
+ *   description="Operations about observations"
+ * )
  */

@@ -34,12 +34,13 @@ class MissionService {
                 'description' => 'The mission\'s name should not be null or an empty string.'];
 
             $status = 400; //todo: for errors use 500?
-        } else if ($data['radical_service_id'] == null || $data['radical_service_id'] == '') {
+        }
+        else if ($data['description'] == null || $data['description'] == '') {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
                 'code' => 'name_is_null',
-                'description' => 'The mission\'s id should not be null or an empty string.'];
+                'description' => 'The mission\'s description should not be null or an empty string.'];
 
             $status = 400;
         }
@@ -102,6 +103,8 @@ class MissionService {
         }
         return \Response::json($response, $status);
     }
+
+
 
     /**
      * Sanitize data before saving

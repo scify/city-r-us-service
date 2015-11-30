@@ -24,7 +24,7 @@ class Mission extends Model{
 
     protected $table = 'missions';
 
-    protected $fillable = ['name', 'description', 'img_name', 'type_id'];
+    protected $fillable = ['name', 'description', 'img_name', 'type_id', 'radical_service_id'];
 
 
     public function type(){

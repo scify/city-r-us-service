@@ -33,24 +33,46 @@ class RadicalConfigurationAPI {
     }
 
     public function updateMission($mission) {
-        $this->sendMissionRequest($mission, false);
+        return $this->sendMissionRequest($mission, false);
+    }
+
+    public function deleteMission($mission) {
+        $url = env("RADICAL_CONFIGURATION_API") . "cities/" . env("RADICAL_CITYNAME") . "/services?api_key=" . $this->getApiKey();
+
+        $params = array("Service_ID" => $mission->radical_service_id,
+            "City_ID" => 'ATHENS');
+
+        $response = $this->curl->delete($url . "/" . $mission->radical_service_id, $params, true);
+        return $response;
     }
 
     private function sendMissionRequest($mission, $missionIsNew) {
         $url = env("RADICAL_CONFIGURATION_API") . "cities/" . env("RADICAL_CITYNAME") . "/services";
         $params = array("Service_ID" => $mission->radical_service_id,
-            "Service_Description" => $mission->name . "\n" . $mission->description);
+            "Service_Description" => $mission->description);
         if ($missionIsNew)
             $this->curl->post($url, $params, true);
         else
-            $this->curl->put($url . "/" . $mission->radical_service_id, $params, true);
+            return $this->curl->put($url . "/" . $mission->radical_service_id, $params, true);
     }
 
 
     public function registerDevice($device) {
         $apiKey = $this->getApiKey();
 
-        $url = env("RADICAL_REPOSITORY_API") . "registerDevice?api_key=".$apiKey;
+        $url = env("RADICAL_REPOSITORY_API") . "registerDevice?api_key=" . $apiKey;
+
+        $params = $device;
+
+        $response = $this->curl->post($url, $params, true);
+
+        return $response;
+    }
+
+    public function storeObservation($device) {
+        $apiKey = $this->getApiKey();
+
+        $url = env("RADICAL_REPOSITORY_API") . "registerObservation?api_key=" . $apiKey;
 
         $params = $device;
 

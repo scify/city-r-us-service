@@ -40,15 +40,19 @@ class Curl {
     }
 
     public function put($url, $params, $isJsonPost = false, $headers = null) {
-        return $this->request($url, $params, $isJsonPost, true, $headers);
+        return $this->request($url, $params, $isJsonPost, 'PUT', $headers);
     }
 
     public function post($url, $params, $isJsonPost = false, $headers = null) {
-        return $this->request($url, $params, $isJsonPost, false, $headers);
+        return $this->request($url, $params, $isJsonPost, 'POST', $headers);
+    }
+
+    public function delete($url, $params, $isJsonPost = false, $headers = null) {
+        return $this->request($url, $params, $isJsonPost, 'DELETE', $headers);
     }
 
 
-    private function request($url, $params, $isJsonPost = false, $isPutRequest = false, $headers = null) {
+    private function request($url, $params, $isJsonPost = false, $method=null, $headers = null) {
         // Get cURL resource
         $curl = curl_init();
         // Set some options, such as the url
@@ -61,8 +65,14 @@ class Curl {
 
         ]);
 
-        if ($isPutRequest)
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT"); // note the PUT here
+        switch ($method){
+            case 'PUT':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+                break;
+            case 'DELETE':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+                break;
+        }
 
         if ($isJsonPost) {
             curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));

@@ -4,14 +4,17 @@
 use App\Models\ApiResponse;
 use App\Models\Mission;
 use App\Services\MissionService;
+use App\Services\Radical\RadicalConfigurationAPI;
 
 class MissionController extends Controller {
 
     private $missionService;
+    private $radicalServiceConfiguration;
 
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->missionService = new MissionService();
+        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
 
 
@@ -203,6 +206,89 @@ class MissionController extends Controller {
 
 
     /**
+     * Delete a mission
+     *
+     *  @SWG\Post(
+     *     summary="Delete a mission",
+     *     path="/missions/delete",
+     *     description="Delete the mission from the db and Radical API",
+     *     operationId="api.missions",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *      @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+     *       required=true,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *      @SWG\Parameter(
+     *        name="id",
+     *        description="The missions's id",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns the id of the deleted mission",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function destroy() {
+
+        $id = \Request::get('id');
+        $response = new ApiResponse();
+        if ($id == null)
+            $id = \Request::get('id');
+
+
+        if ($id != null) {
+            $mission = Mission::with('users')->find($id);
+            if ($mission != null) {
+                if (sizeof($mission->users) > 0) {
+                    $response->status = 'error';
+                    $response->message = [
+                        'id' => '',
+                        'code' => 'mission_has_users',
+                        'description' => 'The mission could not be deleted because it has users'];
+                } else {
+                    //safely delete the mission
+                    $this->radicalServiceConfiguration->deleteMission($mission);
+                    $mission->delete();
+                    $response->status = 'success';
+                    $response->message = $id;
+                }
+            } else {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'mission_not_found',
+                    'description' => 'The mission could not be found'];
+            }
+        } else {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'id_not_provided',
+                'description' => 'No id was provided'];
+        }
+
+        return \Response::json($response);
+    }
+
+
+
+    /**
      * Find a mission by name
      *
      * @return \Illuminate\Http\JsonResponse
@@ -252,6 +338,7 @@ class MissionController extends Controller {
         }
         return \Response::json($response);
     }
+
 
     /**
      * Find a mission by id
@@ -304,45 +391,4 @@ class MissionController extends Controller {
         return \Response::json($response);
     }
 
-    /**
-     * Delete a mission
-     */
-    public function destroy($id) {
-        $response = new ApiResponse();
-        if ($id == null)
-            $id = \Request::get('id');
-
-
-        if ($id != null) {
-            $mission = Mission::with('users')->find($id);
-            if ($mission != null) {
-                if (sizeof($mission->users) > 0) {
-                    $response->status = 'error';
-                    $response->message = [
-                        'id' => '',
-                        'code' => 'mission_has_users',
-                        'description' => 'The mission could not be deleted because it has users'];
-                } else {
-                    //safely delete the mission
-                    $mission->delete();
-                    $response->status = 'success';
-                    $response->message = $id;
-                }
-            } else {
-                $response->status = 'error';
-                $response->message = [
-                    'id' => '',
-                    'code' => 'mission_not_found',
-                    'description' => 'The mission could not be found'];
-            }
-        } else {
-            $response->status = 'error';
-            $response->message = [
-                'id' => '',
-                'code' => 'id_not_provided',
-                'description' => 'No id was provided'];
-        }
-
-        return \Response::json($response);
-    }
 }

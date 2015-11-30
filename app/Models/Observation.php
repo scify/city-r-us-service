@@ -2,6 +2,16 @@
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @SWG\Definition(
+ *  definition="observation",
+ *   @SWG\Property(property="device_uuid"),
+ *   @SWG\Property(property="latitude"),
+ *   @SWG\Property(property="longitude"),
+ *   @SWG\Property(property="observation_date")
+ * )
+ *
+ */
 class Observation extends Model{
 
     protected $table = 'observations';
@@ -10,7 +20,7 @@ class Observation extends Model{
 
 
     public function measurements(){
-        return $this->hasMany('App\Models\Measurement', 'observation_id', 'observation_id');
+        return $this->hasMany('App\Models\Measurement', 'observation_id', 'id');
     }
 
 }

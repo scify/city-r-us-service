@@ -12,7 +12,7 @@ class CreateObservationsAndMeasurementsTable extends Migration {
      */
     public function up() {
         Schema::create('observations', function (Blueprint $table) {
-            $table->increments('observation_id');
+            $table->increments('id');
             $table->string('device_uuid');
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
@@ -23,16 +23,16 @@ class CreateObservationsAndMeasurementsTable extends Migration {
         });
 
         Schema::create('measurements', function (Blueprint $table) {
-            $table->increments('measurement_id');
+            $table->increments('id');
             $table->string('type');
             $table->string('value');
             $table->string('unit');
             $table->string('latitude');
             $table->string('longitude');
-            $table->string('observation_date')->nullable();
+            $table->dateTime('observation_date')->nullable();
 
             $table->integer('observation_id')->unsigned();
-            $table->foreign('observation_id')->references('observation_id')->on('observations');
+            $table->foreign('observation_id')->references('id')->on('observations');
 
             $table->timestamps();
             $table->softDeletes();

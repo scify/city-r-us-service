@@ -180,6 +180,50 @@
                 }
             }
         },
+        "/missions/delete": {
+            "post": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Delete a mission",
+                "description": "Delete the mission from the db and Radical API",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "The missions's id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the id of the deleted mission",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
         "/missions/byName": {
             "get": {
                 "tags": [
@@ -456,6 +500,91 @@
                     }
                 }
             }
+        },
+        "/observations/store": {
+            "post": {
+                "tags": [
+                    "observations"
+                ],
+                "summary": "Store a new observation",
+                "description": "Create and save a new observation.",
+                "operationId": "api.observations",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": false,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_uuid",
+                        "in": "query",
+                        "description": "The uuid of the device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "mission_id",
+                        "in": "query",
+                        "description": "The id of the chosen mission",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string",
+                        "default": " "
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "observation_date",
+                        "in": "query",
+                        "description": "The date of the observation.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "measurements",
+                        "in": "body",
+                        "description": "An array of measurements.",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/measurement"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the id of the observation created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/observation"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -501,6 +630,22 @@
                 }
             }
         },
+        "observation": {
+            "properties": {
+                "device_uuid": {
+
+                },
+                "latitude": {
+
+                },
+                "longitude": {
+
+                },
+                "observation_date": {
+
+                }
+            }
+        },
         "user": {
             "properties": {
                 "id": {
@@ -529,6 +674,31 @@
                     "type": "string"
                 }
             }
+        },
+        "measurement": {
+            "properties": {
+                "type": {
+
+                },
+                "value": {
+
+                },
+                "unit": {
+
+                },
+                "latitude": {
+
+                },
+                "longitude": {
+
+                },
+                "observation_date": {
+
+                },
+                "observation_id": {
+
+                }
+            }
         }
     },
     "tags": [
@@ -543,6 +713,10 @@
         {
             "name": "devices",
             "description": "Operations about devices"
+        },
+        {
+            "name": "observations",
+            "description": "Operations about observations"
         }
     ]
 }

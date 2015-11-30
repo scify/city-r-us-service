@@ -41,12 +41,16 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::post('missions/store', 'MissionController@store');
     Route::post('missions/{id}/update', 'MissionController@update');
     Route::post('missions/update', 'MissionController@update');
-    Route::post('missions/delete/{id}', 'MissionController@destroy');
+    Route::post('missions/{id}/delete', 'MissionController@destroy');
+    Route::post('missions/delete', 'MissionController@destroy');
 
 
-    //Devices routes
+    //Device routes
     Route::post('devices/register', 'DeviceController@register');
 
+
+    //Observation routes
+    Route::post('observations/store', 'ObservationController@store');
 
 
     //TEST
