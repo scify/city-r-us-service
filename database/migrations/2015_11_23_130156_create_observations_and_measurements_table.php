@@ -16,7 +16,7 @@ class CreateObservationsAndMeasurementsTable extends Migration {
             $table->string('device_uuid');
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
-            $table->string('observation_date')->nullable();
+            $table->dateTime('observation_date')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
@@ -24,9 +24,9 @@ class CreateObservationsAndMeasurementsTable extends Migration {
 
         Schema::create('measurements', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type');
-            $table->string('value');
-            $table->string('unit');
+            $table->string('type')->nullable();
+            $table->string('value')->nullable();
+            $table->string('unit')->nullable();
             $table->string('latitude');
             $table->string('longitude');
             $table->dateTime('observation_date')->nullable();

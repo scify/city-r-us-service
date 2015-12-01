@@ -23,7 +23,6 @@ class MissionService {
         $status = 200;
 
         //check if there are other missions with the same radical_service_id
-        $missions = Mission::where('radical_service_id', $data['radical_service_id'])->get();
 
         //Validations
         if ($data['name'] == null || $data['name'] == '') {
@@ -41,15 +40,6 @@ class MissionService {
                 'id' => '',
                 'code' => 'name_is_null',
                 'description' => 'The mission\'s description should not be null or an empty string.'];
-
-            $status = 400;
-        }
-        else if (sizeof($missions)>0) {
-            $response->status = 'error';
-            $response->message = [
-                'id' => '',
-                'code' => 'name_is_null',
-                'description' => 'The mission\'s radical_service_id already exists'];
 
             $status = 400;
         }

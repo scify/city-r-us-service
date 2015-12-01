@@ -5,13 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @SWG\Definition(
  *  definition="measurement",
- *   @SWG\Property(property="type"),
- *   @SWG\Property(property="value"),
- *   @SWG\Property(property="unit"),
  *   @SWG\Property(property="latitude"),
  *   @SWG\Property(property="longitude"),
  *   @SWG\Property(property="observation_date"),
- *   @SWG\Property(property="observation_id")
  * )
  */
 class Measurement  extends Model{

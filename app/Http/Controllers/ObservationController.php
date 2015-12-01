@@ -8,6 +8,8 @@ use App\Models\Observation;
 
 class ObservationController extends Controller {
 
+    private $mission;
+
 
     /**
      * Store an observation.
@@ -48,19 +50,19 @@ class ObservationController extends Controller {
      *       description="",
      *       required=false,
      *       default=" ",
-     *       type="string",
+     *       type="number",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="longitude",
      *       description="",
      *       required=false,
-     *       type="string",
+     *       type="number",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="observation_date",
-     *       description="The date of the observation.",
+     *       description="The date of the observation. It must follow the format y-m-d.",
      *       required=true,
      *       type="string",
      *       in="query"
@@ -96,9 +98,9 @@ class ObservationController extends Controller {
 
         $response = $this->validateData();
 
-        if ($response->status=='error') {
+        if ($response->status == 'error') {
 
-            return $response;
+            return \Response::json($response);
 
         } else {
 
@@ -106,12 +108,12 @@ class ObservationController extends Controller {
                 'device_uuid' => env('RADICAL_CITYNAME') . '.' . \Request::get('mission_id') . '.' . \Request::get('device_uuid'),
                 'latitude' => \Request::get('latitude'),
                 'longitude' => \Request::get('longitude'),
-                'observation_date' => strtotime(\Request::get('observation_date')),
-                // 'registration_date' => \Request::get('registration_date'),
+                'observation_date' => \Request::get('observation_date'),
             ]);
 
             //save new observation to the db
             $observation->save();
+            $radicalMeasurements = $this->getMeasurements($observation->id);
 
             $radicalObservation = ([
                 'Observation_Id' => $observation->id,
@@ -119,10 +121,8 @@ class ObservationController extends Controller {
                 'Latitude' => \Request::get('latitude'),
                 'Longitude' => \Request::get('longitude'),
                 'Observation_Date' => \Request::get('registration_date'),
-                'Measurements' => $this->dummyMeasurements($observation->id),
+                'Measurements' => $radicalMeasurements,
             ]);
-
-            //$observation->measurements()->saveMany($measurements);
 
             //return $this->radicalConfigurationAPI->registerDevice($radicalObservation);
             return $observation;
@@ -153,14 +153,23 @@ class ObservationController extends Controller {
                 'description' => 'The mission id should not be null'];
         } else {
             //check that the mission_id exists
-            $mission = Mission::find(\Request::get('mission_id'));
-            if ($mission == null) {
+            $this->mission = Mission::with('type')->find(\Request::get('mission_id'));
+
+            if ($this->mission == null) {
                 $response->status = 'error';
                 $response->message = [
                     'id' => '',
                     'code' => 'mission_id_not_found',
                     'description' => 'The requested mission could not be found'];
             }
+        }
+
+        if (\Request::has('latitude') && !is_numeric(\Request::get('latitude')) || \Request::has('longitude') && !is_numeric(\Request::get('longitude'))) {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'coordinates_not_numeric',
+                'description' => 'The coordinates of the observation should be numeric'];
         }
 
         if (!\Request::has('measurements')) {
@@ -171,6 +180,7 @@ class ObservationController extends Controller {
                 'description' => 'The measurements should not be null'];
         } else {
             foreach (\Request::get('measurements') as $measurement) {
+
                 if (!isset($measurement['latitude']) || $measurement['latitude'] == '' || !isset($measurement['longitude']) || $measurement['longitude'] == '') {
                     $response->status = 'error';
                     $response->message = [
@@ -186,33 +196,41 @@ class ObservationController extends Controller {
                 }
             }
         }
-        return $response;
 
+        return $response;
     }
 
 
-    //test function, delete
-    private function dummyMeasurements($observation_id) {
+    /**
+     * Save the measurements to our db
+     * and create an array of measurements to sent to the radical API
+     *
+     * @param $observation_id
+     * @return array
+     */
+    private function getMeasurements($observation_id) {
 
-        //measurements for our db
-        $measurement = new Measurement([
-            'type' => '',
-            'value' => '',
-            'unit' => '',
-            'latitude' => 56.560000,
-            'longitude' => 10.560000,
-            'observation_id' => $observation_id,
-            'observation_date' => date('Y-m-d H:i:s')]);
+        $type = '';
+        $value = '';
+        $unit = '';
+
+        if ($this->mission != null) {
+            $type = $this->mission->type->name;
+        }
 
         $radicalMeasurements = [];
-        $measurements = [];
-        array_push($measurements, $measurement);
-        array_push($measurements, $measurement);
-        array_push($measurements, $measurement);
+        foreach (\Request::get('measurements') as $measurement) {
 
+            $meas = new Measurement([
+                'type' => $type,
+                'value' => $value,
+                'unit' => $unit,
+                'latitude' => $measurement['latitude'],
+                'longitude' => $measurement['longitude'],
+                'observation_id' => $observation_id,
+                'observation_date' => $measurement['observation_date']]);
 
-        foreach ($measurements as $meas) {
-            $measurement->save();
+            $meas->save();
 
             array_push($radicalMeasurements, [
                 'Measurement_ID' => $meas->id,
@@ -227,8 +245,5 @@ class ObservationController extends Controller {
         }
 
         return $radicalMeasurements;
-
     }
-
-
 }

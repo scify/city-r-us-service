@@ -540,7 +540,7 @@
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string",
+                        "type": "number",
                         "default": " "
                     },
                     {
@@ -548,12 +548,12 @@
                         "in": "query",
                         "description": "",
                         "required": false,
-                        "type": "string"
+                        "type": "number"
                     },
                     {
                         "name": "observation_date",
                         "in": "query",
-                        "description": "The date of the observation.",
+                        "description": "The date of the observation. It must follow the format y-m-d.",
                         "required": true,
                         "type": "string"
                     },
@@ -677,15 +677,6 @@
         },
         "measurement": {
             "properties": {
-                "type": {
-
-                },
-                "value": {
-
-                },
-                "unit": {
-
-                },
                 "latitude": {
 
                 },
@@ -693,9 +684,6 @@
 
                 },
                 "observation_date": {
-
-                },
-                "observation_id": {
 
                 }
             }
