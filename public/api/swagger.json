@@ -373,6 +373,73 @@
                 }
             }
         },
+        "/users/byEmail": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by email",
+                "description": "Retrieve the user that corresponds to a certain email",
+                "operationId": "api.users.byEmail",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the user based on a certain id",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/byJWT": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by JWT",
+                "description": "Retrieve the user that corresponds to a certain JWT",
+                "operationId": "api.users.byJWT",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the user based on a certain JWT",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users/authenticate": {
             "post": {
                 "tags": [

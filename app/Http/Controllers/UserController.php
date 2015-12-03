@@ -17,7 +17,7 @@ class UserController extends Controller {
      * and the middlewares
      */
     public function __construct() {
-        //$this->middleware('jwt.auth', ['only' => ['register']]);
+        $this->middleware('jwt.auth', ['only' => ['byJWT']]);
         $this->userService = new UserService();
     }
 
@@ -119,6 +119,106 @@ class UserController extends Controller {
         $response->status = 'success';
         $response->message = [
             'users' => $users];
+
+        return \Response::json($response);
+    }
+
+    /**
+     * Display one user by id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get user by email",
+     *     path="/users/byEmail",
+     *     description="Retrieve the user that corresponds to a certain email",
+     *     operationId="api.users.byEmail",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *        name="email",
+     *        description="The user's email",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns the user based on a certain id",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/user")
+     *         ),
+     *     )
+     * )
+     */
+    public function byEmail() {
+
+        $response = new ApiResponse();
+
+        if (!\Request::has('email')) {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'email_null',
+                'description' => 'The user email should not be null'];
+        } else {
+            $user = User::where('email', \Request::get('email'))->with('points')->first();
+
+            if ($user == null) {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'user_not_found',
+                    'description' => 'The user could not be found'];
+            } else {
+                $response->status = 'success';
+                $response->message = [
+                    'user' => $user];
+            }
+        }
+        return \Response::json($response);
+    }
+
+    /**
+     * Display one user by JWT
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get user by JWT",
+     *     path="/users/byJWT",
+     *     description="Retrieve the user that corresponds to a certain JWT",
+     *     operationId="api.users.byJWT",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+     *       required=true,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns the user based on a certain JWT",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/user")
+     *         ),
+     *     )
+     * )
+     */
+    public function byJWT() {
+
+        $user = User::find(\Auth::user()->id);
+
+        return $user;
+
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = ['user' => $user];
 
         return \Response::json($response);
     }
