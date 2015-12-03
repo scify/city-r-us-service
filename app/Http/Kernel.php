@@ -31,5 +31,4 @@ class Kernel extends HttpKernel {
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
         //'corsss' => 'App\Http\Middleware\CORS'
 	];
-
 }

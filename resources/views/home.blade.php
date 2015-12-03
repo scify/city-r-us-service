@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Swagger UI</title>
+    <title>City-R-US API</title>
     <link href="{{ asset('swagger/css/typography.css') }}" media='screen' rel='stylesheet' type='text/css'/>
     <link href="{{ asset('swagger/css/reset.css') }}" media='screen' rel='stylesheet' type='text/css'/>
     <link href="{{ asset('swagger/css/screen.css') }}" media='screen' rel='stylesheet' type='text/css'/>
@@ -61,7 +61,7 @@
                         hljs.highlightBlock(e)
                     });
 
-                    addApiKeyAuthorization();
+                    //addApiKeyAuthorization();
                 },
                 onFailure: function (data) {
                     log("Unable to Load SwaggerUI");
@@ -70,18 +70,19 @@
                 apisSorter: "alpha",
                 showRequestHeaders: false
             });
+            
+            /*
+             function addApiKeyAuthorization() {
+             var key = encodeURIComponent($('#input_apiKey')[0].value);
+             if (key && key.trim() != "") {
+             var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
+             window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
+             log("added key " + key);
+             }
+             }
 
-            function addApiKeyAuthorization() {
-                var key = encodeURIComponent($('#input_apiKey')[0].value);
-                if (key && key.trim() != "") {
-                    var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
-                    window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
-                    log("added key " + key);
-                }
-            }
-
-            $('#input_apiKey').change(addApiKeyAuthorization);
-
+             $('#input_apiKey').change(addApiKeyAuthorization);
+             */
             // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
             /*
              var apiKey = "myApiKeyXXXX123456789";

@@ -31206,13 +31206,13 @@ SwaggerUi.Views.MainView = Backbone.View.extend({
       // Localhost override
       this.model.validatorUrl = null;
     } else {
-      // Default validator
+     /* // Default validator
       if(window.location.protocol === 'https:') {
         this.model.validatorUrl = 'https://online.swagger.io/validator';
       }
       else {
         this.model.validatorUrl = 'http://online.swagger.io/validator';
-      }
+      }*/
     }
   },
 
