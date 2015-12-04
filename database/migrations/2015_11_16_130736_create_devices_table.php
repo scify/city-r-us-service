@@ -16,14 +16,13 @@ class CreateDevicesTable extends Migration {
         Schema::create('devices', function(Blueprint $table)
         {
             $table->increments('id');
-            $table->string('device_uuid')->unique();
+            $table->string('device_name');
             $table->string('model');
             $table->string('manufacturer');
-            $table->string('latitude');
-            $table->string('longitude');
-            $table->string('type');
-            $table->string('status');
-            $table->dateTime('registration_date')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('type')->default('smartphone');
+            $table->string('status')->default(1);
 
             $table->timestamps();
             $table->softDeletes();
@@ -46,8 +45,21 @@ class CreateDevicesTable extends Migration {
 
             $table->timestamps();
 
+            $table->integer('device_id')->unsigned();
+            $table->foreign('device_id')->references('id')->on('devices');
+        });
+
+        Schema::create('devices_missions', function(Blueprint $table)
+        {
+            $table->increments('id');
             $table->string('device_uuid');
-            $table->foreign('device_uuid')->references('device_uuid')->on('devices');
+            $table->dateTime('registration_date')->nullable();
+            $table->timestamps();
+
+            $table->integer('device_id')->unsigned();
+            $table->foreign('device_id')->references('id')->on('devices');
+            $table->integer('mission_id')->unsigned();
+            $table->foreign('mission_id')->references('id')->on('missions');
         });
     }
 
@@ -58,6 +70,7 @@ class CreateDevicesTable extends Migration {
      */
     public function down()
     {
+        Schema::dropIfExists('devices_missions');
         Schema::dropIfExists('users_devices');
         Schema::dropIfExists('device_capabilities');
         Schema::dropIfExists('devices');

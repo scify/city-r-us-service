@@ -70,7 +70,7 @@
                 apisSorter: "alpha",
                 showRequestHeaders: false
             });
-            
+
             /*
              function addApiKeyAuthorization() {
              var key = encodeURIComponent($('#input_apiKey')[0].value);

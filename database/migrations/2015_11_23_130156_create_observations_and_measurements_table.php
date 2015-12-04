@@ -20,10 +20,14 @@ class CreateObservationsAndMeasurementsTable extends Migration {
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->integer('device_id')->unsigned();
+            $table->foreign('device_id')->references('id')->on('devices');
         });
 
         Schema::create('measurements', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('device_uuid');
             $table->string('type')->nullable();
             $table->string('value')->nullable();
             $table->string('unit')->nullable();

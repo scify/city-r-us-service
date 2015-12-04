@@ -31,6 +31,10 @@ class Mission extends Model{
         return $this->hasOne('App\Models\Descriptions\MissionType', 'id', 'type_id');
     }
 
+    public function devices(){
+        return $this->belongsToMany('App\Models\Device', 'devices_missions', 'mission_id', 'device_id');
+    }
+
     public function users(){
         return $this->belongsToMany('App\Models\User', 'users_missions', 'mission_id', 'user_id');
     }

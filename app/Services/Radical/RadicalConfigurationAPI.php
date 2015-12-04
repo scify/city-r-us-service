@@ -69,12 +69,12 @@ class RadicalConfigurationAPI {
         return $response;
     }
 
-    public function storeObservation($device) {
+    public function storeObservation($observation) {
         $apiKey = $this->getApiKey();
 
         $url = env("RADICAL_REPOSITORY_API") . "registerObservation?api_key=" . $apiKey;
 
-        $params = $device;
+        $params = $observation;
 
         $response = $this->curl->post($url, $params, true);
 

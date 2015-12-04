@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -328,6 +328,28 @@
                         "description": "The user's password",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "device_name",
+                        "in": "query",
+                        "description": "The name of the device",
+                        "required": true,
+                        "type": "string",
+                        "default": ""
+                    },
+                    {
+                        "name": "model",
+                        "in": "query",
+                        "description": "The model of the device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "manufacturer",
+                        "in": "query",
+                        "description": "The manufacturer of the device",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -504,19 +526,19 @@
                         "type": "string"
                     },
                     {
-                        "name": "missionId",
+                        "name": "mission_id",
                         "in": "query",
                         "description": "The id of the mission that the user wants to participate to",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "deviceName",
+                        "name": "device_name",
                         "in": "query",
                         "description": "The name of the device",
                         "required": true,
                         "type": "string",
-                        "default": " "
+                        "default": ""
                     },
                     {
                         "name": "model",
@@ -589,9 +611,9 @@
                         "type": "string"
                     },
                     {
-                        "name": "device_uuid",
+                        "name": "device_name",
                         "in": "query",
-                        "description": "The uuid of the device",
+                        "description": "The name of the device",
                         "required": true,
                         "type": "string"
                     },
@@ -699,7 +721,7 @@
         },
         "observation": {
             "properties": {
-                "device_uuid": {
+                "device_id": {
 
                 },
                 "latitude": {

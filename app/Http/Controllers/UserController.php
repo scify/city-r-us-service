@@ -3,6 +3,7 @@
 
 use App\Models\ApiResponse;
 use App\Models\User;
+use App\Services\DeviceService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller {
 
     private $userService;
+    private $deviceService;
 
     /**
      * When the class is constructed,
@@ -19,6 +21,7 @@ class UserController extends Controller {
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['byJWT']]);
         $this->userService = new UserService();
+        $this->deviceService = new DeviceService();
     }
 
 
@@ -55,6 +58,28 @@ class UserController extends Controller {
      *        type="string",
      *          in="query"
      *     ),
+     *     @SWG\Parameter(
+     *       name="device_name",
+     *       description="The name of the device",
+     *       required=true,
+     *       default="",
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="model",
+     *       description="The model of the device",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="manufacturer",
+     *       description="The manufacturer of the device",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="User registered",
@@ -72,14 +97,7 @@ class UserController extends Controller {
      */
     public function register() {
 
-        $credentials = \Request::only('email', 'password', 'name');
-
-        if (!\Request::has('role'))
-            $credentials['role'] = 'mobile';
-        else
-            $credentials['role'] = 'web';
-
-        $response = $this->userService->register($credentials);
+        $response = $this->userService->register();
 
         return $response;
     }

@@ -1,12 +1,16 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Requests;
-use App\Models\Device;
+use App\Models\ApiResponse;
+use App\Models\Mission;
+use App\Services\DeviceService;
 use App\Services\Radical\RadicalConfigurationAPI;
 
 class DeviceController extends Controller {
 
+    private $mission;
     private $radicalConfigurationAPI;
+    private $deviceService;
 
     /* only for test purposes */
     private $deviceModels = ['iPhone', 'iPad', 'GT-I9100', 'modelXYZ', 'Nexus', 'Lenovo A8-50'];
@@ -15,6 +19,7 @@ class DeviceController extends Controller {
 
     public function __construct() {
         $this->radicalConfigurationAPI = new RadicalConfigurationAPI();
+        $this->$deviceService = new DeviceService();
     }
 
     /**
@@ -38,17 +43,17 @@ class DeviceController extends Controller {
      *       schema="json"
      *     ),
      *     @SWG\Parameter(
-     *        name="missionId",
+     *        name="mission_id",
      *        description="The id of the mission that the user wants to participate to",
      *        required=true,
      *        type="string",
      *        in="query"
      *     ),
      *     @SWG\Parameter(
-     *       name="deviceName",
+     *       name="device_name",
      *       description="The name of the device",
      *       required=true,
-     *       default=" ",
+     *       default="",
      *       type="string",
      *       in="query"
      *     ),
@@ -102,62 +107,11 @@ class DeviceController extends Controller {
      */
     public function register() {
 
-        if (!\Request::has('deviceName')) {
+        $response = $this->deviceService->validateDevice();
 
-            $serviceId = 'cityrus_illegal-parking';
-            $device_name = 'test-' . str_random(4);
+        if ($response->status != 'error')
+            $response = $this->deviceService->registerDevice(\Request::all());
 
-            //device_uui = CityID.ServiceId.DeviceName
-
-            $device = new Device([
-                'device_uuid' => env('RADICAL_CITYNAME') . '.' . $serviceId . '.' . $device_name,
-                'model' => $this->deviceModels[array_rand($this->deviceModels)],
-                'manufacturer' => $this->deviceManufacturers[array_rand($this->deviceManufacturers)],
-                'latitude' => 56.560000,
-                'longitude' => 10.560000,
-                'type' => 'RFID antenna',
-                'status' => 1,
-                'registration_date' => date('Y-m-d H:i:s'),
-            ]);
-
-            $radicalDevice = ([
-                'Device_UUID' => env('RADICAL_CITYNAME') . '.' . $serviceId . '.' . $device_name,
-                'Model' => $this->deviceModels[array_rand($this->deviceModels)],
-                'Manufacturer' => $this->deviceManufacturers[array_rand($this->deviceManufacturers)],
-                'Latitude' => 56.560000,
-                'Longitude' => 10.560000,
-                'Type' => 'RFID antenna',
-                'Status' => 1,
-                'Registration_Date' => date('Y-m-d H:i:s'),
-            ]);
-
-        } else {
-
-            $device = new Device([
-                'device_uuid' => env('RADICAL_CITYNAME') . '.' . \Request::get('missionId') . '.' . \Request::get('deviceName'),
-                'model' => \Request::get('model'),
-                'manufacturer' => \Request::get('manufacturer'),
-                'latitude' => \Request::get('latitude'),
-                'longitude' => \Request::get('longitude'),
-                'type' => \Request::get('type'),
-                'status' => \Request::get('status'),
-                'registration_date' => date('Y-m-d H:i:s'),
-            ]);
-
-            $radicalDevice = ([
-                'Device_UUID' => env('RADICAL_CITYNAME') . '.' . \Request::get('missionId') . '.' . \Request::get('deviceName'),
-                'Model' => \Request::get('model'),
-                'Manufacturer' => \Request::get('manufacturer'),
-                'Latitude' => \Request::get('latitude'),
-                'Longitude' => \Request::get('longitude'),
-                'Type' => \Request::get('type'),
-                'Status' => \Request::get('status'),
-                'Registration_Date' => date('Y-m-d H:i:s'),
-            ]);
-        }
-
-        $device->save();
-        return $this->radicalConfigurationAPI->registerDevice($radicalDevice);
+        return \Response::json($response);
     }
-
 }

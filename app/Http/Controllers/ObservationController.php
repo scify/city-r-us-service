@@ -5,10 +5,17 @@ use App\Models\ApiResponse;
 use App\Models\Measurement;
 use App\Models\Mission;
 use App\Models\Observation;
+use App\Services\Radical\RadicalConfigurationAPI;
 
 class ObservationController extends Controller {
 
     private $mission;
+    private $radicalServiceConfiguration;
+
+    public function __construct() {
+      //  $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
+        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+    }
 
 
     /**
@@ -32,8 +39,8 @@ class ObservationController extends Controller {
      *       schema="json"
      *     ),
      *     @SWG\Parameter(
-     *        name="device_uuid",
-     *        description="The uuid of the device",
+     *        name="device_name",
+     *        description="The name of the device",
      *        required=true,
      *        type="string",
      *        in="query"
@@ -93,19 +100,27 @@ class ObservationController extends Controller {
      */
     public function store() {
 
-        //TODO: maybe the name of  the device is not needed -> retrieve it from jwt
+        //check if device is registered
+
+        //TODO: maybe the name of the device is not needed -> retrieve it from jwt
         //TODO: we must also check that jwt doesn't expire as often on mobile as it does on web
 
-        $response = $this->validateData();
+        $responseObs = $this->validateObservation();
 
-        if ($response->status == 'error') {
+        if ($responseObs->status == 'error') {
 
-            return \Response::json($response);
+            return \Response::json($responseObs);
 
         } else {
 
+            $responseMeas = $this->validateMeasurements(\Request::get('measurements'));
+
+            if ($responseMeas->status == 'error') {
+                return \Response::json($responseMeas);
+            }
+
             $observation = new Observation([
-                'device_uuid' => env('RADICAL_CITYNAME') . '.' . \Request::get('mission_id') . '.' . \Request::get('device_uuid'),
+                'device_uuid' => env('RADICAL_CITYNAME') . '.' . \Request::get('mission_id') . '.' . \Request::get('device_name'),
                 'latitude' => \Request::get('latitude'),
                 'longitude' => \Request::get('longitude'),
                 'observation_date' => \Request::get('observation_date'),
@@ -115,34 +130,82 @@ class ObservationController extends Controller {
             $observation->save();
             $radicalMeasurements = $this->getMeasurements($observation->id);
 
+            $radicalMeasurements = $this->getMeasurements(1);
+
             $radicalObservation = ([
-                'Observation_Id' => $observation->id,
-                'Device_UUID' => env('RADICAL_CITYNAME') . '.' . \Request::get('mission_id') . '.' . \Request::get('device_uuid'),
+               // 'Observation_Id' => $observation->id,
+                'Device_UUID' => env('RADICAL_CITYNAME') . '.' . $this->mission->name . '.' . \Request::get('device_name'),
                 'Latitude' => \Request::get('latitude'),
                 'Longitude' => \Request::get('longitude'),
-                'Observation_Date' => \Request::get('registration_date'),
+                'Observation_Date' => \Request::get('observation_date'),
                 'Measurements' => $radicalMeasurements,
             ]);
 
-            //return $this->radicalConfigurationAPI->registerDevice($radicalObservation);
+            //return $radicalObservation;
+
+            return $this->radicalServiceConfiguration->storeObservation($radicalObservation);
             return $observation;
         }
+    }
+
+    /**
+     * Save the measurements to our db
+     * and create an array of measurements to sent to the radical API
+     *
+     * @param $observation_id
+     * @return array
+     */
+    private function getMeasurements($observation_id) {
+
+        $type = 'test';
+        $value = 'test';
+        $unit = 'test';
+
+        if ($this->mission != null) {
+            $type = $this->mission->type->name;
+        }
+
+        $radicalMeasurements = [];
+        foreach (\Request::get('measurements') as $measurement) {
+
+            $meas = new Measurement([
+                'type' => $type,
+                'value' => $value,
+                'unit' => $unit,
+                'latitude' => $measurement['latitude'],
+                'longitude' => $measurement['longitude'],
+                'observation_id' => $observation_id,
+                'observation_date' => $measurement['observation_date']]);
+
+            $meas->save();
+
+            array_push($radicalMeasurements, [
+                'Latitude' => $meas->latitude,
+                'Longitude' => $meas->longitude,
+                'Type' => $meas->type,
+                'Value' => $meas->value,
+                'Unit' => $meas->unit,
+                'Observation_Date' => $meas->observation_date,
+            ]);
+        }
+
+        return $radicalMeasurements;
     }
 
     /**
      * Validate the observation data before performing any action
      *
      */
-    private function validateData() {
+    private function validateObservation() {
 
         $response = new ApiResponse();
 
-        if (!\Request::has('device_uuid')) {
+        if (!\Request::has('device_name')) {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
-                'code' => 'device_uuid_null',
-                'description' => 'The device uuid should not be null'];
+                'code' => 'device_name_null',
+                'description' => 'The device name should not be null'];
         }
 
         if (!\Request::has('mission_id')) {
@@ -161,6 +224,16 @@ class ObservationController extends Controller {
                     'id' => '',
                     'code' => 'mission_id_not_found',
                     'description' => 'The requested mission could not be found'];
+            }
+        }
+
+        if (\Request::has('observation_date')) {
+            if (!$this->validateDate(\Request::get('observation_date'))) {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'wrong_date_format',
+                    'description' => 'The date should be in the following format: Y-m-d hh:mm:ss'];
             }
         }
 
@@ -200,50 +273,52 @@ class ObservationController extends Controller {
         return $response;
     }
 
-
     /**
-     * Save the measurements to our db
-     * and create an array of measurements to sent to the radical API
+     * Validate the observation data before performing any action
      *
-     * @param $observation_id
-     * @return array
      */
-    private function getMeasurements($observation_id) {
+    private function validateMeasurements($measurements) {
 
-        $type = '';
-        $value = '';
-        $unit = '';
+        $response = new ApiResponse();
 
-        if ($this->mission != null) {
-            $type = $this->mission->type->name;
+        foreach ($measurements as $measurement) {
+
+            if ($measurement['observation_date'] != null) {
+                if (!$this->validateDate($measurement['observation_date'])) {
+                    $response->status = 'error';
+                    $response->message = [
+                        'id' => '',
+                        'code' => 'wrong_date_format',
+                        'description' => 'The date should be in the following format: Y-m-d hh:mm:ss'];
+
+                    break;
+                }
+            } else {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'date_null',
+                    'description' => 'The measurement date should not be null'];
+
+                break;
+            }
+
+            if (!is_numeric($measurement['latitude']) || !is_numeric($measurement['longitude'])) {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'coordinates_not_numeric',
+                    'description' => 'The coordinates of the measurements should be numeric'];
+
+                break;
+            }
         }
+        return $response;
+    }
 
-        $radicalMeasurements = [];
-        foreach (\Request::get('measurements') as $measurement) {
 
-            $meas = new Measurement([
-                'type' => $type,
-                'value' => $value,
-                'unit' => $unit,
-                'latitude' => $measurement['latitude'],
-                'longitude' => $measurement['longitude'],
-                'observation_id' => $observation_id,
-                'observation_date' => $measurement['observation_date']]);
-
-            $meas->save();
-
-            array_push($radicalMeasurements, [
-                'Measurement_ID' => $meas->id,
-                'Observation_Id' => $observation_id,
-                'Latitude' => $meas->latitude,
-                'Longitude' => $meas->longitude,
-                'Type' => $meas->type,
-                'Value' => $meas->value,
-                'Unit' => $meas->unit,
-                'Observation_Date' => $meas->observation_date,
-            ]);
-        }
-
-        return $radicalMeasurements;
+    private function validateDate($date) {
+        $d = \DateTime::createFromFormat('Y-m-d H:i:s', $date);
+        return $d && $d->format('Y-m-d H:i:s') == $date;
     }
 }
