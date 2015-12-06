@@ -6,7 +6,7 @@ class Device extends Model{
 
     protected $table = 'devices';
 
-    protected $fillable = ['device_name', 'model', 'manufacturer', 'latitude', 'longitude', 'type', 'status', 'registration_date'];
+    protected $fillable = ['device_uuid', 'model', 'manufacturer', 'latitude', 'longitude', 'type', 'status', 'registration_date'];
 
 
     public function capabilities(){

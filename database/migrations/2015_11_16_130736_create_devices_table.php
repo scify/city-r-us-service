@@ -16,11 +16,9 @@ class CreateDevicesTable extends Migration {
         Schema::create('devices', function(Blueprint $table)
         {
             $table->increments('id');
-            $table->string('device_name');
+            $table->string('device_uuid');
             $table->string('model');
             $table->string('manufacturer');
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
             $table->string('type')->default('smartphone');
             $table->string('status')->default(1);
 
@@ -53,6 +51,8 @@ class CreateDevicesTable extends Migration {
         {
             $table->increments('id');
             $table->string('device_uuid');
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->dateTime('registration_date')->nullable();
             $table->timestamps();
 

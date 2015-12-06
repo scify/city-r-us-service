@@ -26,14 +26,14 @@ class UserController extends Controller {
 
 
     /**
-     * Register a new user to the app.
+     * Register a new user to the mobile application
      *
      * @return \Illuminate\Http\JsonResponse
      *
      * @SWG\Post(
      *     summary="Register a user",
      *     path="/users/register",
-     *     description="Register a new user to the app.",
+     *     description="Register a new user to the mobile application.",
      *     operationId="api.users.register",
      *     produces={"application/json"},
      *     tags={"users"},
@@ -59,8 +59,8 @@ class UserController extends Controller {
      *          in="query"
      *     ),
      *     @SWG\Parameter(
-     *       name="device_name",
-     *       description="The name of the device",
+     *       name="device_uuid",
+     *       description="The uuid of the device",
      *       required=true,
      *       default="",
      *       type="string",

@@ -4,40 +4,47 @@ use App\Models\ApiResponse;
 use App\Models\Device;
 use App\Services\Radical\RadicalConfigurationAPI;
 
-class DeviceService {
+class DeviceService
+{
 
     private $radicalServiceConfiguration;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
 
 
-    public function checkStatus($missionName, $deviceName) {
+    /**
+     * Check if a device is register for a certain mission
+     *
+     * @param $missionName
+     * @param $deviceName
+     */
+    public function isRegistered($missionId, $deviceUUID)
+    {
 
-        $device = Device::where('device_uuid', ENV('RADICAL_CITYNAME') . $missionName . $deviceName)->first();
+        $device = Device::whereHas('missions', function ($q) use ($missionId) {
+            $q->where('mission_id', $missionId)->where('');
+        })->where('device_uuid', $deviceUUID)->get();
 
-        if ($device == null) {
-           $this->radicalServiceConfiguration->registerDevice(null);
-        }
+        if ($device == null)
+            return false;
 
-        return;
+        return true;
     }
 
     /**
      * Store device to our db
      *
      */
-    public function store(){
+    public function store()
+    {
 
         $device = new Device([
-            'device_name' => \Request::get('device_name'),
+            'device_uuid' => \Request::get('device_uuid'),
             'model' => \Request::get('model'),
             'manufacturer' => \Request::get('manufacturer'),
-            'latitude' => \Request::get('latitude'),
-            'longitude' => \Request::get('longitude'),
-            'type' => \Request::get('type'),
-            'status' => \Request::get('status'),
         ]);
 
         $device->save();
@@ -46,42 +53,23 @@ class DeviceService {
     }
 
     /**
-     * Store device to our db and to radical
+     * Store device to radical
      *
      * @param $device
      * @return mixed
      */
-    public function registerDevice($device){
-        $device = new Device([
-            'device_uuid' => env('RADICAL_CITYNAME') . '.' . $this->mission->name . '.' . \Request::get('device_name'),
-            'model' => $device['model'],
-            'manufacturer' => $device['manufacturer'],
-            'registration_date' => date('Y-m-d H:i:s')
-        ]);
-
-        $device->save();
-
-        $radicalDevice = ([
-            'Device_UUID' => $device->device_uuid,
-            'Model' => $device->model,
-            'Manufacturer' => $device->manufacturer,
-            'Latitude' => floatval($device->latitude),
-            'Longitude' => floatval($device->longitude),
-            'Type' =>  $device->type,
-            'Status' => intval($device->status),
-            'Registration_Date' => date('Y-m-d H:i:s'),
-        ]);
-
-        return $this->radicalServiceConfiguration->registerDevice($radicalDevice);
+    public function registerToRadical($device)
+    {
+        return $this->radicalServiceConfiguration->registerDevice($device);
     }
-
 
 
     /**
      * Validate the device data before saving to db
      * @return ApiResponse
      */
-    public function validateDevice() {
+    public function validateDevice()
+    {
 
         $response = new ApiResponse();
 
@@ -171,7 +159,8 @@ class DeviceService {
     }
 
 
-    private function validateDate($date) {
+    private function validateDate($date)
+    {
         $d = \DateTime::createFromFormat('Y-m-d H:i:s', $date);
         return $d && $d->format('Y-m-d H:i:s') == $date;
     }

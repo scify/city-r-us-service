@@ -6,7 +6,8 @@ use App\Models\Descriptions\Role;
 use App\Models\Device;
 use App\Models\User;
 
-class UserService {
+class UserService
+{
 
 
     /**
@@ -16,7 +17,8 @@ class UserService {
      *
      * @return mixed
      */
-    public function register() {
+    public function register()
+    {
 
         $validateUser = $this->validateUser();
         $validateDevice = $this->validateDevice();
@@ -73,7 +75,8 @@ class UserService {
      *
      * @return ApiResponse
      */
-    private function validateUser() {
+    private function validateUser()
+    {
 
         $response = new ApiResponse();
 
@@ -139,16 +142,17 @@ class UserService {
      * Validate the device data before saving to db
      * @return ApiResponse
      */
-    public function validateDevice() {
+    public function validateDevice()
+    {
 
         $response = new ApiResponse();
 
-        if (!\Request::has('device_name')) {
+        if (!\Request::has('device_uuid')) {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
-                'code' => 'device_name_null',
-                'description' => 'The device name should not be null'];
+                'code' => 'device_uuid_null',
+                'description' => 'The device uuid should not be null'];
         }
 
         if (!\Request::has('model')) {
