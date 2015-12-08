@@ -15,6 +15,8 @@ class TestController extends Controller {
 
     public function test() {
 
+        return 'a';
+
         return $this->radicalConfigucationAPI->getApiKey();
     }
 }

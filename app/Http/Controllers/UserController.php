@@ -232,8 +232,6 @@ class UserController extends Controller {
 
         $user = User::find(\Auth::user()->id);
 
-        return $user;
-
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = ['user' => $user];

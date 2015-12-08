@@ -3,12 +3,18 @@
 
 use App\Models\ApiResponse;
 use App\Models\Descriptions\Role;
-use App\Models\Device;
+use App\Services\DeviceService;
 use App\Models\User;
 
 class UserService
 {
 
+    private $deviceService;
+
+    public function __construct()
+    {
+        $this->deviceService = new DeviceService();
+    }
 
     /**
      * The register method is responsible for checking/validating
@@ -46,14 +52,7 @@ class UserService
             $role = Role::where('name', $role)->first();
             $user->roles()->save($role);
 
-            //save device characteristics
-            $device = new Device([
-                'device_name' => \Request::get('device_name'),
-                'model' => \Request::get('model'),
-                'manufacturer' => \Request::get('manufacturer'),
-            ]);
-
-            $device->save();
+            $this->deviceService->store();
 
 
             //Retrieve the JWT and send back to the Controller

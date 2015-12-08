@@ -12,7 +12,7 @@ class MissionController extends Controller {
     private $radicalServiceConfiguration;
 
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
+       // $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->missionService = new MissionService();
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
@@ -77,7 +77,7 @@ class MissionController extends Controller {
      *      @SWG\Parameter(
      *       name="Authorization",
      *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-     *       required=true,
+     *       required=false,
      *       type="string",
      *       in="header",
      *       schema="json"
@@ -92,7 +92,7 @@ class MissionController extends Controller {
      *     @SWG\Parameter(
      *       name="description",
      *       description="The mission's description",
-     *       required=false,
+     *       required=true,
      *       default=" ",
      *       type="string",
      *       in="query"

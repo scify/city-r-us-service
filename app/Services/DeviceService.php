@@ -23,10 +23,10 @@ class DeviceService
      */
     public function isRegistered($missionId, $deviceUUID)
     {
-
-        $device = Device::whereHas('missions', function ($q) use ($missionId) {
-            $q->where('mission_id', $missionId)->where('');
-        })->where('device_uuid', $deviceUUID)->get();
+        $device = Device::where('device_uuid', $deviceUUID)
+            ->whereHas('missions', function ($q) use ($missionId) {
+            $q->where('mission_id', $missionId);
+        })->first();
 
         if ($device == null)
             return false;

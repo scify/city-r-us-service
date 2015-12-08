@@ -6,6 +6,7 @@ use App\Models\Measurement;
 use App\Models\Mission;
 use App\Models\Observation;
 use App\Services\ObservationService;
+use App\Services\PointService;
 use App\Services\Radical\RadicalConfigurationAPI;
 
 class ObservationController extends Controller {
@@ -13,11 +14,13 @@ class ObservationController extends Controller {
     private $mission;
     private $radicalServiceConfiguration;
     private $observationService;
+    private $pointService;
 
     public function __construct() {
       //  $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
         $this->observationService = new ObservationService();
+        $this->pointService = new PointService();
     }
 
 
@@ -60,14 +63,14 @@ class ObservationController extends Controller {
      *       description="",
      *       required=false,
      *       default=" ",
-     *       type="number",
+     *       type="string",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="longitude",
      *       description="",
      *       required=false,
-     *       type="number",
+     *       type="string",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
@@ -103,7 +106,19 @@ class ObservationController extends Controller {
      */
     public function store() {
 
-        return $this->observationService()->store();
+        //Save the observation
+        $observation = $this->observationService->store();
+
+        //reward user for their submission
+        $points = $this->pointService->reward();
+
+        $response  = new ApiResponse();
+        $response->message = [
+            'observation' => $observation,
+            'points' => $points
+        ];
+
+        return \Response::json($response);
     }
 
 
