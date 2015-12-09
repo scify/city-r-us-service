@@ -8,97 +8,12 @@
         },
         "version": "1.0"
     },
-    "host": "city-r-us-service/index.php/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
     ],
     "paths": {
-        "/observations/store": {
-            "post": {
-                "tags": [
-                    "observations"
-                ],
-                "summary": "Store a new observation",
-                "description": "Create and save a new observation.",
-                "operationId": "api.observations",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-                        "required": false,
-                        "schema": "json",
-                        "type": "string"
-                    },
-                    {
-                        "name": "device_uuid",
-                        "in": "query",
-                        "description": "The uuid of the device",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "mission_id",
-                        "in": "query",
-                        "description": "The id of the chosen mission",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "",
-                        "required": false,
-                        "type": "string",
-                        "default": " "
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "observation_date",
-                        "in": "query",
-                        "description": "The date of the observation. It must follow the format y-m-d.",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "measurements",
-                        "in": "body",
-                        "description": "An array of measurements.",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/measurement"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the id of the observation created",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/observation"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Unauthorized action"
-                    }
-                }
-            }
-        },
         "/missions": {
             "get": {
                 "tags": [
@@ -381,91 +296,6 @@
                 }
             }
         },
-        "/devices/register": {
-            "post": {
-                "tags": [
-                    "devices"
-                ],
-                "summary": "Register a new device",
-                "description": "Register a device to the Radical API and save it to db",
-                "operationId": "api.devices",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-                        "required": false,
-                        "schema": "json",
-                        "type": "string"
-                    },
-                    {
-                        "name": "mission_id",
-                        "in": "query",
-                        "description": "The id of the mission that the user wants to participate to",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "device_name",
-                        "in": "query",
-                        "description": "The name of the device",
-                        "required": true,
-                        "type": "string",
-                        "default": ""
-                    },
-                    {
-                        "name": "model",
-                        "in": "query",
-                        "description": "The model of the device",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "manufacturer",
-                        "in": "query",
-                        "description": "The manufacturer of the device",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "The latitude of the device",
-                        "required": true,
-                        "type": "number"
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "The longitude of the device",
-                        "required": true,
-                        "type": "number"
-                    },
-                    {
-                        "name": "type",
-                        "in": "query",
-                        "description": "Examples: 'antenna', 'smartphone', 'sensor', ... ",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "description": "Valid values '0' (inactive) or '1' (active),",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Unauthorized action"
-                    }
-                }
-            }
-        },
         "/users/register": {
             "post": {
                 "tags": [
@@ -674,6 +504,91 @@
                     }
                 }
             }
+        },
+        "/observations/store": {
+            "post": {
+                "tags": [
+                    "observations"
+                ],
+                "summary": "Store a new observation",
+                "description": "Create and save a new observation.",
+                "operationId": "api.observations",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_uuid",
+                        "in": "query",
+                        "description": "The uuid of the device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "mission_id",
+                        "in": "query",
+                        "description": "The id of the chosen mission",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "type": "string",
+                        "default": ""
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "observation_date",
+                        "in": "query",
+                        "description": "The date of the observation. It must follow the format Y-m-d hh:mm:ss.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "measurements",
+                        "in": "body",
+                        "description": "An array of measurements. Should be in the following format: { 'measurements' : [ { 'latitude': 2.45,  'longitude': 0.90,  'observation_date': '2015-12-12 12:12:12'  }  ] }",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/measurement"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the id of the observation created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/observation"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -690,32 +605,6 @@
                 },
                 "message": {
                     "description": "Class HomeController",
-                    "type": "string"
-                }
-            }
-        },
-        "observation": {
-            "properties": {
-                "device_id": {
-
-                },
-                "latitude": {
-
-                },
-                "longitude": {
-
-                },
-                "observation_date": {
-
-                }
-            }
-        },
-        "apiResponse": {
-            "properties": {
-                "status": {
-                    "type": "boolean"
-                },
-                "message": {
                     "type": "string"
                 }
             }
@@ -745,6 +634,22 @@
                 }
             }
         },
+        "observation": {
+            "properties": {
+                "device_id": {
+
+                },
+                "latitude": {
+
+                },
+                "longitude": {
+
+                },
+                "observation_date": {
+
+                }
+            }
+        },
         "user": {
             "properties": {
                 "id": {
@@ -761,6 +666,16 @@
                 },
                 "updated_at": {
 
+                }
+            }
+        },
+        "apiResponse": {
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },

@@ -27,7 +27,7 @@ class DeviceController extends Controller {
      *
      * @return \Illuminate\Http\JsonResponse
      *
-     * @SWG\Post(
+     * @SWG\Post1(
      *     summary="Register a new device",
      *     path="/devices/register",
      *     description="Register a device to the Radical API and save it to db",

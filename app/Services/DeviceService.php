@@ -38,13 +38,13 @@ class DeviceService
      * Store device to our db
      *
      */
-    public function store()
+    public function store($userId)
     {
-
         $device = new Device([
             'device_uuid' => \Request::get('device_uuid'),
             'model' => \Request::get('model'),
             'manufacturer' => \Request::get('manufacturer'),
+            'user_id' => $userId,
         ]);
 
         $device->save();

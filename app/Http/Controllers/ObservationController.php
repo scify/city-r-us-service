@@ -2,9 +2,6 @@
 
 use App\Http\Requests;
 use App\Models\ApiResponse;
-use App\Models\Measurement;
-use App\Models\Mission;
-use App\Models\Observation;
 use App\Services\ObservationService;
 use App\Services\PointService;
 use App\Services\Radical\RadicalConfigurationAPI;
@@ -17,7 +14,7 @@ class ObservationController extends Controller {
     private $pointService;
 
     public function __construct() {
-      //  $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
+        $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
         $this->observationService = new ObservationService();
         $this->pointService = new PointService();
@@ -39,7 +36,7 @@ class ObservationController extends Controller {
      *      @SWG\Parameter(
      *       name="Authorization",
      *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-     *       required=false,
+     *       required=true,
      *       type="string",
      *       in="header",
      *       schema="json"
@@ -61,28 +58,28 @@ class ObservationController extends Controller {
      *     @SWG\Parameter(
      *       name="latitude",
      *       description="",
-     *       required=false,
-     *       default=" ",
+     *       required=true,
+     *       default="",
      *       type="string",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="longitude",
      *       description="",
-     *       required=false,
+     *       required=true,
      *       type="string",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="observation_date",
-     *       description="The date of the observation. It must follow the format y-m-d.",
+     *       description="The date of the observation. It must follow the format Y-m-d hh:mm:ss.",
      *       required=true,
      *       type="string",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="measurements",
-     *       description="An array of measurements.",
+     *       description="An array of measurements. Should be in the following format: { 'measurements' : [ { 'latitude': 2.45,  'longitude': 0.90,  'observation_date': '2015-12-12 12:12:12'  }  ] }",
      *       required=true,
      *       in="body",
      *       @SWG\Schema(
@@ -105,21 +102,25 @@ class ObservationController extends Controller {
      * )
      */
     public function store() {
+        $response = new ApiResponse();
 
         //Save the observation
         $observation = $this->observationService->store();
 
-        //reward user for their submission
-        $points = $this->pointService->reward();
+        if ($observation->status != 'error') {
 
-        $response  = new ApiResponse();
-        $response->message = [
-            'observation' => $observation,
-            'points' => $points
-        ];
+            //reward user for their submission
+            $points = $this->pointService->reward();
+
+            $response->status = 'success';
+            $response->message = [
+                'observation' => $observation,
+                'points' => $points
+            ];
+        } else {
+            $response = $observation;
+        }
 
         return \Response::json($response);
     }
-
-
 }

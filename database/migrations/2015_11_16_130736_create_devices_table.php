@@ -24,14 +24,9 @@ class CreateDevicesTable extends Migration {
 
             $table->timestamps();
             $table->softDeletes();
-        });
 
-        Schema::create('users_devices', function(Blueprint $table)
-        {
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('device_id')->unsigned();
-            $table->foreign('device_id')->references('id')->on('devices');
         });
 
         Schema::create('device_capabilities', function(Blueprint $table)
@@ -71,7 +66,6 @@ class CreateDevicesTable extends Migration {
     public function down()
     {
         Schema::dropIfExists('devices_missions');
-        Schema::dropIfExists('users_devices');
         Schema::dropIfExists('device_capabilities');
         Schema::dropIfExists('devices');
     }

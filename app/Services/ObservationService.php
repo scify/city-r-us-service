@@ -7,13 +7,13 @@ use App\Models\Mission;
 use App\Models\Observation;
 use App\Services\Radical\RadicalConfigurationAPI;
 
-class ObservationService{
+class ObservationService {
 
     private $deviceService;
     private $mission;
     private $radicalServiceConfiguration;
 
-    public function __construct(){
+    public function __construct() {
         $this->deviceService = new DeviceService();
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
@@ -21,52 +21,60 @@ class ObservationService{
     /*
      * Store an observation and its measurements
      */
-    public function store(){
-
+    public function store() {
 
         //TODO: maybe the name of the device is not needed -> retrieve it from jwt
         //TODO: we must also check that jwt doesn't expire as often on mobile as it does on web
-
-        $device = Device::where('device_uuid', \Request::get('device_uuid'))->first();
-
-        //first check if the device is registered for this mission to radical
-        //for our db, that means that there's a row in devices_missions table
-        if(!$this->deviceService->isRegistered(\Request::get('mission_id'), \Request::get('device_uuid'))){
-
-            if($this->mission==null)
-                $this->mission = Mission::find(\Request::get('mission_id'));
-
-
-            //first create a row in devices_missions table
-            $device->missions()->attach($this->mission->id, [
-                'device_uuid' => env('RADICAL_CITY') . '.' . $this->mission->radical_service_id . '.' .$device->device_uuid,
-                'latitude' => floatval(\Request::get('latitude')),
-                'longitude' => floatval(\Request::get('longitude')),
-                'registration_date' => date('Y-m-d H:i:s')
-            ]);
-
-            //then send data to radical api
-            $tmp_device = [
-                'Device_UUID' => env('RADICAL_CITY') . '.' . $this->mission->radical_service_id . '.' .$device->device_uuid,
-                'Model' => $device->model,
-                'Manufacturer' => $device->manufacturer,
-                'Latitude' => floatval(\Request::get('latitude')),
-                'Longitude' => floatval(\Request::get('longitude')),
-                'Type' => $device->type,
-                'Status' => intval($device->status),
-                'Registration_Date' => date('Y-m-d H:i:s'),
-            ];
-
-            $this->deviceService->registerToRadical($tmp_device);
-        }
 
         $responseObs = $this->validateObservation();
 
         if ($responseObs->status == 'error') {
 
-            return \Response::json($responseObs);
+            return $responseObs;
 
         } else {
+            $device = Device::where('device_uuid', \Request::get('device_uuid'))->first();
+
+            //first check if the device is registered for this mission to radical
+            //for our db, that means that there's a row in devices_missions table
+            if (!$this->deviceService->isRegistered(\Request::get('mission_id'), \Request::get('device_uuid'))) {
+
+                if ($this->mission == null)
+                    $this->mission = Mission::find(\Request::get('mission_id'));
+
+                if (!\Request::has('latitude') || \Request::get('latitude') == '')
+                    $latitude = number_format(0, 6);
+                else
+                    $latitude = number_format(\Request::get('latitude'), 6);
+
+                if (!\Request::has('longitude') || \Request::get('longitude') == '')
+                    $longitude = number_format(0, 6);
+                else
+                    $longitude = number_format(\Request::get('longitude'), 6);
+
+                //first create a row in devices_missions table
+                $device->missions()->attach($this->mission->id, [
+                    'device_uuid' => env('RADICAL_CITYNAME') . '.' . $this->mission->radical_service_id . '.' . $device->device_uuid,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'registration_date' => date('Y-m-d H:i:s')
+                ]);
+
+                //then send data to radical api
+                $tmp_device = [
+                    'Device_UUID' => env('RADICAL_CITYNAME') . '.' . $this->mission->radical_service_id . '.' . $device->device_uuid,
+                    'Model' => $device->model,
+                    'Manufacturer' => $device->manufacturer,
+                    'Latitude' => $latitude,
+                    'Longitude' => $longitude,
+                    'Type' => $device->type,
+                    'Status' => intval($device->status),
+                    'Registration_Date' => date('Y-m-d H:i:s'),
+                ];
+
+                $this->deviceService->registerToRadical($tmp_device);
+            }
+
 
             $responseMeas = $this->validateMeasurements(\Request::get('measurements'));
 
@@ -74,12 +82,12 @@ class ObservationService{
                 return \Response::json($responseMeas);
             }
 
-            if($this->mission==null)
+            if ($this->mission == null)
                 $this->mission = Mission::find(\Request::get('mission_id'));
 
 
             $observation = new Observation([
-                'device_uuid' => env('RADICAL_CITY') . '.' . $this->mission->radical_service_id . '.' .$device->device_uuid,
+                'device_uuid' => env('RADICAL_CITYNAME') . '.' . $this->mission->radical_service_id . '.' . $device->device_uuid,
                 'latitude' => \Request::get('latitude'),
                 'longitude' => \Request::get('longitude'),
                 'observation_date' => \Request::get('observation_date'),
@@ -92,7 +100,7 @@ class ObservationService{
 
             $radicalObservation = ([
                 // 'Observation_Id' => $observation->id,
-                'Device_UUID' => env('RADICAL_CITY') . '.' . $this->mission->radical_service_id . '.' .$device->device_uuid,
+                'Device_UUID' => env('RADICAL_CITYNAME') . '.' . $this->mission->radical_service_id . '.' . $device->device_uuid,
                 'Latitude' => \Request::get('latitude'),
                 'Longitude' => \Request::get('longitude'),
                 'Observation_Date' => \Request::get('observation_date'),
@@ -101,7 +109,7 @@ class ObservationService{
 
             //return $radicalObservation;
 
-            $this->radicalServiceConfiguration->storeObservation($radicalObservation);
+            //$this->radicalServiceConfiguration->storeObservation($radicalObservation);
             return $observation;
         }
 
@@ -165,6 +173,17 @@ class ObservationService{
                 'id' => '',
                 'code' => 'device_uuid_null',
                 'description' => 'The device uuid should not be null'];
+        }
+        else{
+            $device = Device::where('device_uuid', \Request::get('device_uuid'))->first();
+
+            if($device==null){
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'device_not_found',
+                    'description' => 'The device could not be found'];
+            }
         }
 
         if (!\Request::has('mission_id')) {

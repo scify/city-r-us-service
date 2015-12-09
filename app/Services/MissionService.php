@@ -25,7 +25,15 @@ class MissionService {
         //check if there are other missions with the same radical_service_id
 
         //Validations
-        if ($data['name'] == null || $data['name'] == '') {
+        $type = MissionType::where('name', $data['mission_type'])->first();
+
+        if ($type == null) {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'type_not_found',
+                'description' => 'The mission\'s type could not be found.'];
+        } else if ($data['name'] == null || $data['name'] == '') {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
@@ -33,8 +41,7 @@ class MissionService {
                 'description' => 'The mission\'s name should not be null or an empty string.'];
 
             $status = 400; //todo: for errors use 500?
-        }
-        else if ($data['description'] == null || $data['description'] == '') {
+        } else if ($data['description'] == null || $data['description'] == '') {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
@@ -42,8 +49,7 @@ class MissionService {
                 'description' => 'The mission\'s description should not be null or an empty string.'];
 
             $status = 400;
-        }
-        else {
+        } else {
 
             $mission = $this->sanitize($data);
             $mission->radical_service_id = "cityrus_" . Str::random();
@@ -93,7 +99,6 @@ class MissionService {
         }
         return \Response::json($response, $status);
     }
-
 
 
     /**

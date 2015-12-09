@@ -32,7 +32,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function devices() {
-        return $this->hasMany('App\Models\Device', 'users_devices', 'user_id', 'id');
+        return $this->hasMany('App\Models\Device', 'user_id', 'id');
     }
 
     public function missions() {

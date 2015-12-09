@@ -52,8 +52,7 @@ class UserService
             $role = Role::where('name', $role)->first();
             $user->roles()->save($role);
 
-            $this->deviceService->store();
-
+            $device = $this->deviceService->store($user->id);
 
             //Retrieve the JWT and send back to the Controller
             $token = \JWTAuth::fromUser($user);

@@ -2,6 +2,8 @@
 
 
 use App\Models\Mission;
+use App\Models\Point;
+use App\Models\User;
 
 class PointService
 {
@@ -15,19 +17,20 @@ class PointService
      */
     public function reward()
     {
-        $mission = Mission::find(\Request::get('id'))->with('type');
+        $mission = Mission::with('type')->find(\Request::get('mission_id'));
         $user = User::find(\Auth::user()->id);
 
         if ($mission->type->name == 'location')
-            $user->points()->attach($mission->id, [
-                'points' => $this->locationPoints
-            ]);
+            $points = $this->locationPoints;
         else
-            $user->points()->attach($mission->id, [
-                'points' => $this->routePoints
-            ]);
+           $points = $this->routePoints;
 
-        return;
+        $user->points()->save(new Point([
+            'mission_id' => $mission->id,
+            'points' => $points
+        ]));
+
+        return $points;
     }
 
 }
