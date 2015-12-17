@@ -34,10 +34,12 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::get('users/byEmail', 'UserController@byEmail');
     Route::get('users/byJWT', 'UserController@byJWT');
     Route::get('users', 'UserController@index');
+    Route::get('users/invite', 'UserController@invite');
 
 
     //Mission routes
     Route::get('missions', 'MissionController@index');
+    Route::get('missions/observations', 'MissionController@withObservations');
     Route::get('missions/byId', 'MissionController@byId');
     Route::get('missions/byName', 'MissionController@byName');
     Route::post('missions/store', 'MissionController@store');
@@ -45,6 +47,8 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::post('missions/update', 'MissionController@update');
     Route::post('missions/{id}/delete', 'MissionController@destroy');
     Route::post('missions/delete', 'MissionController@destroy');
+    Route::post('missions/awardUser', 'MissionController@awardUser');
+    Route::get('missions/topContributors', 'MissionController@topContributors');
 
 
     //Device routes

@@ -12,7 +12,7 @@ class MissionController extends Controller {
     private $radicalServiceConfiguration;
 
     public function __construct() {
-       // $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
+        // $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
         $this->missionService = new MissionService();
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
@@ -45,7 +45,52 @@ class MissionController extends Controller {
      * )
      */
     public function index() {
-        $missions = Mission::with('type')->get();
+        $missions = Mission::with('type', 'users')->get();
+
+        foreach ($missions as $mission) {
+            if ($mission->img_name == null || $mission->img_name == '')
+                $mission->img_path = env('WEB_URL') . '/img/mission.png';
+            else
+                $mission->img_path = env('WEB_URL') . '/uploads/missions/' . $mission->img_name;
+        }
+
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = [
+            'missions' => $missions];
+
+        return \Response::json($response);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get all missions and the ovservations contributed by users",
+     *     path="/missions/observations",
+     *     description="Get all missions and the ovservations contributed by users.",
+     *     operationId="api.missions.observations",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns all the missions of the application with their observations",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function withObservations() {
+        $missions = Mission::with('type', 'devices.observations.measurements')->get();
 
         foreach ($missions as $mission) {
             if ($mission->img_name == null || $mission->img_name == '')
@@ -208,7 +253,7 @@ class MissionController extends Controller {
     /**
      * Delete a mission
      *
-     *  @SWG\Post(
+     * @SWG\Post(
      *     summary="Delete a mission",
      *     path="/missions/delete",
      *     description="Delete the mission from the db and Radical API",
@@ -285,7 +330,6 @@ class MissionController extends Controller {
 
         return \Response::json($response);
     }
-
 
 
     /**
@@ -390,5 +434,121 @@ class MissionController extends Controller {
         }
         return \Response::json($response);
     }
+
+    /**
+     * Award a user for a certain mission
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Award a user for a certain mission",
+     *     path="/missions/awardUser",
+     *     description="Give a user an award for their contribution to a particular mission",
+     *     operationId="api.missions.awardUser",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="missionId",
+     *       description="The mission's id",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="userId",
+     *       description="The users's id",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="award",
+     *       description="The award",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="",
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function awardUser() {
+        $response = new ApiResponse();
+        $response->status = 'error';
+        $response->message = [
+            'id' => '',
+            'code' => 'not_implemented',
+            'description' => 'The action is not implemented yet'];
+
+        return \Response::json($response);
+    }
+
+    /**
+     * Get the top contributors for a certain mission
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get the top contributors for a certain mission",
+     *     path="/missions/topContributors",
+     *     description="Get the top contributors",
+     *     operationId="api.missions.topContributors",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="missionId",
+     *       description="The mission's id",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="",
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function topContributors() {
+
+        $mission = Mission::with('devices.observations', 'devices.user')->find(\Request::get('missionId'));
+
+        $users = [];
+
+        if ($mission != null) {
+
+            foreach ($mission->devices as $device) {
+                $device->user->totalContribution = sizeof($device->observations);
+                array_push($users, $device->user);
+            }
+
+
+            $response = new ApiResponse();
+            $response->status = 'success';
+            $response->message = [
+                'users' => $users
+            ];
+
+            return \Response::json($response);
+
+        } else {
+
+            $response = new ApiResponse();
+            $response->status = 'error';
+            $response->message = [];
+            return \Response::json($response);
+
+        }
+    }
+
 
 }

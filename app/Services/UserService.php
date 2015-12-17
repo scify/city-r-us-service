@@ -3,6 +3,7 @@
 
 use App\Models\ApiResponse;
 use App\Models\Descriptions\Role;
+use App\Models\Device;
 use App\Services\DeviceService;
 use App\Models\User;
 
@@ -27,13 +28,9 @@ class UserService
     {
 
         $validateUser = $this->validateUser();
-        $validateDevice = $this->validateDevice();
 
         if ($validateUser->status == 'error')
             return \Response::json($validateUser);
-
-        else if ($validateDevice->status == 'error')
-            return \Response::json($validateDevice);
         else {
 
             //All's good, create a new user
@@ -52,7 +49,9 @@ class UserService
             $role = Role::where('name', $role)->first();
             $user->roles()->save($role);
 
-            $device = $this->deviceService->store($user->id);
+
+            $device = $this->sanitizeDevice($user->id);
+            $this->deviceService->store($user->id, $device);
 
             //Retrieve the JWT and send back to the Controller
             $token = \JWTAuth::fromUser($user);
@@ -137,38 +136,36 @@ class UserService
 
 
     /**
-     * Validate the device data before saving to db
+     * Before saving a device, check if data is ok
+     *
      * @return ApiResponse
      */
-    public function validateDevice()
+    public function sanitizeDevice($userId)
     {
+        if (!\Request::has('device_uuid'))
+           $deviceUUID = 'test-' . str_random(10);
+        else
+            $deviceUUID = \Request::get('device_uuid');
 
-        $response = new ApiResponse();
+        if (!\Request::has('model'))
+            $model = 'test';
+        else
+            $model = \Request::get('model');
 
-        if (!\Request::has('device_uuid')) {
-            $response->status = 'error';
-            $response->message = [
-                'id' => '',
-                'code' => 'device_uuid_null',
-                'description' => 'The device uuid should not be null'];
-        }
 
-        if (!\Request::has('model')) {
-            $response->status = 'error';
-            $response->message = [
-                'id' => '',
-                'code' => 'model_null',
-                'description' => 'The device model should not be null'];
-        }
-        if (!\Request::has('manufacturer')) {
-            $response->status = 'error';
-            $response->message = [
-                'id' => '',
-                'code' => 'manufacturer_null',
-                'description' => 'The device manufacturer should not be null'];
-        }
+        if (!\Request::has('manufacturer'))
+            $manufacturer = 'test';
+        else
+            $manufacturer = \Request::get('manufacturer');
 
-        return $response;
+        $device = new Device([
+            'device_uuid' => $deviceUUID,
+            'model' => $model,
+            'manufacturer' => $manufacturer,
+            'user_id' => $userId,
+        ]);
+
+        return $device;
     }
 
 }

@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -28,6 +28,33 @@
                 "responses": {
                     "200": {
                         "description": "Returns all the missions of the application",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mission"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/missions/observations": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get all missions and the ovservations contributed by users",
+                "description": "Get all missions and the ovservations contributed by users.",
+                "operationId": "api.missions.observations",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns all the missions of the application with their observations",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -296,6 +323,80 @@
                 }
             }
         },
+        "/missions/awardUser": {
+            "post": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Award a user for a certain mission",
+                "description": "Give a user an award for their contribution to a particular mission",
+                "operationId": "api.missions.awardUser",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "missionId",
+                        "in": "query",
+                        "description": "The mission's id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "description": "The users's id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "award",
+                        "in": "query",
+                        "description": "The award",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/missions/topContributors": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get the top contributors for a certain mission",
+                "description": "Get the top contributors",
+                "operationId": "api.missions.topContributors",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "missionId",
+                        "in": "query",
+                        "description": "The mission's id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
@@ -333,7 +434,7 @@
                         "name": "device_uuid",
                         "in": "query",
                         "description": "The uuid of the device",
-                        "required": true,
+                        "required": false,
                         "type": "string",
                         "default": ""
                     },
@@ -341,14 +442,14 @@
                         "name": "model",
                         "in": "query",
                         "description": "The model of the device",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "manufacturer",
                         "in": "query",
                         "description": "The manufacturer of the device",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     }
                 ],
@@ -501,6 +602,75 @@
                     },
                     "400": {
                         "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/refreshToken": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Refresh JWT token",
+                "description": "Refresh a user token",
+                "operationId": "api.users.refreshToken",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
+                        "required": false,
+                        "schema": "json",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Valid response",
+                        "schema": {
+                            "$ref": "#/definitions/apiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/invite": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Allow user to invite another user by email",
+                "description": "Allow user to invite another user by email",
+                "operationId": "api.users.invite",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Invitation email",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invitation sent"
                     }
                 }
             }

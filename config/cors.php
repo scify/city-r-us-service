@@ -15,7 +15,7 @@ return [
     'allowedOrigins' => ['*'],
     'allowedHeaders' => ['Accept', 'Content-Type', 'X-Auth-Token', 'Origin', 'X-Requested-With', 'Authorization', 'Access-Control-Allow-Origin'],
     'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE', 'OPTIONS'],
-    'exposedHeaders' => [],
+    'exposedHeaders' => ['Authorization'],
     'maxAge' => 30,
     'hosts' => [],
 ];

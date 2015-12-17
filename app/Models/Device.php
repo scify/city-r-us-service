@@ -22,6 +22,6 @@ class Device extends Model{
     }
 
     public function user() {
-        return $this->belongsTo('App\Models\User', 'users_devices', 'device_id');
+        return $this->belongsTo('App\Models\User');
     }
 }

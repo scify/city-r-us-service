@@ -20,6 +20,8 @@ class UserController extends Controller {
      */
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['byJWT']]);
+        $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
+
         $this->userService = new UserService();
         $this->deviceService = new DeviceService();
     }
@@ -61,7 +63,7 @@ class UserController extends Controller {
      *     @SWG\Parameter(
      *       name="device_uuid",
      *       description="The uuid of the device",
-     *       required=true,
+     *       required=false,
      *       default="",
      *       type="string",
      *       in="query"
@@ -69,14 +71,14 @@ class UserController extends Controller {
      *     @SWG\Parameter(
      *       name="model",
      *       description="The model of the device",
-     *       required=true,
+     *       required=false,
      *       type="string",
      *       in="query"
      *     ),
      *     @SWG\Parameter(
      *       name="manufacturer",
      *       description="The manufacturer of the device",
-     *       required=true,
+     *       required=false,
      *       type="string",
      *       in="query"
      *     ),
@@ -229,8 +231,7 @@ class UserController extends Controller {
      * )
      */
     public function byJWT() {
-
-        $user = User::find(\Auth::user()->id);
+        $user = User::with('points')->find(\Auth::user()->id);
 
         $response = new ApiResponse();
         $response->status = 'success';
@@ -311,6 +312,117 @@ class UserController extends Controller {
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = ['token' => $token];
+
+        return \Response::json($response);
+    }
+
+    /**
+     * Refresh a user JWT token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Refresh JWT token",
+     *     path="/users/refreshToken",
+     *     description="Refresh a user token",
+     *     operationId="api.users.refreshToken",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *    @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
+     *       required=false,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Valid response",
+     *         @SWG\Schema(ref="#/definitions/apiResponse")
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function refreshToken(Request $request) {
+        $credentials = $request->only('email', 'password');
+
+        try {
+            // verify the credentials and create a token for the user
+            if (!$token = \JWTAuth::attempt($credentials)) {
+                $response = new ApiResponse();
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'invalid_credentials',
+                    'description' => 'The credentials provided are not valid'];
+
+                return \Response::json($response);
+            }
+        } catch (JWTException $e) {
+            // something went wrong
+            $response = new ApiResponse();
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'could_not_create_token',
+                'description' => 'The token could not be created'];
+
+            return \Response::json($response);
+        }
+
+        // if no errors are encountered we can return a JWT
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = ['token' => $token];
+
+        return \Response::json($response);
+    }
+
+    /**
+     * Allow user to invite another user
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Allow user to invite another user by email",
+     *     path="/users/invite",
+     *     description="Allow user to invite another user by email",
+     *     operationId="api.users.invite",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
+     *       required=true,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *     @SWG\Parameter(
+     *        name="email",
+     *        description="Invitation email",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Invitation sent"
+     *     )
+     * )
+     */
+    public function invite() {
+
+        $response = new ApiResponse();
+
+        $response->message = [
+            'id' => '',
+            'code' => 'not_implemented',
+            'description' => 'Action not implemented yet.'];
 
         return \Response::json($response);
     }

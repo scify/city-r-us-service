@@ -4,13 +4,11 @@ use App\Models\ApiResponse;
 use App\Models\Device;
 use App\Services\Radical\RadicalConfigurationAPI;
 
-class DeviceService
-{
+class DeviceService {
 
     private $radicalServiceConfiguration;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
 
@@ -21,12 +19,11 @@ class DeviceService
      * @param $missionName
      * @param $deviceName
      */
-    public function isRegistered($missionId, $deviceUUID)
-    {
+    public function isRegistered($missionId, $deviceUUID) {
         $device = Device::where('device_uuid', $deviceUUID)
             ->whereHas('missions', function ($q) use ($missionId) {
-            $q->where('mission_id', $missionId);
-        })->first();
+                $q->where('mission_id', $missionId);
+            })->first();
 
         if ($device == null)
             return false;
@@ -38,14 +35,16 @@ class DeviceService
      * Store device to our db
      *
      */
-    public function store($userId)
-    {
-        $device = new Device([
-            'device_uuid' => \Request::get('device_uuid'),
-            'model' => \Request::get('model'),
-            'manufacturer' => \Request::get('manufacturer'),
-            'user_id' => $userId,
-        ]);
+    public function store($userId, $device = null) {
+
+        if ($device == null) {
+            $device = new Device([
+                'device_uuid' => \Request::get('device_uuid'),
+                'model' => \Request::get('model'),
+                'manufacturer' => \Request::get('manufacturer'),
+                'user_id' => $userId,
+            ]);
+        }
 
         $device->save();
 
@@ -58,8 +57,7 @@ class DeviceService
      * @param $device
      * @return mixed
      */
-    public function registerToRadical($device)
-    {
+    public function registerToRadical($device) {
         return $this->radicalServiceConfiguration->registerDevice($device);
     }
 
@@ -68,8 +66,7 @@ class DeviceService
      * Validate the device data before saving to db
      * @return ApiResponse
      */
-    public function validateDevice()
-    {
+    public function validateDevice() {
 
         $response = new ApiResponse();
 
@@ -159,8 +156,7 @@ class DeviceService
     }
 
 
-    private function validateDate($date)
-    {
+    private function validateDate($date) {
         $d = \DateTime::createFromFormat('Y-m-d H:i:s', $date);
         return $d && $d->format('Y-m-d H:i:s') == $date;
     }
