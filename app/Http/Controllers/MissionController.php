@@ -384,6 +384,25 @@ class MissionController extends Controller {
     }
 
 
+    public function byIdWithObservations($id) {
+
+        $mission = Mission::where('id', $id)->with('type', 'devices.observations.measurements')->first();
+
+        if ($mission == null) {
+            $response = new ApiResponse();
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'mission_not_found',
+                'description' => 'The mission could not be found'];
+        } else {
+            $response = new ApiResponse();
+            $response->status = 'success';
+            $response->message = $mission;
+        }
+        return \Response::json($response);
+    }
+
     /**
      * Find a mission by id
      *
