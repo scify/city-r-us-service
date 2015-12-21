@@ -8,290 +8,12 @@
         },
         "version": "1.0"
     },
-    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+    "host": "localhost/city-r-us-service/public/index.php/api",
     "basePath": "/v1",
     "schemes": [
         "http"
     ],
     "paths": {
-        "/users/register": {
-            "post": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Register a user",
-                "description": "Register a new user to the mobile application.",
-                "operationId": "api.users.register",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "description": "The user's name",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "The user's email",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "The user's password",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "device_uuid",
-                        "in": "query",
-                        "description": "The uuid of the device",
-                        "required": false,
-                        "type": "string",
-                        "default": ""
-                    },
-                    {
-                        "name": "model",
-                        "in": "query",
-                        "description": "The model of the device",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "manufacturer",
-                        "in": "query",
-                        "description": "The manufacturer of the device",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User registered",
-                        "schema": {
-                            "$ref": "#/definitions/apiResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Malformed data"
-                    },
-                    "409": {
-                        "description": "Email already exists"
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get all users",
-                "description": "Retrieve the users of the application.",
-                "operationId": "api.users",
-                "produces": [
-                    "application/json"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns all the users of the application",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/user"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Unauthorized action"
-                    }
-                }
-            }
-        },
-        "/users/byEmail": {
-            "get": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get user by email",
-                "description": "Retrieve the user that corresponds to a certain email",
-                "operationId": "api.users.byEmail",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "The user's email",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the user based on a certain id",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/user"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users/byJWT": {
-            "get": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get user by JWT",
-                "description": "Retrieve the user that corresponds to a certain JWT",
-                "operationId": "api.users.byJWT",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-                        "required": true,
-                        "schema": "json",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the user based on a certain JWT",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/user"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users/authenticate": {
-            "post": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Authenticate a user",
-                "description": "Authenticate a user based on given credentials.",
-                "operationId": "api.users.authenticate",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "The user's email",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "The user's password",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User authenticated",
-                        "schema": {
-                            "$ref": "#/definitions/apiResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found"
-                    },
-                    "400": {
-                        "description": "Unauthorized action"
-                    }
-                }
-            }
-        },
-        "/users/refreshToken": {
-            "post": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Refresh JWT token",
-                "description": "Refresh a user token",
-                "operationId": "api.users.refreshToken",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
-                        "required": false,
-                        "schema": "json",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Valid response",
-                        "schema": {
-                            "$ref": "#/definitions/apiResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Unauthorized action"
-                    }
-                }
-            }
-        },
-        "/users/invite": {
-            "post": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Allow user to invite another user by email",
-                "description": "Allow user to invite another user by email",
-                "operationId": "api.users.invite",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
-                        "required": true,
-                        "schema": "json",
-                        "type": "string"
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "Invitation email",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Invitation sent"
-                    }
-                }
-            }
-        },
         "/missions": {
             "get": {
                 "tags": [
@@ -781,6 +503,318 @@
                     }
                 }
             }
+        },
+        "/map/venues": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Get venues",
+                "description": "Get venues from Radical",
+                "operationId": "api.map.venues",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns venues"
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Register a user",
+                "description": "Register a new user to the mobile application.",
+                "operationId": "api.users.register",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "The user's name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "The user's password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_uuid",
+                        "in": "query",
+                        "description": "The uuid of the device",
+                        "required": false,
+                        "type": "string",
+                        "default": ""
+                    },
+                    {
+                        "name": "model",
+                        "in": "query",
+                        "description": "The model of the device",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "manufacturer",
+                        "in": "query",
+                        "description": "The manufacturer of the device",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User registered",
+                        "schema": {
+                            "$ref": "#/definitions/apiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Malformed data"
+                    },
+                    "409": {
+                        "description": "Email already exists"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "description": "Retrieve the users of the application.",
+                "operationId": "api.users",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns all the users of the application",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/byEmail": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by email",
+                "description": "Retrieve the user that corresponds to a certain email",
+                "operationId": "api.users.byEmail",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the user based on a certain id",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/byJWT": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by JWT",
+                "description": "Retrieve the user that corresponds to a certain JWT",
+                "operationId": "api.users.byJWT",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the user based on a certain JWT",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/authenticate": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Authenticate a user",
+                "description": "Authenticate a user based on given credentials.",
+                "operationId": "api.users.authenticate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "The user's password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/apiResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/refreshToken": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Refresh JWT token",
+                "description": "Refresh a user token",
+                "operationId": "api.users.refreshToken",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
+                        "required": false,
+                        "schema": "json",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Valid response",
+                        "schema": {
+                            "$ref": "#/definitions/apiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/invite": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Allow user to invite another user by email",
+                "description": "Allow user to invite another user by email",
+                "operationId": "api.users.invite",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Invitation email",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invitation sent"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -801,11 +835,8 @@
                 }
             }
         },
-        "observation": {
+        "measurement": {
             "properties": {
-                "device_id": {
-
-                },
                 "latitude": {
 
                 },
@@ -814,6 +845,16 @@
                 },
                 "observation_date": {
 
+                }
+            }
+        },
+        "apiResponse": {
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -842,18 +883,11 @@
                 }
             }
         },
-        "apiResponse": {
+        "observation": {
             "properties": {
-                "status": {
-                    "type": "boolean"
+                "device_id": {
+
                 },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "measurement": {
-            "properties": {
                 "latitude": {
 
                 },
@@ -901,6 +935,10 @@
         {
             "name": "observations",
             "description": "Operations about observations"
+        },
+        {
+            "name": "map",
+            "description": "Operations about maps"
         }
     ]
 }

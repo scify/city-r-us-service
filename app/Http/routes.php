@@ -13,6 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 
+
 Route::get('home', 'HomeController@index');
 
 Route::controllers([
@@ -62,6 +63,8 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
     //TEST
     Route::get('test', 'TestController@test');
+
+    Route::get('map/venues', 'MapController@getVenues');
 
 });
 

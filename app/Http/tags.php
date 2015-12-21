@@ -17,4 +17,8 @@
  *   name="observations",
  *   description="Operations about observations"
  * )
+ * * @SWG\Tag(
+ *   name="map",
+ *   description="Operations about maps"
+ * )
  */
