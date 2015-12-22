@@ -20,7 +20,7 @@ class UserController extends Controller {
      */
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['byJWT']]);
-        $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
+       // $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
 
         $this->userService = new UserService();
         $this->deviceService = new DeviceService();
@@ -192,6 +192,15 @@ class UserController extends Controller {
                     'code' => 'user_not_found',
                     'description' => 'The user could not be found'];
             } else {
+
+                $totalPoints = 0;
+                foreach($user->points as $point){
+                    $totalPoints += $point->points;
+                }
+
+                unset($user->points);
+                $user->totalPoints = $totalPoints;
+
                 $response->status = 'success';
                 $response->message = [
                     'user' => $user];
@@ -232,6 +241,14 @@ class UserController extends Controller {
      */
     public function byJWT() {
         $user = User::with('points')->find(\Auth::user()->id);
+
+        $totalPoints = 0;
+        foreach($user->points as $point){
+            $totalPoints += $point->points;
+        }
+
+        unset($user->points);
+        $user->totalPoints = $totalPoints;
 
         $response = new ApiResponse();
         $response->status = 'success';
@@ -423,6 +440,63 @@ class UserController extends Controller {
             'id' => '',
             'code' => 'not_implemented',
             'description' => 'Action not implemented yet.'];
+
+        return \Response::json($response);
+    }
+
+    /**
+     * Reset a user password.
+     * Get a user email, generate a random password and email it to the user
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Reset a user's password",
+     *     path="/users/resetPassword",
+     *     description="Reset a user password",
+     *     operationId="api.users.resetPassword",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *        name="email",
+     *        description="The user's email",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description=""
+     *     )
+     * )
+     */
+    public function resetPassword(){
+
+        $user = User::where('email', \Request::get('email'))->first();
+
+        $response = new ApiResponse();
+
+        if($user==null){
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'user_not_found',
+                'description' => 'Email was not found'];
+        }
+        else{
+            $password = str_random(8);
+            $user->password = bcrypt($password);
+            $user->save();
+
+            //send the user an email conaining the new password
+            \Mail::send('emails.password_reset', ['user' => $user, 'password' => $password], function ($message) use ($user) {
+                $message->to($user->email, $user->name)->subject('[City-R-US] Επαναφορά κωδικού πρόσβασης');
+            });
+
+            $response->status = 'success';
+            $response->message = [
+                'message' => 'An email will be sent containing the new password.'];
+        }
 
         return \Response::json($response);
     }

@@ -675,6 +675,33 @@
                 }
             }
         },
+        "/users/resetPassword": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Reset a user's password",
+                "description": "Reset a user password",
+                "operationId": "api.users.resetPassword",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/observations/store": {
             "post": {
                 "tags": [
