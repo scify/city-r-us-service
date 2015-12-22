@@ -383,6 +383,46 @@ class MissionController extends Controller {
         return \Response::json($response);
     }
 
+    /**
+     * Find a mission by name
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get observations for a given mission",
+     *     path="/missions/{id}/observation",
+     *     description="Retrieve the location data for a given observation",
+     *     operationId="api.missions",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="id",
+     *       description="The mission's id",
+     *       required=true,
+     *       type="integer",
+     *       in="query"
+     *     )
+     *     )
+     * )
+     */
+    public function byIdWithObservations($id) {
+
+        $mission = Mission::where('id', $id)->with('type', 'devices.observations.measurements')->first();
+
+        if ($mission == null) {
+            $response = new ApiResponse();
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'mission_not_found',
+                'description' => 'The mission could not be found'];
+        } else {
+            $response = new ApiResponse();
+            $response->status = 'success';
+            $response->message = $mission;
+        }
+        return \Response::json($response);
+    }
 
     /**
      * Find a mission by id

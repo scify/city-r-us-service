@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "cityrus.projects.development1.scify.org/www/city-r-us-service/public/api",
+    "host": "localhost/city-r-us-service/public/index.php/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -285,6 +285,28 @@
                         "description": "Unauthorized action"
                     }
                 }
+            }
+        },
+        "/missions/{id}/observation": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get observations for a given mission",
+                "description": "Retrieve the location data for a given observation",
+                "operationId": "api.missions",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "The mission's id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ]
             }
         },
         "/missions/byId": {
@@ -702,6 +724,74 @@
                 }
             }
         },
+        "/map/venues": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Get venues",
+                "description": "Get venues from Radical",
+                "operationId": "api.map.venues",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns venues"
+                    }
+                }
+            }
+        },
+        "/map/events": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Get events",
+                "description": "Get events from Radical",
+                "operationId": "api.map.events",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns events"
+                    }
+                }
+            }
+        },
         "/observations/store": {
             "post": {
                 "tags": [
@@ -906,6 +996,10 @@
         {
             "name": "observations",
             "description": "Operations about observations"
+        },
+        {
+            "name": "map",
+            "description": "Operations about maps"
         }
     ]
 }

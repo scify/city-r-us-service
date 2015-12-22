@@ -13,6 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 
+
 Route::get('home', 'HomeController@index');
 
 Route::controllers([
@@ -42,6 +43,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     //Mission routes
     Route::get('missions', 'MissionController@index');
     Route::get('missions/observations', 'MissionController@withObservations');
+    Route::get('missions/{id}/observations', 'MissionController@byIdWithObservations');
     Route::get('missions/byId', 'MissionController@byId');
     Route::get('missions/byName', 'MissionController@byName');
     Route::post('missions/store', 'MissionController@store');
@@ -66,6 +68,10 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
     //TEST
     Route::get('test', 'TestController@test');
+    //  Points of Interst
+    Route::get('map/venues', 'MapController@getVenues');
+    //  Events
+    Route::get('map/events', 'MapController@getEvents');
 
 });
 
