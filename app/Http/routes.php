@@ -63,8 +63,10 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
     //TEST
     Route::get('test', 'TestController@test');
-
+    //  Points of Interst
     Route::get('map/venues', 'MapController@getVenues');
+    //  Events
+    Route::get('map/events', 'MapController@getEvents');
 
 });
 

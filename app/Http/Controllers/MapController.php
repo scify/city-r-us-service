@@ -50,9 +50,7 @@ class MapController extends Controller
      *     )
      * )
      */
-    public function getVenues()
-    {
-//        return "test";
+    public function getVenues(){
         $response = $this->curl->get("http://athens.radical-project.eu:8080/Radical/rest/dataapi/getVenues", [
             "lat" => \Request::get("lat"),
             "lon" => \Request::get("lon"),
@@ -60,4 +58,45 @@ class MapController extends Controller
         return (array)json_decode($response)->response->venues;
     }
 
+    /**
+     * Return Events
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get events",
+     *     path="/map/events",
+     *     description="Get events from Radical",
+     *     operationId="api.map.events",
+     *     produces={"application/json"},
+     *     tags={"map"},
+     *     @SWG\Parameter(
+     *       name="lat",
+     *       description="Latitude",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="lon",
+     *       description="Longitude",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns events"
+     *     )
+     * )
+     */
+    public function getEvents(){
+        $response = $this->curl->get("http://athens.radical-project.eu:8080/Radical/rest/dataapi/getSnsEvents", [
+            "sns"  =>"eventful",
+            "lat"  => \Request::get("lat"),
+            "lon"  => \Request::get("lon"),
+            "rad"  => "2",
+            "page" => "2"]);
+        return (array)json_decode($response)->events->event;
+    }
 }

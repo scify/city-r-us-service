@@ -538,6 +538,40 @@
                 }
             }
         },
+        "/map/events": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Get events",
+                "description": "Get events from Radical",
+                "operationId": "api.map.events",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns events"
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
