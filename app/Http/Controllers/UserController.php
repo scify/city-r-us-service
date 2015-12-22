@@ -488,7 +488,7 @@ class UserController extends Controller {
             $user->password = bcrypt($password);
             $user->save();
 
-            //send the user an email conaining the new password
+            //send the user an email containing the new password
             \Mail::send('emails.password_reset', ['user' => $user, 'password' => $password], function ($message) use ($user) {
                 $message->to($user->email, $user->name)->subject('[City-R-US] Επαναφορά κωδικού πρόσβασης');
             });
