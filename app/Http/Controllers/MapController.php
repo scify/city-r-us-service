@@ -55,7 +55,11 @@ class MapController extends Controller
             "lat" => \Request::get("lat"),
             "lon" => \Request::get("lon"),
             "sns" => "foursquare"]);
-        return (array)json_decode($response)->response->venues;
+        if((array)json_decode($response)->response->venues== null || (array)json_decode($response)->response->venues == []){
+            return ["No venues found"];
+        } else{
+            return (array)json_decode($response)->response->venues;
+        }
     }
 
     /**
@@ -97,6 +101,10 @@ class MapController extends Controller
             "lon"  => \Request::get("lon"),
             "rad"  => "2",
             "page" => "2"]);
-        return (array)json_decode($response)->events->event;
+        if((array)json_decode($response)->events ==null){
+            return ["No events found"];
+        } else{
+            return (array)json_decode($response)->events->event;
+        }
     }
 }
