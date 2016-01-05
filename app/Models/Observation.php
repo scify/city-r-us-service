@@ -16,7 +16,7 @@ class Observation extends Model{
 
     protected $table = 'observations';
 
-    protected $fillable = ['device_id', 'latitude', 'longitude', 'observation_date'];
+    protected $fillable = ['device_uuid', 'device_id',  'latitude', 'longitude', 'observation_date'];
 
 
     public function measurements(){

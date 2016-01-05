@@ -18,11 +18,11 @@ class CreateObservationsAndMeasurementsTable extends Migration {
             $table->string('longitude')->nullable();
             $table->dateTime('observation_date')->nullable();
 
-            $table->timestamps();
-            $table->softDeletes();
-
             $table->integer('device_id')->unsigned();
             $table->foreign('device_id')->references('id')->on('devices');
+
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('measurements', function (Blueprint $table) {

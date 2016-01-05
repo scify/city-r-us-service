@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Device as Device;
 use App\Models\User as User;
+use Illuminate\Database\Seeder;
 
 class UserTableSeeder extends Seeder {
 
@@ -12,13 +12,21 @@ class UserTableSeeder extends Seeder {
      *
      * @return void
      */
-    public function run()
-    {
-        User::create([
+    public function run() {
+        $user = User::create([
             'name' => 'admin',
             'email' => 'test@scify.org',
             'password' => Hash::make('1q2w3e'),
         ]);
+
+
+        Device::create([
+            'device_uuid' => 'test',
+            'model' => 'test',
+            'manufacturer' => 'test',
+            'user_id' => $user->id
+        ]);
+
     }
 
 }

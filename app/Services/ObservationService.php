@@ -24,7 +24,6 @@ class ObservationService {
     public function store() {
 
         //TODO: maybe the name of the device is not needed -> retrieve it from jwt
-        //TODO: we must also check that jwt doesn't expire as often on mobile as it does on web
 
         $responseObs = $this->validateObservation();
 
@@ -59,6 +58,8 @@ class ObservationService {
                     'longitude' => $longitude,
                     'registration_date' => date('Y-m-d H:i:s')
                 ]);
+
+                $this->mission->users()->attach(\Auth::user()->id);
 
                 //then send data to radical api
                 $tmp_device = [
@@ -99,7 +100,7 @@ class ObservationService {
             $radicalMeasurements = $this->getMeasurements($observation->id);
 
             $radicalObservation = ([
-                // 'Observation_Id' => $observation->id,
+                'Observation_Id' => $observation->id,
                 'Device_UUID' => env('RADICAL_CITYNAME') . '.' . $this->mission->radical_service_id . '.' . $device->device_uuid,
                 'Latitude' => \Request::get('latitude'),
                 'Longitude' => \Request::get('longitude'),
@@ -107,8 +108,8 @@ class ObservationService {
                 'Measurements' => $radicalMeasurements,
             ]);
 
-            //return $radicalObservation;
 
+            //TODO: this works?
             //$this->radicalServiceConfiguration->storeObservation($radicalObservation);
             return $observation;
         }
@@ -258,6 +259,8 @@ class ObservationService {
     private function validateMeasurements($measurements) {
 
         $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = [];
 
         foreach ($measurements as $measurement) {
 
