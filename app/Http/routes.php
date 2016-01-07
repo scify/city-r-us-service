@@ -52,6 +52,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::post('missions/{id}/delete', 'MissionController@destroy');
     Route::post('missions/delete', 'MissionController@destroy');
     Route::post('missions/awardUser', 'MissionController@awardUser');
+    Route::post('missions/suggest', 'MissionController@suggestMission');
     Route::get('missions/topContributors', 'MissionController@topContributors');
 
 

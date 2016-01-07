@@ -3,6 +3,7 @@
 
 use App\Models\ApiResponse;
 use App\Models\Mission;
+use App\Models\SuggestedMission;
 use App\Services\MissionService;
 use App\Services\Radical\RadicalConfigurationAPI;
 
@@ -12,7 +13,7 @@ class MissionController extends Controller {
     private $radicalServiceConfiguration;
 
     public function __construct() {
-        // $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
+         $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy', 'suggestMission']]);
         $this->missionService = new MissionService();
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
     }
@@ -590,5 +591,55 @@ class MissionController extends Controller {
         }
     }
 
+    /**
+     * Suggest a mission
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Suggest a mission",
+     *     path="/missions/suggest",
+     *     description="Users of the application are able to suggest a mission",
+     *     operationId="api.missions.suggest",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="Authorization",
+     *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+     *       required=true,
+     *       type="string",
+     *       in="header",
+     *       schema="json"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="description",
+     *       description="The description of the suggested mission",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="",
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function suggestMission() {
+
+        SuggestedMission::create([
+            'description' => \Request::get('description'),
+            'user_id' => \Auth::user()->id
+        ]);
+
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = "Mission created";
+
+        return \Response::json($response);
+    }
 
 }
