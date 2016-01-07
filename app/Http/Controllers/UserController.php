@@ -19,8 +19,8 @@ class UserController extends Controller {
      * and the middlewares
      */
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['byJWT', 'invite']]);
-       // $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
+        $this->middleware('jwt.auth', ['only' => ['byJWT', 'invite', 'changePassword']]);
+        // $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
 
         $this->userService = new UserService();
         $this->deviceService = new DeviceService();
@@ -194,7 +194,7 @@ class UserController extends Controller {
             } else {
 
                 $totalPoints = 0;
-                foreach($user->points as $point){
+                foreach ($user->points as $point) {
                     $totalPoints += $point->points;
                 }
 
@@ -243,7 +243,7 @@ class UserController extends Controller {
         $user = User::with('points')->find(\Auth::user()->id);
 
         $totalPoints = 0;
-        foreach($user->points as $point){
+        foreach ($user->points as $point) {
             $totalPoints += $point->points;
         }
 
@@ -479,20 +479,19 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function resetPassword(){
+    public function resetPassword() {
 
         $user = User::where('email', \Request::get('email'))->first();
 
         $response = new ApiResponse();
 
-        if($user==null){
+        if ($user == null) {
             $response->status = 'error';
             $response->message = [
                 'id' => '',
                 'code' => 'user_not_found',
                 'description' => 'Email was not found'];
-        }
-        else{
+        } else {
             $password = str_random(8);
             $user->password = bcrypt($password);
             $user->save();
@@ -510,4 +509,49 @@ class UserController extends Controller {
         return \Response::json($response);
     }
 
+    /**
+     * Change a user password.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Post(
+     *     summary="Change a user's password",
+     *     path="/users/changePassword",
+     *     description="Change a user password",
+     *     operationId="api.users.changePassword",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *        name="password",
+     *        description="The new user password",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *  @SWG\Parameter(
+     *        name="passwordConfirmation",
+     *        description="Password confirmation",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description=""
+     *     )
+     * )
+     */
+    public function changePassword() {
+
+        $user = User::find(\Auth::user()->id);
+        $user->update(['password' => bcrypt(\Request::get('password'))]);
+
+        $response = new ApiResponse();
+
+        $response->status = 'success';
+        $response->message = [
+            'message' => 'Password changed'];
+
+        return \Response::json($response);
+    }
 }
