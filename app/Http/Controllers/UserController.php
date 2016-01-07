@@ -19,7 +19,7 @@ class UserController extends Controller {
      * and the middlewares
      */
     public function __construct() {
-        $this->middleware('jwt.auth', ['only' => ['byJWT']]);
+        $this->middleware('jwt.auth', ['only' => ['byJWT', 'invite']]);
        // $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
 
         $this->userService = new UserService();
@@ -434,12 +434,21 @@ class UserController extends Controller {
      */
     public function invite() {
 
+        $email = \Request::get('email');
+        $msg = \Request::get('msg');
+        $user = User::find(\Auth::user()->id);
+
+
+        //send the user's friend an email to invite them to the app
+        \Mail::send('emails.invite_friends', ['email' => $email, 'msg' => $msg, 'user' => $user], function ($message) use ($email) {
+            $message->to($email)->subject('Πρόσκληση στην εφαρμογή City-R-US!');
+        });
+
         $response = new ApiResponse();
 
+        $response->status = 'success';
         $response->message = [
-            'id' => '',
-            'code' => 'not_implemented',
-            'description' => 'Action not implemented yet.'];
+            'description' => 'Email sent'];
 
         return \Response::json($response);
     }
