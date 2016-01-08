@@ -192,14 +192,9 @@ class UserController extends Controller {
                     'code' => 'user_not_found',
                     'description' => 'The user could not be found'];
             } else {
-
-                $totalPoints = 0;
-                foreach ($user->points as $point) {
-                    $totalPoints += $point->points;
-                }
-
-                unset($user->points);
-                $user->totalPoints = $totalPoints;
+                unset($user->missionPoints);
+                unset($user->invitePoints);
+                $user->totalPoints = UserService::totalPoints($user);
 
                 $response->status = 'success';
                 $response->message = [
@@ -242,13 +237,10 @@ class UserController extends Controller {
     public function byJWT() {
         $user = User::with('points')->find(\Auth::user()->id);
 
-        $totalPoints = 0;
-        foreach ($user->points as $point) {
-            $totalPoints += $point->points;
-        }
+        unset($user->missionPoints);
+        unset($user->invitePoints);
+        $user->totalPoints = UserService::totalPoints($user);
 
-        unset($user->points);
-        $user->totalPoints = $totalPoints;
 
         $response = new ApiResponse();
         $response->status = 'success';

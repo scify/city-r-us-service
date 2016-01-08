@@ -12,7 +12,7 @@ class CreatePointsTable extends Migration {
 	 */
 	public function up()
 	{
-        Schema::create('user_mission_points', function (Blueprint $table) {
+        Schema::create('user_observation_points', function (Blueprint $table) {
             $table->increments('id');
             $table->string('points')->nullable();
 
@@ -25,6 +25,22 @@ class CreatePointsTable extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
+
+
+        Schema::create('user_invite_points', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('points')->nullable();
+
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->integer('invite_id')->unsigned();
+            $table->foreign('invite_id')->references('id')->on('invites');
+
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
     }
 
     /**
@@ -33,7 +49,8 @@ class CreatePointsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('user_mission_points');
+        Schema::dropIfExists('user_observation_points');
+        Schema::dropIfExists('user_invite_points');
     }
 
 

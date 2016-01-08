@@ -17,6 +17,17 @@ class PointService
      */
     public function reward()
     {
+        $mission = Mission::with(type)->find(\Request::get('mission_id'));
+        $user = User::find(\Request::get(\Auth::user()->id));
+
+        if ($mission->type->name == 'location')
+            $user->setRewardStrategy(new \LocationStrategy());
+        else
+            $user->setRewardStrategy(new \RouteStrategy());
+
+        $user->reward($user->id, $mission->id);
+
+        /*
         $mission = Mission::with('type')->find(\Request::get('mission_id'));
         $user = User::find(\Auth::user()->id);
 
@@ -30,7 +41,7 @@ class PointService
             'points' => $points
         ]));
 
-        return $points;
+        return $points;*/
     }
 
 }

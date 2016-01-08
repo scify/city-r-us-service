@@ -123,7 +123,7 @@ class MissionController extends Controller {
      *      @SWG\Parameter(
      *       name="Authorization",
      *       description="The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-     *       required=false,
+     *       required=true,
      *       type="string",
      *       in="header",
      *       schema="json"
@@ -139,7 +139,7 @@ class MissionController extends Controller {
      *       name="description",
      *       description="The mission's description",
      *       required=true,
-     *       default=" ",
+     *       default="",
      *       type="string",
      *       in="query"
      *     ),

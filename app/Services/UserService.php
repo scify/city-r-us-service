@@ -4,16 +4,13 @@
 use App\Models\ApiResponse;
 use App\Models\Descriptions\Role;
 use App\Models\Device;
-use App\Services\DeviceService;
 use App\Models\User;
 
-class UserService
-{
+class UserService {
 
     private $deviceService;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->deviceService = new DeviceService();
     }
 
@@ -24,8 +21,7 @@ class UserService
      *
      * @return mixed
      */
-    public function register()
-    {
+    public function register() {
 
         $validateUser = $this->validateUser();
 
@@ -68,12 +64,31 @@ class UserService
 
 
     /**
+     * Return the total points of a user
+     *
+     * @param $user
+     * @return int
+     */
+    public function totalPoints($user) {
+        $totalPoints = 0;
+
+        foreach ($user->missionPoints as $point) {
+            $totalPoints += $point;
+        }
+
+        foreach ($user->invitePoints as $point) {
+            $totalPoints += $point;
+        }
+
+        return $totalPoints;
+    }
+
+    /**
      * Validate a single user
      *
      * @return ApiResponse
      */
-    private function validateUser()
-    {
+    private function validateUser() {
 
         $response = new ApiResponse();
 
@@ -140,10 +155,9 @@ class UserService
      *
      * @return ApiResponse
      */
-    public function sanitizeDevice($userId)
-    {
+    public function sanitizeDevice($userId) {
         if (!\Request::has('device_uuid'))
-           $deviceUUID = 'test-' . str_random(10);
+            $deviceUUID = 'test-' . str_random(10);
         else
             $deviceUUID = \Request::get('device_uuid');
 

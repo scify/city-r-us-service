@@ -109,6 +109,7 @@ class ObservationService {
             ]);
 
 
+
             //TODO: this works?
             //$this->radicalServiceConfiguration->storeObservation($radicalObservation);
             return $observation;

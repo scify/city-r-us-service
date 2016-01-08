@@ -39,13 +39,28 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsToMany('App\Models\Mission', 'users_missions', 'user_id', 'mission_id');
     }
 
-    public function points() {
-        return $this->hasMany('App\Models\Point', 'user_id', 'id');
+    public function observationPoints() {
+        return $this->hasMany('App\Models\ObservationPoint', 'user_id', 'id');
+    }
+
+    public function invitePoints() {
+        return $this->hasMany('App\Models\InvitePoint', 'user_id', 'id');
     }
 
     public function scopeMissionPoints($query, $missionId) {
         return $query->whereHas('points', function ($q) use ($missionId) {
             $q->where('id', $missionId);
         });
+    }
+
+    private $rewardStrategy;
+
+    public function setRewardStrategy($strategy) {
+        $this->rewardStrategy = $strategy;
+    }
+
+
+    public function reward($id, $actionId){
+        $this->rewardStrategy->reward($id, $actionId);
     }
 }

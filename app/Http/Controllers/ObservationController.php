@@ -2,6 +2,8 @@
 
 use App\Http\Requests;
 use App\Models\ApiResponse;
+use App\Models\Mission;
+use App\Models\User;
 use App\Services\ObservationService;
 use App\Services\PointService;
 use App\Services\Radical\RadicalConfigurationAPI;
