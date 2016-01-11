@@ -112,7 +112,7 @@ class ObservationController extends Controller {
         if ($observation->status != 'error') {
 
             //reward user for their submission
-            $points = $this->pointService->reward();
+            $points = $this->pointService->observationReward();
 
             $response->status = 'success';
             $response->message = [

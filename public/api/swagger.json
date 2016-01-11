@@ -84,7 +84,7 @@
                         "name": "Authorization",
                         "in": "header",
                         "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-                        "required": false,
+                        "required": true,
                         "schema": "json",
                         "type": "string"
                     },
@@ -101,7 +101,7 @@
                         "description": "The mission's description",
                         "required": true,
                         "type": "string",
-                        "default": " "
+                        "default": ""
                     },
                     {
                         "name": "mission_type",
@@ -419,6 +419,44 @@
                 }
             }
         },
+        "/missions/suggest": {
+            "get": {
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Suggest a mission",
+                "description": "Users of the application are able to suggest a mission",
+                "operationId": "api.missions.suggest",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "The description of the suggested mission",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
@@ -713,6 +751,40 @@
                         "name": "email",
                         "in": "query",
                         "description": "The user's email",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/users/changePassword": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Change a user's password",
+                "description": "Change a user password",
+                "operationId": "api.users.changePassword",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "The new user password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "passwordConfirmation",
+                        "in": "query",
+                        "description": "Password confirmation",
                         "required": true,
                         "type": "string"
                     }

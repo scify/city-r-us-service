@@ -53,14 +53,4 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         });
     }
 
-    private $rewardStrategy;
-
-    public function setRewardStrategy($strategy) {
-        $this->rewardStrategy = $strategy;
-    }
-
-
-    public function reward($id, $actionId){
-        $this->rewardStrategy->reward($id, $actionId);
-    }
 }

@@ -1,19 +1,23 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\ApiResponse;
 use App\Models\Invite;
 use App\Models\User;
+use App\Services\PointService;
 use App\Services\Radical\RadicalConfigurationAPI;
 
 class InviteController extends Controller {
 
     private $radicalConfigucationAPI;
+    private $pointService;
     private $googlePlayUrl = "https://play.google.com/store/apps/details?id=gr.scify.cityrus";
     private $appStoreUrl = "";
 
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['invite']]);
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+        $this->pointService = new PointService();
     }
 
     /**
@@ -39,7 +43,7 @@ class InviteController extends Controller {
         ]);
 
         //send the user's friend an email to invite them to the app
-        \Mail::send('emails.invite_friends', ['email' => $email, 'msg' => $msg, 'user' => $user], function ($message) use ($email) {
+        \Mail::send('emails.invite_friends', ['email' => $email, 'msg' => $msg, 'user' => $user, 'token' => $token], function ($message) use ($email) {
             $message->to($email)->subject('Πρόσκληση στην εφαρμογή City-R-US!');
         });
 
@@ -60,22 +64,23 @@ class InviteController extends Controller {
      */
     public function inviteClicked() {
 
-        $inviteId = 9;
+        //find invite based on the token
+        $invite = Invite::where('token', \Request::get('token'))->first();
 
-        $user = User::find(\Auth::user()->id);
+        if ($invite != null && !$invite->clicked) {
+            //reward user when the link is clicked
+            $this->pointService->inviteReward(\Request::get('user_id'), $invite->id);
 
-        $user->setRewardStrategy(new \InviteStrategy());
-        $user->reward($user->id, $inviteId);
-
+            $invite->update(['clicked' => true]);
+        }
 
         //determine the platform and set the url accordingly
-        if (\Request::get('platform') == 'Android')
+        if (\Request::get('platform') == 'android')
             $url = $this->googlePlayUrl;
         else
             $url = $this->appStoreUrl;
 
         //redirect to googlePlay/appStore
-        return Redirect::to($url);
+        return \Redirect::to($url);
     }
-
 }

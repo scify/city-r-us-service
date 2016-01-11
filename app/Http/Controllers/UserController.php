@@ -183,7 +183,7 @@ class UserController extends Controller {
                 'code' => 'email_null',
                 'description' => 'The user email should not be null'];
         } else {
-            $user = User::where('email', \Request::get('email'))->with('points')->first();
+            $user = User::where('email', \Request::get('email'))->with('observationPoints', 'invitePoints')->first();
 
             if ($user == null) {
                 $response->status = 'error';
@@ -192,9 +192,7 @@ class UserController extends Controller {
                     'code' => 'user_not_found',
                     'description' => 'The user could not be found'];
             } else {
-                unset($user->missionPoints);
-                unset($user->invitePoints);
-                $user->totalPoints = UserService::totalPoints($user);
+                $user = $this->userService->totalPoints($user);
 
                 $response->status = 'success';
                 $response->message = [
@@ -235,12 +233,9 @@ class UserController extends Controller {
      * )
      */
     public function byJWT() {
-        $user = User::with('points')->find(\Auth::user()->id);
+        $user = User::with('observationPoints', 'invitePoints')->find(\Auth::user()->id);
 
-        unset($user->missionPoints);
-        unset($user->invitePoints);
-        $user->totalPoints = UserService::totalPoints($user);
-
+        $user = $this->userService->totalPoints($user);
 
         $response = new ApiResponse();
         $response->status = 'success';
@@ -391,59 +386,6 @@ class UserController extends Controller {
         return \Response::json($response);
     }
 
-    /**
-     * Allow user to invite another user
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @SWG\Post(
-     *     summary="Allow user to invite another user by email",
-     *     path="/users/invite",
-     *     description="Allow user to invite another user by email",
-     *     operationId="api.users.invite",
-     *     produces={"application/json"},
-     *     tags={"users"},
-     *     @SWG\Parameter(
-     *       name="Authorization",
-     *       description="The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
-     *       required=true,
-     *       type="string",
-     *       in="header",
-     *       schema="json"
-     *     ),
-     *     @SWG\Parameter(
-     *        name="email",
-     *        description="Invitation email",
-     *        required=true,
-     *        type="string",
-     *        in="query"
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="Invitation sent"
-     *     )
-     * )
-     */
-    public function invite() {
-
-        $email = \Request::get('email');
-        $msg = \Request::get('msg');
-        $user = User::find(\Auth::user()->id);
-
-
-        //send the user's friend an email to invite them to the app
-        \Mail::send('emails.invite_friends', ['email' => $email, 'msg' => $msg, 'user' => $user], function ($message) use ($email) {
-            $message->to($email)->subject('Πρόσκληση στην εφαρμογή City-R-US!');
-        });
-
-        $response = new ApiResponse();
-
-        $response->status = 'success';
-        $response->message = [
-            'description' => 'Email sent'];
-
-        return \Response::json($response);
-    }
 
     /**
      * Reset a user password.

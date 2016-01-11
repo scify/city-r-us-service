@@ -34,10 +34,12 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::post('users/authenticate', 'UserController@authenticate');
     Route::post('users/resetPassword', 'UserController@resetPassword');
     Route::post('users/changePassword', 'UserController@changePassword');
-    Route::post('users/invite', 'UserController@invite');
     Route::get('users/byEmail', 'UserController@byEmail');
     Route::get('users/byJWT', 'UserController@byJWT');
     Route::get('users', 'UserController@index');
+
+    Route::post('users/invite', 'InviteController@invite');
+    Route::get('users/invite/clicked', 'InviteController@inviteClicked');
 
 
     //Mission routes

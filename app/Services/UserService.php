@@ -64,7 +64,7 @@ class UserService {
 
 
     /**
-     * Return the total points of a user
+     * Return the user with their total points set
      *
      * @param $user
      * @return int
@@ -72,15 +72,18 @@ class UserService {
     public function totalPoints($user) {
         $totalPoints = 0;
 
-        foreach ($user->missionPoints as $point) {
-            $totalPoints += $point;
+        foreach ($user->observationPoints as $point) {
+            $totalPoints += $point->points;
         }
 
         foreach ($user->invitePoints as $point) {
-            $totalPoints += $point;
+            $totalPoints += $point->points;
         }
+        unset($user->observationPoints);
+        unset($user->invitePoints);
+        $user->totalPoints = $totalPoints;
 
-        return $totalPoints;
+        return $user;
     }
 
     /**

@@ -3,15 +3,15 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePointsTable extends Migration {
+class CreatePointsTables extends Migration {
 
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
-	public function up()
-	{
+    public function up()
+    {
         Schema::create('user_observation_points', function (Blueprint $table) {
             $table->increments('id');
             $table->string('points')->nullable();

@@ -1,47 +1,57 @@
 <?php namespace App\Services;
 
 
+use App\Models\InvitePoint;
 use App\Models\Mission;
+use App\Models\ObservationPoint;
 use App\Models\Point;
-use App\Models\User;
 
-class PointService
-{
+class PointService {
 
+    private $invitePoints = 5;
     private $locationPoints = 10;
     private $routePoints = 20;
 
-    /**
-     * Reward a user with points based on the type of mission
-     * they contributed to.
-     */
-    public function reward()
-    {
-        $mission = Mission::with(type)->find(\Request::get('mission_id'));
-        $user = User::find(\Request::get(\Auth::user()->id));
 
-        if ($mission->type->name == 'location')
-            $user->setRewardStrategy(new \LocationStrategy());
-        else
-            $user->setRewardStrategy(new \RouteStrategy());
-
-        $user->reward($user->id, $mission->id);
-
-        /*
+    public function observationReward() {
         $mission = Mission::with('type')->find(\Request::get('mission_id'));
-        $user = User::find(\Auth::user()->id);
 
         if ($mission->type->name == 'location')
-            $points = $this->locationPoints;
+           return $this->locationReward(\Auth::user()->id, $mission->id);
         else
-           $points = $this->routePoints;
-
-        $user->points()->save(new Point([
-            'mission_id' => $mission->id,
-            'points' => $points
-        ]));
-
-        return $points;*/
+            $this->routeReward(\Auth::user()->id, $mission->id);
     }
 
+    public function locationReward($userId, $missionId) {
+
+        ObservationPoint::create([
+            'user_id' => $userId,
+            'mission_id' => $missionId,
+            'points' => $this->locationPoints
+        ]);
+
+        return $this->locationPoints;
+    }
+
+    public function routeReward($userId, $missionId) {
+
+        ObservationPoint::create([
+            'user_id' => $userId,
+            'mission_id' => $missionId,
+            'points' => $this->routePoints
+        ]);
+
+        return $this->routePoints;
+    }
+
+    public function inviteReward($userId, $inviteId) {
+
+        InvitePoint::create([
+            'user_id' => $userId,
+            'invite_id' => $inviteId,
+            'points' => $this->invitePoints
+        ]);
+
+        return $this->invitePoints;
+    }
 }
