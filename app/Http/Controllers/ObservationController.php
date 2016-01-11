@@ -3,6 +3,7 @@
 use App\Http\Requests;
 use App\Models\ApiResponse;
 use App\Models\Mission;
+use App\Models\Observation;
 use App\Models\User;
 use App\Services\ObservationService;
 use App\Services\PointService;
@@ -20,6 +21,39 @@ class ObservationController extends Controller {
         $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
         $this->observationService = new ObservationService();
         $this->pointService = new PointService();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get all observations",
+     *     path="/missions",
+     *     description="Retrieve all the oservations.",
+     *     operationId="api.observations",
+     *     produces={"application/json"},
+     *     tags={"observations"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns all the observations of the application"
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function index() {
+        $observations = Observation::get();
+
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = [
+            'observations' => $observations];
+
+        return \Response::json($response);
     }
 
 

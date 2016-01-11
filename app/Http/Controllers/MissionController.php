@@ -172,6 +172,7 @@ class MissionController extends Controller {
      * )
      */
     public function store() {
+
         return $this->missionService->store(\Request::all());
     }
 

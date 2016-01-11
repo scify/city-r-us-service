@@ -63,6 +63,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
 
 
     //Observation routes
+    Route::get('observations', 'ObservationController@index');
     Route::post('observations/store', 'ObservationController@store');
 
     //Map routes
