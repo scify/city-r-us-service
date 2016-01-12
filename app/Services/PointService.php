@@ -19,7 +19,7 @@ class PointService {
         if ($mission->type->name == 'location')
            return $this->locationReward(\Auth::user()->id, $mission->id);
         else
-            $this->routeReward(\Auth::user()->id, $mission->id);
+            return $this->routeReward(\Auth::user()->id, $mission->id);
     }
 
     public function locationReward($userId, $missionId) {

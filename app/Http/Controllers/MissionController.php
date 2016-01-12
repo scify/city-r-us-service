@@ -48,13 +48,6 @@ class MissionController extends Controller {
     public function index() {
         $missions = Mission::with('type', 'users')->get();
 
-        foreach ($missions as $mission) {
-            if ($mission->img_name == null || $mission->img_name == '')
-                $mission->img_path = env('WEB_URL') . '/img/mission.png';
-            else
-                $mission->img_path = env('WEB_URL') . '/uploads/missions/' . $mission->img_name;
-        }
-
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = [
@@ -92,13 +85,6 @@ class MissionController extends Controller {
      */
     public function withObservations() {
         $missions = Mission::with('type', 'devices.observations.measurements')->get();
-
-        foreach ($missions as $mission) {
-            if ($mission->img_name == null || $mission->img_name == '')
-                $mission->img_path = env('WEB_URL') . '/img/mission.png';
-            else
-                $mission->img_path = env('WEB_URL') . '/uploads/missions/' . $mission->img_name;
-        }
 
         $response = new ApiResponse();
         $response->status = 'success';

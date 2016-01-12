@@ -159,10 +159,10 @@ class UserService {
      * @return ApiResponse
      */
     public function sanitizeDevice($userId) {
-        if (!\Request::has('device_uuid'))
+        if (!\Request::has('deviceUUID'))
             $deviceUUID = 'test-' . str_random(10);
         else
-            $deviceUUID = \Request::get('device_uuid');
+            $deviceUUID = \Request::get('deviceUUID');
 
         if (!\Request::has('model'))
             $model = 'test';

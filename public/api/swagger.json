@@ -700,41 +700,6 @@
                 }
             }
         },
-        "/users/invite": {
-            "post": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Allow user to invite another user by email",
-                "description": "Allow user to invite another user by email",
-                "operationId": "api.users.invite",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header. Format should be: Authorization: Bearer x.y.z",
-                        "required": true,
-                        "schema": "json",
-                        "type": "string"
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "description": "Invitation email",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Invitation sent"
-                    }
-                }
-            }
-        },
         "/users/resetPassword": {
             "post": {
                 "tags": [
