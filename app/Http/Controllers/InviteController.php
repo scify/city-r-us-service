@@ -5,18 +5,15 @@ use App\Models\ApiResponse;
 use App\Models\Invite;
 use App\Models\User;
 use App\Services\PointService;
-use App\Services\Radical\RadicalConfigurationAPI;
 
 class InviteController extends Controller {
 
-    private $radicalConfigucationAPI;
     private $pointService;
     private $googlePlayUrl = "https://play.google.com/store/apps/details?id=gr.scify.cityrus";
     private $appStoreUrl = "";
 
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['invite']]);
-        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
         $this->pointService = new PointService();
     }
 

@@ -5,16 +5,16 @@ use App\Exceptions\RadicalApiException;
 use App\Models\ApiResponse;
 use App\Models\Descriptions\MissionType;
 use App\Models\Mission;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class MissionService {
 
-    private $radicalServiceConfiguration;
+    private $radicalIntegrationManager;
 
     function __construct() {
-        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
 
     public function store($data) {
@@ -54,7 +54,7 @@ class MissionService {
             $mission = $this->sanitize($data);
             $mission->radical_service_id = "cityrus_" . Str::random();
             try {
-                $this->radicalServiceConfiguration->registerMission($mission);
+                $this->radicalIntegrationManager->registerMission($mission);
                 $mission->save();
                 $response->status = 'success';
                 $response->message = $mission->id;
@@ -86,7 +86,7 @@ class MissionService {
         } else {
             $mission = $this->sanitize($data, $mission);
             try {
-                $this->radicalServiceConfiguration->updateMission($mission);
+                $this->radicalIntegrationManager->updateMission($mission);
                 $mission->save();
                 $response->status = 'success';
                 $response->message = $mission->id;

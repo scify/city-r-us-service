@@ -6,7 +6,7 @@
  * Date: 11/11/2015
  * Time: 3:48 μμ
  */
-class RadicalConfigurationAPI {
+class RadicalIntegrationManager {
 
     private $curl;
 
@@ -79,5 +79,18 @@ class RadicalConfigurationAPI {
         $response = $this->curl->post($url, $params, true);
 
         return $response;
+    }
+
+
+    public function getMeasurementsByDeviceUUID($observationId){
+
+        $apiKey = $this->getApiKey();
+
+        $url = env("RADICAL_DATA_API") . "getMeasurementsByDeviceId?key=" . $apiKey .'&id=' . $observationId . '&format=json';
+
+        $measurements = $this->curl->get($url, [], true);
+
+        return $measurements;
+
     }
 } 

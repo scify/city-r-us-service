@@ -4,21 +4,15 @@ use App\Http\Requests;
 use App\Models\ApiResponse;
 use App\Models\Mission;
 use App\Services\DeviceService;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 
 class DeviceController extends Controller {
 
-    private $mission;
-    private $radicalConfigurationAPI;
+    private $radicalIntegrationManager;
     private $deviceService;
 
-    /* only for test purposes */
-    private $deviceModels = ['iPhone', 'iPad', 'GT-I9100', 'modelXYZ', 'Nexus', 'Lenovo A8-50'];
-    private $deviceManufacturers = ['Apple', 'Samsung', 'Nokia', 'Google', 'Lenovo'];
-
-
     public function __construct() {
-        $this->radicalConfigurationAPI = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
         $this->$deviceService = new DeviceService();
     }
 

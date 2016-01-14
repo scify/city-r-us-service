@@ -2,21 +2,21 @@
 
 use App\Http\Requests;
 use App\Models\Descriptions\MissionType;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 
 class TestController extends Controller {
 
-    private $radicalConfigucationAPI;
+    private $radicalIntegrationManager;
 
     public function __construct() {
 
-        $this->radicalConfigucationAPI = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
 
     public function test() {
 
         return 'a';
 
-        return $this->radicalConfigucationAPI->getApiKey();
+        return $this->radicalIntegrationManager->getApiKey();
     }
 }

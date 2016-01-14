@@ -5,17 +5,17 @@ use App\Models\ApiResponse;
 use App\Models\Mission;
 use App\Models\SuggestedMission;
 use App\Services\MissionService;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 
 class MissionController extends Controller {
 
     private $missionService;
-    private $radicalServiceConfiguration;
+    private $radicalIntegrationManager;
 
     public function __construct() {
          $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy', 'suggestMission']]);
         $this->missionService = new MissionService();
-        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
 
 
@@ -296,7 +296,7 @@ class MissionController extends Controller {
                         'description' => 'The mission could not be deleted because it has users'];
                 } else {
                     //safely delete the mission
-                    $this->radicalServiceConfiguration->deleteMission($mission);
+                    $this->radicalIntegrationManager->deleteMission($mission);
                     $mission->delete();
                     $response->status = 'success';
                     $response->message = $id;

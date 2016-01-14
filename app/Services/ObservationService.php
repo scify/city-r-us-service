@@ -5,17 +5,17 @@ use App\Models\Device;
 use App\Models\Measurement;
 use App\Models\Mission;
 use App\Models\Observation;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 
 class ObservationService {
 
     private $deviceService;
     private $mission;
-    private $radicalServiceConfiguration;
+    private $radicalIntegrationManager;
 
     public function __construct() {
         $this->deviceService = new DeviceService();
-        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
 
     /*
@@ -100,7 +100,6 @@ class ObservationService {
             $radicalMeasurements = $this->getMeasurements($observation->id);
 
             $radicalObservation = ([
-                'Observation_Id' => $observation->id,
                 'Device_UUID' => env('RADICAL_CITYNAME') . '.' . $this->mission->radical_service_id . '.' . $device->device_uuid,
                 'Latitude' => \Request::get('latitude'),
                 'Longitude' => \Request::get('longitude'),
@@ -108,10 +107,7 @@ class ObservationService {
                 'Measurements' => $radicalMeasurements,
             ]);
 
-
-
-            //TODO: this works?
-            //$this->radicalServiceConfiguration->storeObservation($radicalObservation);
+            $this->radicalIntegrationManager->storeObservation($radicalObservation);
             return $observation;
         }
 

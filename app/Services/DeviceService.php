@@ -2,14 +2,14 @@
 
 use App\Models\ApiResponse;
 use App\Models\Device;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 
 class DeviceService {
 
-    private $radicalServiceConfiguration;
+    private $radicalIntegrationManager;
 
     public function __construct() {
-        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
 
 
@@ -58,7 +58,7 @@ class DeviceService {
      * @return mixed
      */
     public function registerToRadical($device) {
-        return $this->radicalServiceConfiguration->registerDevice($device);
+        return $this->radicalIntegrationManager->registerDevice($device);
     }
 
 

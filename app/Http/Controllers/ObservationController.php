@@ -7,18 +7,18 @@ use App\Models\Observation;
 use App\Models\User;
 use App\Services\ObservationService;
 use App\Services\PointService;
-use App\Services\Radical\RadicalConfigurationAPI;
+use App\Services\Radical\RadicalIntegrationManager;
 
 class ObservationController extends Controller {
 
     private $mission;
-    private $radicalServiceConfiguration;
+    private $radicalIntegrationManager;
     private $observationService;
     private $pointService;
 
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy']]);
-        $this->radicalServiceConfiguration = new RadicalConfigurationAPI();
+        $this->radicalIntegrationManager = new RadicalIntegrationManager();
         $this->observationService = new ObservationService();
         $this->pointService = new PointService();
     }
@@ -142,6 +142,8 @@ class ObservationController extends Controller {
 
         //Save the observation
         $observation = $this->observationService->store();
+
+      //  return $observation;
 
         if ($observation->status != 'error') {
 
