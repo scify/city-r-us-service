@@ -93,4 +93,16 @@ class RadicalIntegrationManager {
         return $measurements;
 
     }
+
+    public function getMeasurementsByDate($observationId, $date){
+
+        $apiKey = $this->getApiKey();
+
+        //getMeasurementsFromDate (String id, long date, String format, String key)
+        $url = env("RADICAL_DATA_API") . "getMeasurementsFromDate?key=" . $apiKey .'&id=' . $observationId . '$date=' . $date . '&format=json';
+
+        $measurements = $this->curl->get($url, [], true);
+
+        return $measurements;
+    }
 } 
