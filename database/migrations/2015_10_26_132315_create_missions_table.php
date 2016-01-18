@@ -16,6 +16,19 @@ class CreateMissionsTable extends Migration {
             $table->increments('id');
             $table->string('name');
         });
+        
+        DB::table('mission_types')->insert(
+            array(
+                'id' => 1,
+                'name' => 'location'
+            )
+        );
+        DB::table('mission_types')->insert(
+            array(
+                'id' => 2,
+                'name' => 'route'
+            )
+        );
 
         Schema::create('missions', function (Blueprint $table) {
             $table->increments('id');

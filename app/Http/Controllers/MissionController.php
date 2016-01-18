@@ -39,6 +39,20 @@ class MissionController extends Controller {
      *             @SWG\Items(ref="#/definitions/mission")
      *         ),
      *     ),
+     *     @SWG\Parameter(
+     *       name="from",
+     *       description="Limit to missions created at the date provided or later. Format: dd-mm-yyyy or mm/dd/yyyy",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="to",
+     *       description="Limit to missions created at the date provided or earlier. Format: dd-mm-yyyy or mm/dd/yyyy",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
      *     @SWG\Response(
      *         response=400,
      *         description="Unauthorized action",
@@ -46,7 +60,22 @@ class MissionController extends Controller {
      * )
      */
     public function index() {
-        $missions = Mission::with('type', 'users')->get();
+        $from = null;
+        $to = null;
+        if (\Request::has('from')) {
+            $from = date('Y-m-d', strtotime(\Request::get('from')));
+        }
+        if (\Request::has('to')) {
+            $to = date('Y-m-d', strtotime(\Request::get('to')));
+        }
+        $missions = Mission::with('type', 'users');
+        if ($from != null) {
+            $missions = $missions->where('created_at', '>=', $from);
+        }
+        if ($to != null) {
+            $missions = $missions->where('created_at', '<=', $to);
+        }
+        $missions = $missions->get();
 
         $response = new ApiResponse();
         $response->status = 'success';

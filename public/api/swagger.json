@@ -8,12 +8,80 @@
         },
         "version": "1.0"
     },
-    "host": "city-r-us-service/api",
+    "host": "localhost/api",
     "basePath": "/v1",
     "schemes": [
         "http"
     ],
     "paths": {
+        "/map/venues": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Get venues",
+                "description": "Get venues from Radical",
+                "operationId": "api.map.venues",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns venues"
+                    }
+                }
+            }
+        },
+        "/map/events": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Get events",
+                "description": "Get events from Radical",
+                "operationId": "api.map.events",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns events"
+                    }
+                }
+            }
+        },
         "/missions": {
             "get": {
                 "tags": [
@@ -24,6 +92,22 @@
                 "operationId": "api.missions",
                 "produces": [
                     "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Limit to missions created at the date provided or later. Format: dd-mm-yyyy or mm/dd/yyyy",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "Limit to missions created at the date provided or earlier. Format: dd-mm-yyyy or mm/dd/yyyy",
+                        "required": false,
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -457,6 +541,91 @@
                 }
             }
         },
+        "/observations/store": {
+            "post": {
+                "tags": [
+                    "observations"
+                ],
+                "summary": "Store a new observation",
+                "description": "Create and save a new observation.",
+                "operationId": "api.observations",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
+                        "required": true,
+                        "schema": "json",
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_uuid",
+                        "in": "query",
+                        "description": "The uuid of the device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "mission_id",
+                        "in": "query",
+                        "description": "The id of the chosen mission",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "type": "string",
+                        "default": ""
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "observation_date",
+                        "in": "query",
+                        "description": "The date of the observation. It must follow the format Y-m-d hh:mm:ss.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "measurements",
+                        "in": "body",
+                        "description": "An array of measurements. Should be in the following format: { 'measurements' : [ { 'latitude': 2.45,  'longitude': 0.90,  'observation_date': '2015-12-12 12:12:12'  }  ] }",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/measurement"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the id of the observation created",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/observation"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
@@ -760,159 +929,6 @@
                     }
                 }
             }
-        },
-        "/map/venues": {
-            "get": {
-                "tags": [
-                    "map"
-                ],
-                "summary": "Get venues",
-                "description": "Get venues from Radical",
-                "operationId": "api.map.venues",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "lat",
-                        "in": "query",
-                        "description": "Latitude",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "lon",
-                        "in": "query",
-                        "description": "Longitude",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns venues"
-                    }
-                }
-            }
-        },
-        "/map/events": {
-            "get": {
-                "tags": [
-                    "map"
-                ],
-                "summary": "Get events",
-                "description": "Get events from Radical",
-                "operationId": "api.map.events",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "lat",
-                        "in": "query",
-                        "description": "Latitude",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "lon",
-                        "in": "query",
-                        "description": "Longitude",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns events"
-                    }
-                }
-            }
-        },
-        "/observations/store": {
-            "post": {
-                "tags": [
-                    "observations"
-                ],
-                "summary": "Store a new observation",
-                "description": "Create and save a new observation.",
-                "operationId": "api.observations",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "The JWT must be present in the Authorization header, in order to authenticate the user making the call. Format should be: Authorization: Bearer x.y.z",
-                        "required": true,
-                        "schema": "json",
-                        "type": "string"
-                    },
-                    {
-                        "name": "device_uuid",
-                        "in": "query",
-                        "description": "The uuid of the device",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "mission_id",
-                        "in": "query",
-                        "description": "The id of the chosen mission",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "",
-                        "required": true,
-                        "type": "string",
-                        "default": ""
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "observation_date",
-                        "in": "query",
-                        "description": "The date of the observation. It must follow the format Y-m-d hh:mm:ss.",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "measurements",
-                        "in": "body",
-                        "description": "An array of measurements. Should be in the following format: { 'measurements' : [ { 'latitude': 2.45,  'longitude': 0.90,  'observation_date': '2015-12-12 12:12:12'  }  ] }",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/measurement"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the id of the observation created",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/observation"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Unauthorized action"
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -933,66 +949,6 @@
                 }
             }
         },
-        "mission": {
-            "properties": {
-                "id": {
-
-                },
-                "name": {
-
-                },
-                "description": {
-
-                },
-                "img_name": {
-
-                },
-                "type_id": {
-
-                },
-                "created_at": {
-
-                },
-                "updated_at": {
-
-                }
-            }
-        },
-        "observation": {
-            "properties": {
-                "device_id": {
-
-                },
-                "latitude": {
-
-                },
-                "longitude": {
-
-                },
-                "observation_date": {
-
-                }
-            }
-        },
-        "user": {
-            "properties": {
-                "id": {
-
-                },
-                "name": {
-
-                },
-                "email": {
-
-                },
-                "created_at": {
-
-                },
-                "updated_at": {
-
-                }
-            }
-        },
         "apiResponse": {
             "properties": {
                 "status": {
@@ -1005,15 +961,37 @@
         },
         "measurement": {
             "properties": {
-                "latitude": {
-
-                },
-                "longitude": {
-
-                },
-                "observation_date": {
-
-                }
+                "latitude": {},
+                "longitude": {},
+                "observation_date": {}
+            }
+        },
+        "mission": {
+            "properties": {
+                "id": {},
+                "name": {},
+                "description": {},
+                "img_name": {},
+                "type_id": {},
+                "created_at": {},
+                "updated_at": {}
+            }
+        },
+        "observation": {
+            "properties": {
+                "device_id": {},
+                "latitude": {},
+                "longitude": {},
+                "observation_date": {}
+            }
+        },
+        "user": {
+            "properties": {
+                "id": {},
+                "name": {},
+                "email": {},
+                "created_at": {},
+                "updated_at": {}
             }
         }
     },
