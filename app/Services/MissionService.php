@@ -87,15 +87,16 @@ class MissionService {
             $mission = $this->sanitize($data, $mission);
             try {
                 $this->radicalIntegrationManager->updateMission($mission);
-                $mission->save();
-                $response->status = 'success';
-                $response->message = $mission->id;
             } catch (RadicalApiException $e) {
                 Log::error($e);
-                $response->status = 'error';
-                $response->message = $e->getMessage();
-                $status = 500;
+                //For now ingore, see [CIT-380]
+//                $response->status = 'error';
+//                $response->message = $e->getMessage();
+//                $status = 500;
             }
+            $mission->save();
+            $response->status = 'success';
+            $response->message = $mission->id;
         }
         return \Response::json($response, $status);
     }
