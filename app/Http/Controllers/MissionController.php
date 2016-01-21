@@ -306,9 +306,7 @@ class MissionController extends Controller {
      *     )
      * )
      */
-    public function destroy() {
-
-        $id = \Request::get('id');
+    public function destroy($id) {
         $response = new ApiResponse();
         if ($id == null)
             $id = \Request::get('id');
