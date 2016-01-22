@@ -37,6 +37,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::get('users/byEmail', 'UserController@byEmail');
     Route::get('users/byJWT', 'UserController@byJWT');
     Route::get('users', 'UserController@index');
+    Route::get('users/withScores', 'UserController@scores');
 
     Route::post('users/invite', 'InviteController@invite');
     Route::get('users/invite/clicked', 'InviteController@inviteClicked');

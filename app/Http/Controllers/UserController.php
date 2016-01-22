@@ -142,6 +142,45 @@ class UserController extends Controller {
 
         return \Response::json($response);
     }
+    
+    
+    /**
+     * Display a listing of the resource including user observation points.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get all users with their scores, ordered by score",
+     *     path="/users/withScores",
+     *     description="Retrieve the users of the application with their respective observation points.",
+     *     operationId="api.users.withScores",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Retrieve the users of the application with their respective observation points.",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/user")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="Unauthorized action",
+     *     )
+     * )
+     */
+    public function scores() {
+
+        $users = User::with('observationPoints');
+
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = [
+            'users' => $users];
+
+        return \Response::json($response);
+    }
 
     /**
      * Display one user by id
