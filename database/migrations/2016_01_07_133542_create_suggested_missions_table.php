@@ -33,5 +33,4 @@ class CreateSuggestedMissionsTable extends Migration {
         Schema::dropIfExists('suggested_missions');
     }
 
-
 }

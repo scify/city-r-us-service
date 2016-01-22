@@ -3,15 +3,14 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePointsTables extends Migration {
+class CreatePointsTable extends Migration {
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-    public function up()
-    {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('user_observation_points', function (Blueprint $table) {
             $table->increments('id');
             $table->string('points')->nullable();
@@ -40,7 +39,6 @@ class CreatePointsTables extends Migration {
             $table->timestamps();
             $table->softDeletes();
         });
-
     }
 
     /**
@@ -52,6 +50,5 @@ class CreatePointsTables extends Migration {
         Schema::dropIfExists('user_observation_points');
         Schema::dropIfExists('user_invite_points');
     }
-
 
 }

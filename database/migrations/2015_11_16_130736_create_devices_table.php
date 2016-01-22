@@ -5,16 +5,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateDevicesTable extends Migration {
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
 
-        Schema::create('devices', function(Blueprint $table)
-        {
+        Schema::create('devices', function(Blueprint $table) {
             $table->increments('id');
             $table->string('device_uuid');
             $table->string('model');
@@ -29,8 +27,7 @@ class CreateDevicesTable extends Migration {
             $table->foreign('user_id')->references('id')->on('users');
         });
 
-        Schema::create('device_capabilities', function(Blueprint $table)
-        {
+        Schema::create('device_capabilities', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('unit');
@@ -42,8 +39,7 @@ class CreateDevicesTable extends Migration {
             $table->foreign('device_id')->references('id')->on('devices');
         });
 
-        Schema::create('devices_missions', function(Blueprint $table)
-        {
+        Schema::create('devices_missions', function(Blueprint $table) {
             $table->increments('id');
             $table->string('device_uuid');
             $table->string('latitude')->nullable();
@@ -63,10 +59,10 @@ class CreateDevicesTable extends Migration {
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('devices_missions');
         Schema::dropIfExists('device_capabilities');
         Schema::dropIfExists('devices');
     }
+
 }

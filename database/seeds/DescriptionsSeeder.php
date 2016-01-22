@@ -28,8 +28,14 @@ class DescriptionsSeeder extends Seeder {
         DB::table('mission_types')->delete();
 
         $types = [
-            ['name' => 'location'],
-            ['name' => 'route'],
+            [
+                'id' => 1,
+                'name' => 'location'
+            ],
+            [
+                'id' => 2,
+                'name' => 'route'
+            ]
         ];
 
         DB::table('mission_types')->insert($types);

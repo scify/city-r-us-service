@@ -16,19 +16,6 @@ class CreateMissionsTable extends Migration {
             $table->increments('id');
             $table->string('name');
         });
-        
-        DB::table('mission_types')->insert(
-            array(
-                'id' => 1,
-                'name' => 'location'
-            )
-        );
-        DB::table('mission_types')->insert(
-            array(
-                'id' => 2,
-                'name' => 'route'
-            )
-        );
 
         Schema::create('missions', function (Blueprint $table) {
             $table->increments('id');
@@ -41,7 +28,7 @@ class CreateMissionsTable extends Migration {
             $table->integer('type_id')->unsigned();
             $table->foreign('type_id')->references('id')->on('mission_types');
         });
-	}
+    }
 
     /**
      * Reverse the migrations.
@@ -51,7 +38,6 @@ class CreateMissionsTable extends Migration {
     public function down() {
         Schema::dropIfExists('missions');
         Schema::dropIfExists('mission_types');
-
     }
 
 }
