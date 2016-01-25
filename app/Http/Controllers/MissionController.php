@@ -433,14 +433,16 @@ class MissionController extends Controller {
                 'description' => 'The mission could not be found'];
         } else {
 
-            foreach ($mission->devices as $device) {
-                foreach ($device->observations as $observation) {
+            foreach ($mission->devices as $dKey => $device) {
+                foreach ($device->observations as $oKey => $observation) {
                     $tmp = explode(".", $observation->device_uuid);
-                    if ($tmp[1] != $mission->radical_service_id || !isset($observation->measurements) || sizeof($observation->measurements)==0)
-                        unset($observation);
+
+                    if ($tmp[1] != $mission->radical_service_id || !isset($observation->measurements) || sizeof($observation->measurements) == 0)
+                        unset($device->observations[$oKey]);
                 }
-                if(sizeof($device->observations)==0)
-                    unset($device);
+
+                if (sizeof($device->observations) == 0)
+                    unset($mission->devices[$dKey]);
             }
 
             $response = new ApiResponse();
