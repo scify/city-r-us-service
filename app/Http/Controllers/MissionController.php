@@ -13,7 +13,7 @@ class MissionController extends Controller {
     private $radicalIntegrationManager;
 
     public function __construct() {
-         $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy', 'suggestMission']]);
+        $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy', 'suggestMission']]);
         $this->missionService = new MissionService();
         $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
@@ -113,7 +113,7 @@ class MissionController extends Controller {
      * )
      */
     public function withObservations() {
-        $missions = Mission::with('type', 'devices.observations.measurements')->get();
+        $missions = Mission::with('type', 'devices.observations')->get();
 
         $response = new ApiResponse();
         $response->status = 'success';
@@ -432,6 +432,15 @@ class MissionController extends Controller {
                 'code' => 'mission_not_found',
                 'description' => 'The mission could not be found'];
         } else {
+
+            foreach ($mission->devices as $device) {
+                foreach ($device->observations as $obervation) {
+                    $tmp = explode(".", $obervation);
+                    if ($tmp[1] != $mission->name)
+                        unset($device->observations, $obervation);
+                }                
+            }
+
             $response = new ApiResponse();
             $response->status = 'success';
             $response->message = $mission;
