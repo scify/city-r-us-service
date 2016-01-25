@@ -439,6 +439,8 @@ class MissionController extends Controller {
                     if ($tmp[1] != $mission->radical_service_id)
                         unset($device->observations, $obervation);
                 }
+                if(sizeof($device->observations)==0)
+                    unset($mission->devices, $device);
             }
 
             $response = new ApiResponse();
