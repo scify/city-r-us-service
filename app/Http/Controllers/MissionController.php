@@ -436,7 +436,7 @@ class MissionController extends Controller {
             foreach ($mission->devices as $device) {
                 foreach ($device->observations as $obervation) {
                     $tmp = explode(".", $obervation->device_uuid);
-                    if ($tmp[1] != $mission->radical_service_id)
+                    if ($tmp[1] != $mission->radical_service_id || sizeof($obervation->measurements)==0)
                         unset($device->observations, $obervation);
                 }
                 if(sizeof($device->observations)==0)
