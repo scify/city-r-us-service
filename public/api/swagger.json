@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost/api",
+    "host": "city-r-us-service/api",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -712,6 +712,33 @@
                 "responses": {
                     "200": {
                         "description": "Returns all the users of the application",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unauthorized action"
+                    }
+                }
+            }
+        },
+        "/users/withScores": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users with their observation points",
+                "description": "Retrieve the users of the application with their respective observation points.",
+                "operationId": "api.users.withScores",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieve the users of the application with their respective observation points.",
                         "schema": {
                             "type": "array",
                             "items": {

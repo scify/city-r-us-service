@@ -150,7 +150,7 @@ class UserController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      *
      * @SWG\Get(
-     *     summary="Get all users with their scores, ordered by score",
+     *     summary="Get all users with their observation points",
      *     path="/users/withScores",
      *     description="Retrieve the users of the application with their respective observation points.",
      *     operationId="api.users.withScores",
@@ -172,7 +172,7 @@ class UserController extends Controller {
      */
     public function scores() {
 
-        $users = User::with('observationPoints');
+        $users = User::with('observationPoints')->get();
 
         $response = new ApiResponse();
         $response->status = 'success';
