@@ -436,11 +436,11 @@ class MissionController extends Controller {
             foreach ($mission->devices as $device) {
                 foreach ($device->observations as $observation) {
                     $tmp = explode(".", $observation->device_uuid);
-                    if ($tmp[1] != $mission->radical_service_id || sizeof($observation->measurements)==0 || !isset($observation->measurements))
-                        unset($device->observations, $observation);
+                    if ($tmp[1] != $mission->radical_service_id || !isset($observation->measurements) || sizeof($observation->measurements)==0)
+                        unset($observation);
                 }
                 if(sizeof($device->observations)==0)
-                    unset($mission->devices, $device);
+                    unset($device);
             }
 
             $response = new ApiResponse();
