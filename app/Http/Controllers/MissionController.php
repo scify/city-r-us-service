@@ -435,10 +435,10 @@ class MissionController extends Controller {
 
             foreach ($mission->devices as $device) {
                 foreach ($device->observations as $obervation) {
-                    $tmp = explode(".", $obervation);
+                    $tmp = explode(".", $obervation->device_uuid);
                     if ($tmp[1] != $mission->name)
                         unset($device->observations, $obervation);
-                }                
+                }
             }
 
             $response = new ApiResponse();
