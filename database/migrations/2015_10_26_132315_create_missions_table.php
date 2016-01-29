@@ -19,9 +19,9 @@ class CreateMissionsTable extends Migration {
 
         Schema::create('missions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('img_name')->nullable();
+            $table->string('name', 50);
+            $table->string('description', 600)->nullable();
+            $table->string('img_name', 150)->nullable();
             $table->timestamps();
             $table->softDeletes();
 
