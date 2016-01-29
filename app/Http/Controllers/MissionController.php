@@ -1,5 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
 
+namespace App\Http\Controllers;
 
 use App\Models\ApiResponse;
 use App\Models\Mission;
@@ -17,7 +18,6 @@ class MissionController extends Controller {
         $this->missionService = new MissionService();
         $this->radicalIntegrationManager = new RadicalIntegrationManager();
     }
-
 
     /**
      * Display a listing of the resource.
@@ -85,19 +85,32 @@ class MissionController extends Controller {
         return \Response::json($response);
     }
 
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
      *
      * @SWG\Get(
-     *     summary="Get all missions and the ovservations contributed by users",
+     *     summary="Get all missions and the observations contributed by users",
      *     path="/missions/observations",
      *     description="Get all missions and the ovservations contributed by users.",
      *     operationId="api.missions.observations",
      *     produces={"application/json"},
      *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="from",
+     *       description="Limit to observations created at the date provided or later. Format: dd-mm-yyyy or mm/dd/yyyy",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="to",
+     *       description="Limit to observations created at the date provided or earlier. Format: dd-mm-yyyy or mm/dd/yyyy",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="Returns all the missions of the application with their observations",
@@ -113,13 +126,39 @@ class MissionController extends Controller {
      * )
      */
     public function withObservations() {
+        $from = null;
+        $to = null;
+        if (\Request::has('from')) {
+            $from = date('Y-m-d', strtotime(\Request::get('from')));
+        }
+        if (\Request::has('to')) {
+            $to = date('Y-m-d', strtotime(\Request::get('to')));
+        }
         $missions = Mission::with('type', 'devices.observations')->get();
-
+        if ($from != null || $to != null) {
+            $from = \Carbon::parse($from == null ? '01-01-1990' : $from);
+            $to = \Carbon::parse($to == null ? '01-01-3000' : $to);
+            foreach ($missions as $mid => $mission) {
+                foreach ($mission->devices as $did => $device) {
+                    foreach ($device->observations as $oid => $observation) {
+                        if ($from->gt($observation->created_at) || $to->lt($observation->created_at)) {
+                            unset($device->observations[$oid]);
+                        }
+                    }
+                    if (count($device->observations) == 0) {
+                        unset($mission->devices[$did]);
+                    }
+                }
+                if (count($mission->devices) == 0) {
+                    unset($missions[$mid]);
+                }
+            }
+        }
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = [
-            'missions' => $missions];
-
+            'missions' => $missions
+        ];
         return \Response::json($response);
     }
 
@@ -190,7 +229,6 @@ class MissionController extends Controller {
 
         return $this->missionService->store(\Request::all());
     }
-
 
     /**
      * Update a mission.
@@ -265,7 +303,6 @@ class MissionController extends Controller {
     public function update() {
         return $this->missionService->update(\Request::all());
     }
-
 
     /**
      * Delete a mission
@@ -345,7 +382,6 @@ class MissionController extends Controller {
 
         return \Response::json($response);
     }
-
 
     /**
      * Find a mission by name
@@ -607,14 +643,12 @@ class MissionController extends Controller {
             ];
 
             return \Response::json($response);
-
         } else {
 
             $response = new ApiResponse();
             $response->status = 'error';
             $response->message = [];
             return \Response::json($response);
-
         }
     }
 

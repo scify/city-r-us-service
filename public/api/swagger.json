@@ -130,11 +130,27 @@
                 "tags": [
                     "missions"
                 ],
-                "summary": "Get all missions and the ovservations contributed by users",
+                "summary": "Get all missions and the observations contributed by users",
                 "description": "Get all missions and the ovservations contributed by users.",
                 "operationId": "api.missions.observations",
                 "produces": [
                     "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Limit to observations created at the date provided or later. Format: dd-mm-yyyy or mm/dd/yyyy",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "Limit to observations created at the date provided or earlier. Format: dd-mm-yyyy or mm/dd/yyyy",
+                        "required": false,
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
