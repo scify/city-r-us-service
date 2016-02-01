@@ -27,6 +27,8 @@ class UserTableSeeder extends Seeder {
             'user_id' => $user->id
         ]);
 
+        $user->roles()->attach([1]);
+
     }
 
 }

@@ -86,6 +86,20 @@ class UserService {
         return $user;
     }
 
+
+    /*
+     * Get the admins of the web application
+     */
+    public function admins() {
+
+        $admins = User::whereHas('roles', function ($q) {
+            $q->where('name', 'web');
+        })->get();
+
+        return $admins;
+    }
+
+
     /**
      * Validate a single user
      *

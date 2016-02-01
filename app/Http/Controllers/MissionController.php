@@ -5,18 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\ApiResponse;
 use App\Models\Mission;
 use App\Models\SuggestedMission;
+use App\Models\User;
 use App\Services\MissionService;
 use App\Services\Radical\RadicalIntegrationManager;
+use App\Services\UserService;
 
 class MissionController extends Controller {
 
     private $missionService;
     private $radicalIntegrationManager;
+    private $userService;
 
     public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['store', 'update', 'destroy', 'suggestMission']]);
         $this->missionService = new MissionService();
         $this->radicalIntegrationManager = new RadicalIntegrationManager();
+        $this->userService = new UserService();
     }
 
     /**
@@ -699,6 +703,19 @@ class MissionController extends Controller {
         $response = new ApiResponse();
         $response->status = 'success';
         $response->message = "Mission created";
+
+
+        $admins = $this->userService->admins();
+        $user = User::find(\Auth::user()->id);
+
+        //send an email to all the admins
+        foreach ($admins as $admin) {
+            $email = $admin->email;
+            \Mail::send('emails.new_suggested_mission', ['admin' => $admin, 'user' => $user, 'missionDescription' => \Request::get('description')], function ($message) use ($email) {
+                $message->to($email)->subject('Νέα προτεινόμενη αποστολή στο City-R-US!');
+            });
+
+        }
 
         return \Response::json($response);
     }
