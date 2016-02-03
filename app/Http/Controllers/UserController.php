@@ -283,6 +283,67 @@ class UserController extends Controller {
         return \Response::json($response);
     }
 
+
+    /**
+     * Display one user by id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Get user by id",
+     *     path="/users/byId",
+     *     description="Retrieve the user that corresponds to a certain id",
+     *     operationId="api.users.byId",
+     *     produces={"application/json"},
+     *     tags={"users"},
+     *     @SWG\Parameter(
+     *        name="id",
+     *        description="The user's id",
+     *        required=true,
+     *        type="string",
+     *        in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns the user based on a certain id",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/user")
+     *         ),
+     *     )
+     * )
+     */
+    public function byId() {
+
+        $response = new ApiResponse();
+
+        if (!\Request::has('id')) {
+            $response->status = 'error';
+            $response->message = [
+                'id' => '',
+                'code' => 'id_null',
+                'description' => 'The user id should not be null'];
+        } else {
+            $user = User::find(\Request::get('id'));
+
+            if ($user == null) {
+                $response->status = 'error';
+                $response->message = [
+                    'id' => '',
+                    'code' => 'user_not_found',
+                    'description' => 'The user could not be found'];
+            } else {
+
+                $response->status = 'success';
+                $response->message = [
+                    'user' => $user];
+            }
+        }
+        return \Response::json($response);
+    }
+
+
+
     /**
      * Authenticate a user based on given credentials.
      *

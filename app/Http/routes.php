@@ -35,6 +35,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function()
     Route::post('users/resetPassword', 'UserController@resetPassword');
     Route::post('users/changePassword', 'UserController@changePassword');
     Route::get('users/byEmail', 'UserController@byEmail');
+    Route::get('users/byId', 'UserController@byId');
     Route::get('users/byJWT', 'UserController@byJWT');
     Route::get('users', 'UserController@index');
     Route::get('users/withScores', 'UserController@scores');
