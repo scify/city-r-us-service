@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "dev-city-r-us.scify.org/service/api",
+    "host": "dev-city-r-us.scify.org/service/public/api",
     "basePath": "/v1",
     "schemes": [
         "http"
