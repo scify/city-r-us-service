@@ -456,7 +456,14 @@ class MissionController extends Controller {
      *       required=true,
      *       type="integer",
      *       in="query"
-     *     )
+     *     ),
+     * @SWG\Response(
+     *         response=200,
+     *         description="Returns a mission",
+     *          @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/mission")
+     *         )
      *     )
      * )
      */
