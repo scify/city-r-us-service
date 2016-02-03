@@ -17,8 +17,14 @@ class DescriptionsSeeder extends Seeder {
         DB::table('roles')->delete();
 
         $types = [
-            ['name' => 'web'],
-            ['name' => 'mobile'],
+            [
+                'id' => 1,
+                'name' => 'web'
+            ],
+            [
+                'id' => 2,
+                'name' => 'mobile'
+            ]
         ];
 
         DB::table('roles')->insert($types);
