@@ -8,7 +8,8 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
     private $userService;
     private $deviceService;
@@ -18,7 +19,8 @@ class UserController extends Controller {
      * also initialize the services needed
      * and the middlewares
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('jwt.auth', ['only' => ['byJWT', 'invite', 'changePassword']]);
         // $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
 
@@ -97,7 +99,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function register() {
+    public function register()
+    {
 
         $response = $this->userService->register();
 
@@ -131,7 +134,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function index() {
+    public function index()
+    {
 
         $users = User::all();
 
@@ -142,8 +146,8 @@ class UserController extends Controller {
 
         return \Response::json($response);
     }
-    
-    
+
+
     /**
      * Display a listing of the resource including user observation points.
      *
@@ -170,7 +174,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function scores() {
+    public function scores()
+    {
 
         $users = User::with('observationPoints')->get();
 
@@ -211,7 +216,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function byEmail() {
+    public function byEmail()
+    {
 
         $response = new ApiResponse();
 
@@ -271,7 +277,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function byJWT() {
+    public function byJWT()
+    {
         $user = User::with('observationPoints', 'invitePoints')->find(\Auth::user()->id);
 
         $user = $this->userService->totalPoints($user);
@@ -313,7 +320,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function byId() {
+    public function byId()
+    {
 
         $response = new ApiResponse();
 
@@ -341,7 +349,6 @@ class UserController extends Controller {
         }
         return \Response::json($response);
     }
-
 
 
     /**
@@ -385,7 +392,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function authenticate(Request $request) {
+    public function authenticate(Request $request)
+    {
         $credentials = $request->only('email', 'password');
 
         try {
@@ -412,10 +420,12 @@ class UserController extends Controller {
             return \Response::json($response);
         }
 
+        $user = User::where('email', $credentials['email'])->first();
+
         // if no errors are encountered we can return a JWT
         $response = new ApiResponse();
         $response->status = 'success';
-        $response->message = ['token' => $token];
+        $response->message = ['token' => $token, 'user' => $user];
 
         return \Response::json($response);
     }
@@ -451,7 +461,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function refreshToken(Request $request) {
+    public function refreshToken(Request $request)
+    {
         $credentials = $request->only('email', 'password');
 
         try {
@@ -513,7 +524,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function resetPassword() {
+    public function resetPassword()
+    {
 
         $user = User::where('email', \Request::get('email'))->first();
 
@@ -575,7 +587,8 @@ class UserController extends Controller {
      *     )
      * )
      */
-    public function changePassword() {
+    public function changePassword()
+    {
 
         $user = User::find(\Auth::user()->id);
         $user->update(['password' => bcrypt(\Request::get('password'))]);
