@@ -18,8 +18,8 @@ class TestController extends Controller {
 
     public function test() {
 
-        return $this->userService->admins();
-
-        return $this->radicalIntegrationManager->getApiKey();
+      /*  \Mail::raw('Text to e-mail', function ($message) {
+            //
+        });*/
     }
 }
