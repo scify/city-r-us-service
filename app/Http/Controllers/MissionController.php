@@ -457,6 +457,20 @@ class MissionController extends Controller {
      *       type="integer",
      *       in="query"
      *     ),
+     *     @SWG\Parameter(
+     *       name="from",
+     *       description="Limit to observations created at the date provided or later. Format: dd-mm-yyyy or mm/dd/yyyy",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="to",
+     *       description="Limit to observations created at the date provided or earlier. Format: dd-mm-yyyy or mm/dd/yyyy",
+     *       required=false,
+     *       type="string",
+     *       in="query"
+     *     ),
      * @SWG\Response(
      *         response=200,
      *         description="Returns a mission",
@@ -468,7 +482,14 @@ class MissionController extends Controller {
      * )
      */
     public function byIdWithObservations($id) {
-
+        $from = null;
+        $to = null;
+        if (\Request::has('from')) {
+            $from = date('Y-m-d', strtotime(\Request::get('from')));
+        }
+        if (\Request::has('to')) {
+            $to = date('Y-m-d', strtotime(\Request::get('to')));
+        }
         $mission = Mission::where('id', $id)->with('type', 'devices.observations.measurements')->first();
 
         if ($mission == null) {
@@ -479,17 +500,25 @@ class MissionController extends Controller {
                 'code' => 'mission_not_found',
                 'description' => 'The mission could not be found'];
         } else {
-
             foreach ($mission->devices as $dKey => $device) {
                 foreach ($device->observations as $oKey => $observation) {
+                    $oDate = explode(" ", $observation->observation_date)[0];
+                    if ($from != null && strcmp($from, $oDate) > 0) {
+                        unset($device->observations[$oKey]);
+                        continue;
+                    } else if ($to != null && strcmp($to, $oDate) < 0) {
+                        unset($device->observations[$oKey]);
+                        continue;
+                    }
                     $tmp = explode(".", $observation->device_uuid);
 
-                    if ($tmp[1] != $mission->radical_service_id || !isset($observation->measurements) || sizeof($observation->measurements) == 0)
+                    if ($tmp[1] != $mission->radical_service_id || !isset($observation->measurements) || sizeof($observation->measurements) == 0) {
                         unset($device->observations[$oKey]);
+                    }
                 }
-
-                if (sizeof($device->observations) == 0)
+                if (sizeof($device->observations) == 0) {
                     unset($mission->devices[$dKey]);
+                }
             }
 
             $response = new ApiResponse();
@@ -721,7 +750,6 @@ class MissionController extends Controller {
             \Mail::send('emails.new_suggested_mission', ['admin' => $admin, 'user' => $user, 'missionDescription' => \Request::get('description')], function ($message) use ($email) {
                 $message->to($email)->subject('Νέα προτεινόμενη αποστολή στο City-R-US!');
             });
-
         }
 
         return \Response::json($response);
