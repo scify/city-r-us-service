@@ -347,7 +347,7 @@ class MissionController extends Controller {
      *     )
      * )
      */
-    public function destroy($id) {
+    public function destroy($id = null) {
         $response = new ApiResponse();
         if ($id == null)
             $id = \Request::get('id');
@@ -364,8 +364,14 @@ class MissionController extends Controller {
                         'description' => 'The mission could not be deleted because it has users'];
                 } else {
                     //safely delete the mission
-                    $this->radicalIntegrationManager->deleteMission($mission);
+                    try {
+                        $this->radicalIntegrationManager->deleteMission($mission);
+                    } catch (\Exception $ex) {
+                        //TODO: handle exception
+                       // return ($ex);
+                    }
                     $mission->delete();
+
                     $response->status = 'success';
                     $response->message = $id;
                 }

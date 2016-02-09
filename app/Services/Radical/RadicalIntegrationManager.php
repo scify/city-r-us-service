@@ -37,12 +37,14 @@ class RadicalIntegrationManager {
     }
 
     public function deleteMission($mission) {
-        $url = env("RADICAL_CONFIGURATION_API") . "cities/" . env("RADICAL_CITYNAME") . "/services?api_key=" . $this->getApiKey();
+        $url = env("RADICAL_CONFIGURATION_API") . "cities/" . env("RADICAL_CITYNAME");
 
         $params = array("Service_ID" => $mission->radical_service_id,
             "City_ID" => 'ATHENS');
 
-        $response = $this->curl->delete($url . "/" . $mission->radical_service_id, $params, true);
+        $url = $url . "/services/" . $mission->radical_service_id . "?api_key=" . $this->getApiKey();
+
+        $response = $this->curl->delete($url, $params, true);
         return $response;
     }
 
@@ -82,11 +84,11 @@ class RadicalIntegrationManager {
     }
 
 
-    public function getMeasurementsByDeviceUUID($observationId){
+    public function getMeasurementsByDeviceUUID($observationId) {
 
         $apiKey = $this->getApiKey();
 
-        $url = env("RADICAL_DATA_API") . "getMeasurementsByDeviceId?key=" . $apiKey .'&id=' . $observationId . '&format=json';
+        $url = env("RADICAL_DATA_API") . "getMeasurementsByDeviceId?key=" . $apiKey . '&id=' . $observationId . '&format=json';
 
         $measurements = $this->curl->get($url, [], true);
 
@@ -94,12 +96,12 @@ class RadicalIntegrationManager {
 
     }
 
-    public function getMeasurementsByDate($observationId, $date){
+    public function getMeasurementsByDate($observationId, $date) {
 
         $apiKey = $this->getApiKey();
 
         //getMeasurementsFromDate (String id, long date, String format, String key)
-        $url = env("RADICAL_DATA_API") . "getMeasurementsFromDate?key=" . $apiKey .'&id=' . $observationId . '$date=' . $date . '&format=json';
+        $url = env("RADICAL_DATA_API") . "getMeasurementsFromDate?key=" . $apiKey . '&id=' . $observationId . '$date=' . $date . '&format=json';
 
         $measurements = $this->curl->get($url, [], true);
 

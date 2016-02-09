@@ -337,6 +337,20 @@
                         "description": "The mission's id",
                         "required": true,
                         "type": "integer"
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Limit to observations created at the date provided or later. Format: dd-mm-yyyy or mm/dd/yyyy",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "Limit to observations created at the date provided or earlier. Format: dd-mm-yyyy or mm/dd/yyyy",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
