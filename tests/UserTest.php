@@ -3,11 +3,21 @@
 class UserTest extends TestCase {
 
     public function testRegistration() {
-        //TODO: Test
+        $this->post('/users/register', [
+            'name' => env('TEST_NAME'),
+            'email' => env('TEST_MAIL'),
+            'password' => env('TEST_PASS'),
+            'device_uuid' => env('TEST_DEVICE'),
+            'model' => env('TEST_DEVICE'),
+            'manufacturer' => env('TEST_DEVICE'),
+        ]) -> seeJson([
+            'status' => 'error',
+            'code' => 'email_exists'
+        ]);
     }
 
     public function testAuthentication() {
-        //TODO: Test
+        
     }
 
     public function testPasswordReset() {

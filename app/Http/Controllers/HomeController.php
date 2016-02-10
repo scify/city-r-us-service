@@ -11,7 +11,7 @@ use Swagger\Annotations\Swagger;
  * @package App\Http\Controllers
  *
  * @SWG\Swagger(
- *     host="city-r-us.scify.org/service/public/api",
+ *     host="localhost/api",
  *     basePath="/v1",
  *     schemes={"http"},
  *     @SWG\Info(
