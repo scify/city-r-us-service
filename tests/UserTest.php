@@ -10,50 +10,50 @@ class UserTest extends TestCase {
             'device_uuid' => env('TEST_DEVICE'),
             'model' => env('TEST_DEVICE'),
             'manufacturer' => env('TEST_DEVICE'),
-        ]) -> seeJson([
+        ])->seeJson([
             'status' => 'error',
             'code' => 'email_exists'
         ]);
     }
 
     public function testAuthentication() {
-        
+        $this->post('/users/authenticate', [
+            'email' => env('TEST_MAIL'),
+            'password' => env('TEST_PASS')
+        ])->seeJson([
+            'status' => 'success',
+            'email' => env('TEST_MAIL')
+        ]);
     }
 
-    public function testPasswordReset() {
-        //TODO: Test
+    public function testFindByEmail() {
+        $this->get('/users/byEmail?email=' . env('TEST_MAIL'))->seeJson([
+            'status' => 'success',
+            'email' => env('TEST_MAIL'),
+            'name' => env('TEST_NAME')
+        ]);
     }
 
-    public function testPasswordChange() {
-        //TODO: Test
-    }
-
-    public function testFindeByEmail() {
-        //TODO: Test
-    }
-
-    public function testFindeById() {
-        //TODO: Test
-    }
-
-    public function testFindeByJWT() {
-        //TODO: Test
+    public function testFindById() {
+        $this->get('/users/byId?id=1')->seeJson([
+            'status' => 'success'
+        ]);
     }
 
     public function testGetAll() {
-        //TODO: Test
+        $this->get('/users')->seeJson([
+            'status' => 'success',
+            'email' => env('TEST_MAIL'),
+            'name' => env('TEST_NAME')
+        ]);
     }
 
     public function testGetAllWithScores() {
-        //TODO: Test
+        $this->get('/users/withScores')->seeJson([
+            'status' => 'success',
+            'email' => env('TEST_MAIL'),
+            'name' => env('TEST_NAME'),
+            'observation_points' => []
+        ]);
     }
-
-    public function testInvite() {
-        //TODO: Test
-    }
-
-    public function testInviteAccepted() {
-        //TODO: Test
-    }
-
 }

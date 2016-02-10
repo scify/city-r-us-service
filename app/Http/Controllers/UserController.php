@@ -1,5 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
 
+namespace App\Http\Controllers;
 
 use App\Models\ApiResponse;
 use App\Models\User;
@@ -7,9 +8,7 @@ use App\Services\DeviceService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
-
-class UserController extends Controller
-{
+class UserController extends Controller {
 
     private $userService;
     private $deviceService;
@@ -19,15 +18,13 @@ class UserController extends Controller
      * also initialize the services needed
      * and the middlewares
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('jwt.auth', ['only' => ['byJWT', 'invite', 'changePassword']]);
         // $this->middleware('jwt.refresh', ['only' => ['byJWT']]);
 
         $this->userService = new UserService();
         $this->deviceService = new DeviceService();
     }
-
 
     /**
      * Register a new user to the mobile application
@@ -99,14 +96,12 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function register()
-    {
+    public function register() {
 
         $response = $this->userService->register();
 
         return $response;
     }
-
 
     /**
      * Display a listing of the resource.
@@ -134,8 +129,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function index()
-    {
+    public function index() {
 
         $users = User::all();
 
@@ -146,7 +140,6 @@ class UserController extends Controller
 
         return \Response::json($response);
     }
-
 
     /**
      * Display a listing of the resource including user observation points.
@@ -174,8 +167,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function scores()
-    {
+    public function scores() {
 
         $users = User::with('observationPoints')->get();
 
@@ -216,9 +208,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function byEmail()
-    {
-
+    public function byEmail() {
         $response = new ApiResponse();
 
         if (!\Request::has('email')) {
@@ -277,8 +267,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function byJWT()
-    {
+    public function byJWT() {
         $user = User::with('observationPoints', 'invitePoints')->find(\Auth::user()->id);
 
         $user = $this->userService->totalPoints($user);
@@ -289,7 +278,6 @@ class UserController extends Controller
 
         return \Response::json($response);
     }
-
 
     /**
      * Display one user by id
@@ -320,9 +308,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function byId()
-    {
-
+    public function byId() {
         $response = new ApiResponse();
 
         if (!\Request::has('id')) {
@@ -349,7 +335,6 @@ class UserController extends Controller
         }
         return \Response::json($response);
     }
-
 
     /**
      * Authenticate a user based on given credentials.
@@ -392,8 +377,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function authenticate(Request $request)
-    {
+    public function authenticate(Request $request) {
         $credentials = $request->only('email', 'password');
 
         try {
@@ -461,8 +445,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function refreshToken(Request $request)
-    {
+    public function refreshToken(Request $request) {
         $credentials = $request->only('email', 'password');
 
         try {
@@ -497,7 +480,6 @@ class UserController extends Controller
         return \Response::json($response);
     }
 
-
     /**
      * Reset a user password.
      * Get a user email, generate a random password and email it to the user
@@ -524,8 +506,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function resetPassword()
-    {
+    public function resetPassword() {
 
         $user = User::where('email', \Request::get('email'))->first();
 
@@ -587,8 +568,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function changePassword()
-    {
+    public function changePassword() {
 
         $user = User::find(\Auth::user()->id);
         $user->update(['password' => bcrypt(\Request::get('password'))]);
@@ -601,4 +581,5 @@ class UserController extends Controller
 
         return \Response::json($response);
     }
+
 }
