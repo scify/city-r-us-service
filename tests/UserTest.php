@@ -25,6 +25,18 @@ class UserTest extends TestCase {
             'email' => env('TEST_MAIL')
         ]);
     }
+    
+    public function testChangePassword() {
+        $this->login();
+        $this->post('/users/changePassword', [
+            'password' => env('TEST_PASS'),
+            'passwordConfirmation' => env('TEST_PASS')
+        ], [
+            'Authorization' => 'Bearer ' . $this->token
+        ])->seeJson([
+            'status' => 'success'
+        ]);
+    }
 
     public function testFindByEmail() {
         $this->get('/users/byEmail?email=' . env('TEST_MAIL'))->seeJson([
