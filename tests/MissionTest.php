@@ -3,47 +3,97 @@
 class MissionTest extends TestCase {
 
     public function testGetAll() {
-        //TODO: Test
+        $this->get('/missions')->seeJson([
+            'status' => 'success'
+        ]);
     }
 
     public function testGetAllWithObservations() {
-        //TODO: Test
-    }
-
-    public function testFindById() {
-        //TODO: Test
-    }
-
-    public function testFindByIdWithObservations() {
-        //TODO: Test
-    }
-
-    public function testFindByName() {
-        //TODO: Test
+        $this->get('/missions/observations')->seeJson([
+            'status' => 'success'
+        ]);
     }
 
     public function testCreate() {
-        //TODO: Test
+        $this->login();
+        $mission_id = json_decode($this->post('/missions/store', [
+            'name' => 'TEST_MISSION',
+            'description' => 'TEST_MISSION',
+            'mission_type' => 'ROUTE'
+        ], [
+            'Authorization' => 'Bearer ' . $this->token
+        ])->seeJson([
+            'status' => 'success'
+        ])->response->getContent())->message;
+        return $mission_id;
     }
 
-    public function testUpdate() {
-        //TODO: Test
+    /**
+     * @depends testCreate
+     */
+    public function testUpdate($mission_id) {
+        $this->login();
+        $this->post('/missions/update', [
+            'id' => $mission_id,
+            'name' => 'TEST_MISSION',
+            'description' => 'TEST_MISSION_2',
+            'mission_type' => 'ROUTE'
+        ], [
+            'Authorization' => 'Bearer ' . $this->token
+        ])->seeJson([
+            'status' => 'success',
+            'message' => $mission_id
+        ]);
+        return $mission_id;
     }
 
-    public function testDelete() {
-        //TODO: Test
+    /**
+     * @depends testUpdate
+     */
+    public function testFindById($mission_id) {
+        $this->login();
+        $this->get('/missions/byId?id=' . $mission_id)->seeJson([
+            'status' => 'success',
+            'id' => $mission_id,
+            'name' => 'TEST_MISSION',
+            'description' => 'TEST_MISSION_2'
+        ]);
+        return $mission_id;
     }
 
-    public function testSuggest() {
-        //TODO: Test
+    /**
+     * @depends testFindById
+     */
+    public function testFindByName($mission_id) {
+        $this->login();
+        $this->get('/missions/byName?name=TEST_MISSION')->seeJson([
+            'status' => 'success',
+            'id' => $mission_id,
+            'name' => 'TEST_MISSION',
+            'description' => 'TEST_MISSION_2'
+        ]);
+        return $mission_id;
+    }
+
+    /**
+     * @depends testFindByName
+     */
+    public function testDelete($mission_id) {
+        $this->login();
+        $this->post('/missions/delete', [
+            'id' => $mission_id
+        ], [
+            'Authorization' => 'Bearer ' . $this->token
+        ])->seeJson([
+            'status' => 'success',
+            'message' => $mission_id
+        ]);
     }
 
     public function testGetContributors() {
-        //TODO: Test
-    }
-
-    public function testAwardUser() {
-        //TODO: Test
+        $this->get('/missions/topContributors?missionId=1')->seeJson([
+            'status' => 'success'
+        ]);
     }
 
 }
