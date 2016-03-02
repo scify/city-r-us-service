@@ -368,7 +368,7 @@ class MissionController extends Controller {
                         $this->radicalIntegrationManager->deleteMission($mission);
                     } catch (\Exception $ex) {
                         //TODO: handle exception
-                       // return ($ex);
+                        // return ($ex);
                     }
                     $mission->delete();
 
@@ -744,7 +744,7 @@ class MissionController extends Controller {
 
         $response = new ApiResponse();
         $response->status = 'success';
-        $response->message = "Mission created";
+        $response->message = "Mission suggested";
 
 
         $admins = $this->userService->admins();
@@ -754,6 +754,65 @@ class MissionController extends Controller {
         foreach ($admins as $admin) {
             $email = $admin->email;
             \Mail::send('emails.new_suggested_mission', ['admin' => $admin, 'user' => $user, 'missionDescription' => \Request::get('description')], function ($message) use ($email) {
+                $message->to($email)->subject('Νέα προτεινόμενη αποστολή στο City-R-US!');
+            });
+        }
+
+        return \Response::json($response);
+    }
+
+    /**
+     * Suggest a mission from website
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @SWG\Get(
+     *     summary="Suggest a mission",
+     *     path="/missions/suggest",
+     *     description="Users of the website are able to suggest a mission",
+     *     operationId="api.missions.suggest",
+     *     produces={"application/json"},
+     *     tags={"missions"},
+     *     @SWG\Parameter(
+     *       name="description",
+     *       description="The description of the suggested mission",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="mail",
+     *       description="The e-mail of the person suggesting a mission",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Parameter(
+     *       name="name",
+     *       description="The name of the person suggesting a mission",
+     *       required=true,
+     *       type="string",
+     *       in="query"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="",
+     *     )
+     * )
+     */
+    public function suggestMissionWeb() {
+
+        $response = new ApiResponse();
+        $response->status = 'success';
+        $response->message = "Mission suggestion sent";
+
+
+        $admins = $this->userService->admins();
+
+        //send an email to all the admins
+        foreach ($admins as $admin) {
+            $email = $admin->email;
+            \Mail::send('emails.new_suggested_mission_web', ['admin' => $admin, 'name' => \Request::get('name'), 'mail' => \Request::get('mail'), 'missionDescription' => \Request::get('description')], function ($message) use ($email) {
                 $message->to($email)->subject('Νέα προτεινόμενη αποστολή στο City-R-US!');
             });
         }

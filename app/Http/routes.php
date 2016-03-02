@@ -49,6 +49,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function() {
     Route::post('missions/delete', 'MissionController@destroy');
     Route::post('missions/awardUser', 'MissionController@awardUser');
     Route::post('missions/suggest', 'MissionController@suggestMission');
+    Route::post('missions/suggestWeb', 'MissionController@suggestMissionWeb');
     Route::get('missions/topContributors', 'MissionController@topContributors');
 
     //Device routes
