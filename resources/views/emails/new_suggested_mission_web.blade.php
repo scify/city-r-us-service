@@ -1,6 +1,12 @@
-<p>Γεια {{ $admin->name }}!</p>
+@extends('emails.email_template')
 
-<p>Ο {{ $name }} <{{ $mail }}> πρότεινε μια αποστολή για την εφαρμογή City-R-Us:</p>
+@section('title', 'Πρόσκληση')
+
+@section('content)
+    <p>Γεια {{ $admin->name }}!</p>
+
+    <p>Ο {{ $name }} <{{ $mail }}> πρότεινε μια αποστολή για την εφαρμογή City-R-Us:</p>
 
 
-<p><em>{{ $missionDescription }}</em></p>
+    <p><em>{{ $missionDescription }}</em></p>
+@endsection
