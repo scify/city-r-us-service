@@ -1,8 +1,10 @@
 @extends('template.email')
 
-@section('title', 'Πρόσκληση')
+@section('title')
+    Πρόταση Αποστολής
+@stop
 
-@section('content)
+@section('content')
     <p>Γεια {{ $admin->name }}!</p>
 
     <p>Ο {{ $name }} <{{ $mail }}> πρότεινε μια αποστολή για την εφαρμογή City-R-Us:</p>

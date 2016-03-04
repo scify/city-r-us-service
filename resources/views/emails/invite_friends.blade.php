@@ -1,8 +1,10 @@
 @extends('template.email')
 
-@section('title', 'Πρόσκληση')
+@section('title')
+    Πρόσκληση
+@stop
 
-@section('content)
+@section('content')
     <p>Ο/Η {{ $user->name }} σας προσκάλεσε στην εφαρμογή City-R-US!</p>
 
     <p>Το City-R-US ειναι μια εφαρμογή που επιτρέπει στους κατοίκους της Αθήνας να συμμετέχουν σε αποστολές. Επιλέξτε την
