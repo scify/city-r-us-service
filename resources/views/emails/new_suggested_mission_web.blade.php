@@ -1,4 +1,4 @@
-@extends('emails.email_template')
+@extends('template.email')
 
 @section('title', 'Πρόσκληση')
 
@@ -9,4 +9,4 @@
 
 
     <p><em>{{ $missionDescription }}</em></p>
-@endsection
+@stop

@@ -1,4 +1,4 @@
-@extends('emails.email_template')
+@extends('template.email')
 
 @section('title', 'Πρόσκληση')
 
@@ -8,4 +8,4 @@
     <p>Ο χρήστης {{ $user->name }} πρότεινε μια αποστολή για την εφαρμογή City-R-Us:</p>
 
     <p><em>{{ $missionDescription }}</em></p>
-@endsection
+@stop

@@ -1,4 +1,4 @@
-@extends('emails.email_template')
+@extends('template.email')
 
 @section('title', 'Πρόσκληση')
 
@@ -10,4 +10,4 @@
 
     <p>Κατεβάστε την εφαρμογή για κινητό <a href="{{ url('/api/v1/users/invite/clicked?platform=android&token='.$token.'&user_id='.$user->id) }}">Android</a>.
     </p>
-@endsection
+@stop
