@@ -60,6 +60,7 @@ Route::group(['middleware' => 'cors', 'prefix' => 'api/v1'], function() {
     Route::post('observations/store', 'ObservationController@store');
     Route::get('getObservationsByMissionId/{missionId}', 'RadicalIntegrationController@getObservations');
     Route::get('getObservationsByMissionId/{missionId}/{date}', 'RadicalIntegrationController@getObservationsByDate');
+    Route::post('observations/classify', 'ClassificationController@classify');
 
     //Map routes
     Route::get('map/venues', 'MapController@getVenues');
